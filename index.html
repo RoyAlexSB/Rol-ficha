@@ -307,6 +307,127 @@ select {
         font-size: 26px;
     }
 }
+
+/* ===== PRUEBAS RÁPIDAS — DISEÑO ===== */
+.quick-intro{
+  margin:0 0 24px;
+  padding:16px 18px;
+  border:1px solid #303747;
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+  color:#b9c0cf;
+  line-height:1.55;
+}
+.quick-intro strong{color:#fff}
+
+.quick-group{
+  margin:0 0 30px;
+  padding:20px;
+  border:1px solid #303747;
+  border-radius:18px;
+  background:rgba(10,12,18,.45);
+}
+.quick-group:last-child{margin-bottom:0}
+
+.quick-group-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 16px;
+  padding-bottom:12px;
+  border-bottom:1px solid #303747;
+  font-size:1.15rem;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:.02em;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.quick-card{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  padding:17px;
+  border:1px solid #343b4d;
+  border-radius:14px;
+  background:#171a22;
+  transition:border-color .15s ease, transform .15s ease, background .15s ease;
+}
+.quick-card:hover{
+  border-color:#4b556d;
+  background:#1a1e28;
+  transform:translateY(-1px);
+}
+
+.quick-card-title{
+  margin:0 0 5px;
+  font-size:1rem;
+  font-weight:800;
+  color:#fff;
+}
+.quick-card-combination{
+  margin:0 0 9px;
+  font-size:.86rem;
+  font-weight:600;
+  color:#8f9bb2;
+}
+.quick-card-uses{
+  min-height:40px;
+  margin:0 0 15px;
+  color:#c6ccda;
+  font-size:.84rem;
+  line-height:1.45;
+}
+.quick-card-uses span{
+  display:inline;
+}
+.quick-modes{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:auto;
+}
+.quick-modes button{
+  width:100%;
+  min-height:38px;
+  padding:8px 9px;
+  border:0;
+  border-radius:9px;
+  background:#5865e8;
+  color:#fff;
+  font-weight:700;
+  font-size:.78rem;
+  cursor:pointer;
+  transition:filter .15s ease, transform .1s ease;
+}
+.quick-modes button:hover{
+  filter:brightness(1.1);
+}
+.quick-modes button:active{
+  transform:scale(.98);
+}
+.quick-modes button:last-child{
+  grid-column:span 2;
+}
+
+.quick-attribute{
+  margin:0 0 16px;
+  color:#8f9bb2;
+  font-size:.82rem;
+}
+
+@media (max-width:760px){
+  .quick-group{padding:15px;margin-bottom:20px}
+  .quick-grid{grid-template-columns:1fr;gap:11px}
+  .quick-card{padding:15px}
+  .quick-card-uses{min-height:auto}
+}
+
 </style>
 </head>
 
@@ -578,6 +699,203 @@ select {
     </div>
 
 </section>
+
+
+
+<section class="card">
+  <h2>⚡ Pruebas rápidas</h2>
+
+  <div class="quick-intro">
+    Selecciona directamente la prueba que quieres realizar.
+    <strong>El sistema aplicará automáticamente el atributo y la habilidad correspondientes.</strong>
+    Para combinaciones especiales puedes seguir usando el modo manual de arriba.
+  </div>
+
+  <div class="quick-group">
+    <h3 class="quick-group-title">💪 Fortaleza</h3>
+    <div class="quick-grid">
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🏋️ Forma física</h4>
+        <p class="quick-card-combination">Fortaleza + Forma física</p>
+        <p class="quick-card-uses">Soportar peso · Actividad física prolongada · Aguantar la respiración</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('fortaleza','formaFisica','normal')">Normal</button>
+          <button onclick="quickRoll('fortaleza','formaFisica','talento')">Talento</button>
+          <button onclick="quickRoll('fortaleza','formaFisica','drama')">Drama</button>
+          <button onclick="quickRoll('fortaleza','formaFisica','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">⚔️ Combate</h4>
+        <p class="quick-card-combination">Fortaleza + Combate</p>
+        <p class="quick-card-uses">Bloquear un golpe</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('fortaleza','combate','normal')">Normal</button>
+          <button onclick="quickRoll('fortaleza','combate','talento')">Talento</button>
+          <button onclick="quickRoll('fortaleza','combate','drama')">Drama</button>
+          <button onclick="quickRoll('fortaleza','combate','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🛡️ Resistencia</h4>
+        <p class="quick-card-combination">Solo Fortaleza</p>
+        <p class="quick-card-uses">Resistencia al dolor</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('fortaleza','ninguna','normal')">Normal</button>
+          <button onclick="quickRoll('fortaleza','ninguna','talento')">Talento</button>
+          <button onclick="quickRoll('fortaleza','ninguna','drama')">Drama</button>
+          <button onclick="quickRoll('fortaleza','ninguna','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="quick-group">
+    <h3 class="quick-group-title">⚡ Reflejos</h3>
+    <div class="quick-grid">
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🏃 Forma física</h4>
+        <p class="quick-card-combination">Reflejos + Forma física</p>
+        <p class="quick-card-uses">Correr · Nadar · Trepar · Esquivar un ataque o peligro</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('reflejos','formaFisica','normal')">Normal</button>
+          <button onclick="quickRoll('reflejos','formaFisica','talento')">Talento</button>
+          <button onclick="quickRoll('reflejos','formaFisica','drama')">Drama</button>
+          <button onclick="quickRoll('reflejos','formaFisica','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">⚔️ Combate</h4>
+        <p class="quick-card-combination">Reflejos + Combate</p>
+        <p class="quick-card-uses">Atacar · Tirar algo</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('reflejos','combate','normal')">Normal</button>
+          <button onclick="quickRoll('reflejos','combate','talento')">Talento</button>
+          <button onclick="quickRoll('reflejos','combate','drama')">Drama</button>
+          <button onclick="quickRoll('reflejos','combate','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🕵️ Subterfugio</h4>
+        <p class="quick-card-combination">Reflejos + Subterfugio</p>
+        <p class="quick-card-uses">Sigilo · Forzar cerraduras</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('reflejos','subterfugio','normal')">Normal</button>
+          <button onclick="quickRoll('reflejos','subterfugio','talento')">Talento</button>
+          <button onclick="quickRoll('reflejos','subterfugio','drama')">Drama</button>
+          <button onclick="quickRoll('reflejos','subterfugio','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="quick-group">
+    <h3 class="quick-group-title">🧠 Voluntad</h3>
+    <div class="quick-grid">
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🔮 Ocultismo</h4>
+        <p class="quick-card-combination">Voluntad + Ocultismo</p>
+        <p class="quick-card-uses">Fusionarse con alguien · Sentir energía arcana</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('voluntad','ocultismo','normal')">Normal</button>
+          <button onclick="quickRoll('voluntad','ocultismo','talento')">Talento</button>
+          <button onclick="quickRoll('voluntad','ocultismo','drama')">Drama</button>
+          <button onclick="quickRoll('voluntad','ocultismo','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="quick-group">
+    <h3 class="quick-group-title">🧠 Inteligencia</h3>
+    <div class="quick-grid">
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">👁️ Percepción</h4>
+        <p class="quick-card-combination">Inteligencia + Percepción</p>
+        <p class="quick-card-uses">Observar · Escuchar · Buscar</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','percepcion','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','percepcion','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','percepcion','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','percepcion','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🎭 Subterfugio</h4>
+        <p class="quick-card-combination">Inteligencia + Subterfugio</p>
+        <p class="quick-card-uses">Mentir</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','subterfugio','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','subterfugio','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','subterfugio','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','subterfugio','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">💬 Comunicación</h4>
+        <p class="quick-card-combination">Inteligencia + Comunicación</p>
+        <p class="quick-card-uses">Convencer · Entender a otros</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','comunicacion','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','comunicacion','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','comunicacion','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','comunicacion','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">📚 Cultura</h4>
+        <p class="quick-card-combination">Inteligencia + Cultura</p>
+        <p class="quick-card-uses">Cultura general (Historia, cultura de vida nocturna, cultura de internet o local) · Hackear</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','cultura','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','cultura','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','cultura','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','cultura','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🔮 Ocultismo</h4>
+        <p class="quick-card-combination">Inteligencia + Ocultismo</p>
+        <p class="quick-card-uses">Crear un vínculo con alguien · Detectar energía arcana (racionalmente)</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','ocultismo','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','ocultismo','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','ocultismo','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','ocultismo','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+      <div class="quick-card">
+        <h4 class="quick-card-title">🧠 Prueba de atributo</h4>
+        <p class="quick-card-combination">Solo Inteligencia</p>
+        <p class="quick-card-uses">Memoria · Entender algo</p>
+        <div class="quick-modes">
+          <button onclick="quickRoll('inteligencia','ninguna','normal')">Normal</button>
+          <button onclick="quickRoll('inteligencia','ninguna','talento')">Talento</button>
+          <button onclick="quickRoll('inteligencia','ninguna','drama')">Drama</button>
+          <button onclick="quickRoll('inteligencia','ninguna','dramaTalent')">Drama + Talento</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 </main>
 
@@ -952,6 +1270,61 @@ function startDramaTalent() {
     updateDramaStatus();
 }
 
+
+
+/* =========================================
+   PRUEBAS RÁPIDAS
+========================================= */
+
+function quickRoll(attribute, skill, mode) {
+
+    document.getElementById("attributeSelect").value = attribute;
+    document.getElementById("skillSelect").value = skill;
+
+    updateCalculation();
+
+    if (mode === "normal") {
+        selectMode("normal");
+        rollNormal();
+    }
+
+    if (mode === "talent") {
+        selectMode("talent");
+        rollNormal();
+    }
+
+    if (mode === "drama") {
+        startDrama();
+        rollInitialDrama();
+    }
+
+    if (mode === "dramaTalent") {
+        startDramaTalent();
+        rollInitialDrama();
+    }
+
+    document.getElementById("result").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+function rollInitialDrama() {
+
+    setDice([
+        rollD10(),
+        rollD10(),
+        rollD10()
+    ]);
+
+    selectedDice = [];
+    updateSelectedVisuals();
+    updateDramaStatus();
+
+    document.getElementById("resultNumber").textContent = "—";
+    document.getElementById("explanation").textContent =
+        "Selecciona los dados que quieres volver a tirar para resolver el Drama.";
+}
 
 /* =========================================
    TIRADA
