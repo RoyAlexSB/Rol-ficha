@@ -7,34 +7,38 @@
     <title>Rol-Ficha</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #17171c;
             color: white;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 30px 15px;
         }
 
         .app {
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
+            width: 100%;
+            max-width: 650px;
+            margin: auto;
         }
 
         h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 5px;
         }
 
         .subtitle {
+            text-align: center;
             color: #aaa;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        .system {
+        .panel {
             background: #24242c;
             border: 1px solid #3b3b47;
             border-radius: 15px;
@@ -42,58 +46,450 @@
             margin-bottom: 20px;
         }
 
-        .system h2 {
+        .panel h2 {
             margin-top: 0;
         }
 
-        button {
-            background: #ffffff;
+        .modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mode {
+            background: #30303a;
+            color: white;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 14px 10px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .mode.selected {
+            border-color: white;
+            background: #3d3d49;
+        }
+
+        .roll-button {
+            width: 100%;
+            margin-top: 20px;
+            background: white;
             color: #17171c;
             border: none;
-            border-radius: 10px;
-            padding: 12px 25px;
-            font-size: 16px;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 19px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        button:hover {
+        .roll-button:hover {
             opacity: 0.85;
+        }
+
+        .dice {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .die {
+            width: 70px;
+            height: 70px;
+            background: #30303a;
+            border: 1px solid #555565;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .result {
+            text-align: center;
+            background: #30303a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .result-label {
+            color: #aaa;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .explanation {
+            color: #ccc;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .attributes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .attribute {
+            background: #30303a;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .attribute-name {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .attribute-value {
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 450px) {
+            .modes {
+                grid-template-columns: 1fr;
+            }
+
+            .die {
+                width: 60px;
+                height: 60px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <h1>Rol-Ficha</h1>
+    <h1>🎲 Rol-Ficha</h1>
 
-        <p class="subtitle">
-            Fichas de personaje y sistema de tiradas
-        </p>
+    <p class="subtitle">
+        Sistema de tiradas
+    </p>
 
-        <div class="system">
-            <h2>🎲 Sistema de pruebas</h2>
+    <div class="panel">
 
-            <p>
-                Nuestro primer sistema de rol.
-            </p>
+        <h2>Personaje</h2>
 
-            <button onclick="alert('¡Sistema seleccionado!')">
-                Entrar
-            </button>
-        </div>
+        <div class="attributes">
 
-        <div class="system">
-            <h2>➕ Nuevo sistema</h2>
+            <div class="attribute">
+                <div class="attribute-name">Inteligencia</div>
+                <div class="attribute-value">7</div>
+            </div>
 
-            <p>
-                Próximamente podremos añadir otros sistemas.
-            </p>
+            <div class="attribute">
+                <div class="attribute-name">Percepción</div>
+                <div class="attribute-value">9</div>
+            </div>
 
         </div>
 
     </div>
+
+
+    <div class="panel">
+
+        <h2>🔎 Búsqueda / Atención</h2>
+
+        <p>
+            Inteligencia + Percepción
+        </p>
+
+        <p><strong>Tipo de tirada:</strong></p>
+
+        <div class="modes">
+
+            <button class="mode selected" onclick="selectMode('normal', this)">
+                ⚪ Normal
+            </button>
+
+            <button class="mode" onclick="selectMode('drama', this)">
+                🔥 Drama
+            </button>
+
+            <button class="mode" onclick="selectMode('talento', this)">
+                ✨ Talento
+            </button>
+
+            <button class="mode" onclick="selectMode('dramaTalento', this)">
+                🔥✨ Drama + Talento
+            </button>
+
+        </div>
+
+        <button class="roll-button" onclick="rollDice()">
+            🎲 TIRAR 3d10
+        </button>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h2>Resultado</h2>
+
+        <div class="dice">
+
+            <div class="die" id="die1">–</div>
+            <div class="die" id="die2">–</div>
+            <div class="die" id="die3">–</div>
+
+        </div>
+
+        <div class="result">
+
+            <div class="result-label">
+                Resultado de la tirada
+            </div>
+
+            <div class="result-number" id="result">
+                –
+            </div>
+
+        </div>
+
+        <p class="explanation" id="explanation">
+            Pulsa "Tirar 3d10" para comenzar.
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let currentMode = "normal";
+
+
+    function selectMode(mode, button) {
+
+        currentMode = mode;
+
+        document.querySelectorAll(".mode").forEach(function(btn) {
+            btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+    }
+
+
+    function rollD10() {
+
+        return Math.floor(Math.random() * 10) + 1;
+
+    }
+
+
+    function rollDice() {
+
+        let dice = [
+            rollD10(),
+            rollD10(),
+            rollD10()
+        ];
+
+
+        // Ordenamos los dados de menor a mayor
+        let sorted = [...dice].sort((a, b) => a - b);
+
+        let menor = sorted[0];
+        let central = sorted[1];
+        let mayor = sorted[2];
+
+
+        // Detectamos dobles
+        let isDouble = (
+            dice[0] === dice[1] ||
+            dice[0] === dice[2] ||
+            dice[1] === dice[2]
+        );
+
+
+        // Detectamos triples
+        let isTriple = (
+            dice[0] === dice[1] &&
+            dice[1] === dice[2]
+        );
+
+
+        let result;
+        let explanation = "";
+
+
+        // -------------------------
+        // TIRADA NORMAL
+        // -------------------------
+
+        if (currentMode === "normal") {
+
+            result = central;
+
+            explanation =
+                "Dado central: " + central;
+
+        }
+
+
+        // -------------------------
+        // TALENTO
+        // -------------------------
+
+        else if (currentMode === "talento") {
+
+            result = central + menor;
+
+            explanation =
+                "Dado central " + central +
+                " + dado menor " + menor +
+                " = " + result;
+
+        }
+
+
+        // -------------------------
+        // DRAMA
+        // -------------------------
+
+        else if (currentMode === "drama") {
+
+            let dramaOptions = [
+                mayor
+            ];
+
+            if (isDouble) {
+
+                // En un triple también existe un doble,
+                // pero posteriormente añadiremos el triple
+                // como opción independiente.
+                let doubleValue;
+
+                if (dice[0] === dice[1]) {
+                    doubleValue = dice[0];
+                } else if (dice[0] === dice[2]) {
+                    doubleValue = dice[0];
+                } else {
+                    doubleValue = dice[1];
+                }
+
+                dramaOptions.push(doubleValue * 2);
+            }
+
+
+            if (isTriple) {
+
+                dramaOptions.push(dice[0] * 3);
+
+            }
+
+
+            result = Math.max(...dramaOptions);
+
+
+            if (isTriple && result === dice[0] * 3) {
+
+                explanation =
+                    "Triple " + dice[0] +
+                    " → " + result;
+
+            } else if (isDouble && result === mayor) {
+
+                explanation =
+                    "El dado mayor (" + mayor +
+                    ") supera al doble → " + result;
+
+            } else if (isDouble) {
+
+                explanation =
+                    "Doble " + (result / 2) +
+                    " → " + result;
+
+            } else {
+
+                explanation =
+                    "Dado mayor: " + mayor;
+
+            }
+
+        }
+
+
+        // -------------------------
+        // DRAMA + TALENTO
+        // -------------------------
+
+        else if (currentMode === "dramaTalento") {
+
+            let dramaOptions = [
+                mayor
+            ];
+
+
+            if (isDouble) {
+
+                let doubleValue;
+
+                if (dice[0] === dice[1]) {
+                    doubleValue = dice[0];
+                } else if (dice[0] === dice[2]) {
+                    doubleValue = dice[0];
+                } else {
+                    doubleValue = dice[1];
+                }
+
+                dramaOptions.push(doubleValue * 2);
+            }
+
+
+            if (isTriple) {
+
+                dramaOptions.push(dice[0] * 3);
+
+            }
+
+
+            let dramaResult = Math.max(...dramaOptions);
+
+            result = dramaResult + menor;
+
+
+            explanation =
+                "Drama: " + dramaResult +
+                " + Talento (dado menor " +
+                menor + ") = " + result;
+
+        }
+
+
+        // Mostramos los dados
+        document.getElementById("die1").textContent = dice[0];
+        document.getElementById("die2").textContent = dice[1];
+        document.getElementById("die3").textContent = dice[2];
+
+
+        // Mostramos resultado
+        document.getElementById("result").textContent = result;
+
+        document.getElementById("explanation").textContent = explanation;
+
+    }
+
+</script>
 
 </body>
 </html>
