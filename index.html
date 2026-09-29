@@ -3,237 +3,310 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rol-Ficha — Sistema de pruebas</title>
+<title>Rol-Ficha — Amor de Otro Mundo</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #111318;
-        color: #f2f2f2;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111318;
+    color: #f2f2f2;
+}
 
-    header {
-        padding: 24px;
-        text-align: center;
-        background: #191c24;
-        border-bottom: 1px solid #303542;
-    }
+header {
+    padding: 24px;
+    text-align: center;
+    background: #191c24;
+    border-bottom: 1px solid #303542;
+}
 
-    header h1 {
-        margin: 0;
-        font-size: 32px;
-    }
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
 
-    header p {
-        margin: 8px 0 0;
-        color: #aeb4c2;
-    }
+header p {
+    margin: 8px 0 0;
+    color: #aeb4c2;
+}
 
-    main {
-        width: min(900px, 92%);
-        margin: 30px auto;
-    }
+main {
+    width: min(950px, 92%);
+    margin: 30px auto;
+}
 
-    .card {
-        background: #191c24;
-        border: 1px solid #303542;
-        border-radius: 14px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
+.card {
+    background: #191c24;
+    border: 1px solid #303542;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
 
-    h2 {
-        margin-top: 0;
-    }
+h2 {
+    margin-top: 0;
+}
 
-    .attributes {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 20px;
-    }
+h3 {
+    margin-bottom: 15px;
+}
 
-    .attribute {
-        background: #222631;
-        border-radius: 10px;
-        padding: 16px;
-    }
+/* =========================
+   FICHA
+========================= */
 
-    .attribute-name {
-        color: #aeb4c2;
-        font-size: 14px;
-    }
+.character-name {
+    width: 100%;
+    padding: 14px;
+    border-radius: 9px;
+    border: 1px solid #454c5c;
+    background: #222631;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
 
-    .attribute-value {
-        font-size: 30px;
-        font-weight: bold;
-        margin-top: 5px;
-    }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
 
-    .dice-container {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin: 25px 0;
-        flex-wrap: wrap;
+.stat {
+    background: #222631;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.stat-name {
+    color: #aeb4c2;
+    margin-bottom: 8px;
+}
+
+.stat-input {
+    width: 75px;
+    padding: 8px;
+    border-radius: 7px;
+    border: 1px solid #454c5c;
+    background: #191c24;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.save-area {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.save-message {
+    width: 100%;
+    color: #65d68a;
+    min-height: 20px;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+button {
+    border: 0;
+    border-radius: 9px;
+    padding: 12px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #5865f2;
+    color: white;
+}
+
+button:hover {
+    filter: brightness(1.12);
+}
+
+button.secondary {
+    background: #303642;
+}
+
+button.drama {
+    background: #a56b19;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* =========================
+   PRUEBAS
+========================= */
+
+.action-box {
+    padding: 16px;
+    border-radius: 10px;
+    background: #222631;
+    margin-top: 15px;
+}
+
+.test-selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #454c5c;
+    background: #222631;
+    color: white;
+    font-size: 15px;
+}
+
+.calculation {
+    margin-top: 15px;
+    padding: 15px;
+    background: #222631;
+    border-radius: 10px;
+    color: #c5cad4;
+}
+
+.dice-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.die {
+    width: 85px;
+    height: 85px;
+    border-radius: 14px;
+    background: #292e3a;
+    border: 2px solid #454c5c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: default;
+    transition: 0.15s;
+    user-select: none;
+}
+
+.die.selectable {
+    cursor: pointer;
+}
+
+.die.selectable:hover {
+    transform: translateY(-3px);
+    border-color: #8f99ad;
+}
+
+.die.selected {
+    border-color: #ffb84d;
+    background: #3a3020;
+    transform: translateY(-5px);
+}
+
+.die.kept {
+    border-color: #65d68a;
+    background: #203528;
+}
+
+.die-label {
+    text-align: center;
+    color: #8e96a6;
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.mode {
+    background: #303642;
+}
+
+.mode.active {
+    background: #5865f2;
+}
+
+.result {
+    text-align: center;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #222631;
+}
+
+.result-number {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.explanation {
+    color: #aeb4c2;
+    line-height: 1.5;
+}
+
+.drama-panel {
+    display: none;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: #252a35;
+    border: 1px solid #454c5c;
+}
+
+.drama-panel.visible {
+    display: block;
+}
+
+.instruction {
+    color: #c3c8d3;
+    line-height: 1.5;
+}
+
+.status {
+    margin-top: 15px;
+    color: #aeb4c2;
+}
+
+.roll-area {
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+
+    .stats-grid,
+    .test-selectors {
+        grid-template-columns: 1fr;
     }
 
     .die {
-        width: 85px;
-        height: 85px;
-        border-radius: 14px;
-        background: #292e3a;
-        border: 2px solid #454c5c;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        font-weight: bold;
-        cursor: default;
-        transition: 0.15s;
-        user-select: none;
+        width: 70px;
+        height: 70px;
+        font-size: 26px;
     }
-
-    .die.selectable {
-        cursor: pointer;
-    }
-
-    .die.selectable:hover {
-        transform: translateY(-3px);
-        border-color: #8f99ad;
-    }
-
-    .die.selected {
-        border-color: #ffb84d;
-        background: #3a3020;
-        transform: translateY(-5px);
-    }
-
-    .die.kept {
-        border-color: #65d68a;
-        background: #203528;
-    }
-
-    .die-label {
-        text-align: center;
-        color: #8e96a6;
-        font-size: 12px;
-        margin-top: 7px;
-    }
-
-    button {
-        border: 0;
-        border-radius: 9px;
-        padding: 12px 18px;
-        font-size: 15px;
-        font-weight: bold;
-        cursor: pointer;
-        background: #5865f2;
-        color: white;
-        margin: 4px;
-    }
-
-    button:hover {
-        filter: brightness(1.12);
-    }
-
-    button.secondary {
-        background: #303642;
-    }
-
-    button.drama {
-        background: #a56b19;
-    }
-
-    button:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-    }
-
-    .modes {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 15px;
-    }
-
-    .mode {
-        background: #303642;
-    }
-
-    .mode.active {
-        background: #5865f2;
-    }
-
-    .result {
-        text-align: center;
-        margin-top: 25px;
-        padding: 20px;
-        border-radius: 12px;
-        background: #222631;
-    }
-
-    .result-number {
-        font-size: 48px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-
-    .explanation {
-        color: #aeb4c2;
-        line-height: 1.5;
-    }
-
-    .drama-panel {
-        display: none;
-        margin-top: 20px;
-        padding: 18px;
-        border-radius: 12px;
-        background: #252a35;
-        border: 1px solid #454c5c;
-    }
-
-    .drama-panel.visible {
-        display: block;
-    }
-
-    .drama-panel h3 {
-        margin-top: 0;
-    }
-
-    .instruction {
-        color: #c3c8d3;
-        line-height: 1.5;
-    }
-
-    .status {
-        margin-top: 15px;
-        color: #aeb4c2;
-    }
-
-    .action-box {
-        padding: 16px;
-        border-radius: 10px;
-        background: #222631;
-        margin-top: 15px;
-    }
-
-    @media (max-width: 600px) {
-        .attributes {
-            grid-template-columns: 1fr;
-        }
-
-        .die {
-            width: 70px;
-            height: 70px;
-            font-size: 26px;
-        }
-    }
+}
 </style>
 </head>
 
@@ -241,122 +314,509 @@
 
 <header>
     <h1>🎲 Rol-Ficha</h1>
-    <p>Sistema de pruebas — Amor de Otro Mundo</p>
+    <p>Amor de Otro Mundo</p>
 </header>
 
 <main>
 
-    <section class="card">
-        <h2>👤 Personaje de prueba</h2>
+<!-- =========================
+     FICHA DEL PERSONAJE
+========================= -->
 
-        <div class="attributes">
-            <div class="attribute">
-                <div class="attribute-name">Inteligencia</div>
-                <div class="attribute-value">7</div>
-            </div>
+<section class="card">
 
-            <div class="attribute">
-                <div class="attribute-name">Percepción</div>
-                <div class="attribute-value">9</div>
-            </div>
-        </div>
-    </section>
+    <h2>👤 Ficha del personaje</h2>
 
-    <section class="card">
+    <input
+        id="characterName"
+        class="character-name"
+        type="text"
+        value="Archie Montgomery"
+        placeholder="Nombre del personaje"
+    >
 
-        <h2>🔎 Búsqueda / Atención</h2>
+    <h3>🧬 Atributos</h3>
 
-        <div class="action-box">
-            <strong>Prueba:</strong> Inteligencia + Percepción
-            <br>
-            <span style="color:#aeb4c2;">
-                Inteligencia 7 + Percepción 9
-            </span>
+    <div class="stats-grid">
+
+        <div class="stat">
+            <div class="stat-name">Fortaleza</div>
+            <input class="stat-input" id="fortaleza" type="number" min="0" value="4">
         </div>
 
-        <div class="modes">
-            <button class="mode active" onclick="selectMode('normal')">
-                Normal
-            </button>
-
-            <button class="mode" onclick="selectMode('talent')">
-                Talento
-            </button>
-
-            <button class="mode drama" onclick="startDrama()">
-                🔥 Drama
-            </button>
-
-            <button class="mode drama" onclick="startDramaTalent()">
-                🔥 Drama + Talento
-            </button>
+        <div class="stat">
+            <div class="stat-name">Reflejos</div>
+            <input class="stat-input" id="reflejos" type="number" min="0" value="4">
         </div>
 
-        <div class="dice-container" id="diceContainer">
-            <div>
-                <div class="die" id="die0">?</div>
-                <div class="die-label">Dado 1</div>
-            </div>
-
-            <div>
-                <div class="die" id="die1">?</div>
-                <div class="die-label">Dado 2</div>
-            </div>
-
-            <div>
-                <div class="die" id="die2">?</div>
-                <div class="die-label">Dado 3</div>
-            </div>
+        <div class="stat">
+            <div class="stat-name">Voluntad</div>
+            <input class="stat-input" id="voluntad" type="number" min="0" value="4">
         </div>
+
+        <div class="stat">
+            <div class="stat-name">Inteligencia</div>
+            <input class="stat-input" id="inteligencia" type="number" min="0" value="6">
+        </div>
+
+    </div>
+
+    <h3 style="margin-top:30px;">🎯 Habilidades</h3>
+
+    <div class="stats-grid">
+
+        <div class="stat">
+            <div class="stat-name">Forma física</div>
+            <input class="stat-input" id="formaFisica" type="number" min="0" value="4">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Combate</div>
+            <input class="stat-input" id="combate" type="number" min="0" value="3">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Percepción</div>
+            <input class="stat-input" id="percepcion" type="number" min="0" value="7">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Subterfugio</div>
+            <input class="stat-input" id="subterfugio" type="number" min="0" value="4">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Comunicación</div>
+            <input class="stat-input" id="comunicacion" type="number" min="0" value="5">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Cultura</div>
+            <input class="stat-input" id="cultura" type="number" min="0" value="6">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Ocultismo</div>
+            <input class="stat-input" id="ocultismo" type="number" min="0" value="4">
+        </div>
+
+        <div class="stat">
+            <div class="stat-name">Gestión emocional</div>
+            <input class="stat-input" id="gestionEmocional" type="number" min="0" value="3">
+        </div>
+
+    </div>
+
+    <div class="save-area">
+
+        <button onclick="saveCharacter()">
+            💾 Guardar cambios
+        </button>
+
+        <button class="secondary" onclick="resetCharacter()">
+            ↩️ Restablecer
+        </button>
+
+        <div class="save-message" id="saveMessage"></div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SISTEMA DE PRUEBAS
+========================= -->
+
+<section class="card">
+
+    <h2>🎲 Nueva prueba</h2>
+
+    <p>
+        Selecciona el Atributo y la Habilidad que quieras utilizar.
+    </p>
+
+    <div class="test-selectors">
+
+        <div>
+            <label>Atributo</label>
+            <select id="attributeSelect" onchange="updateCalculation()">
+                <option value="fortaleza">Fortaleza</option>
+                <option value="reflejos">Reflejos</option>
+                <option value="voluntad">Voluntad</option>
+                <option value="inteligencia" selected>Inteligencia</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Habilidad</label>
+            <select id="skillSelect" onchange="updateCalculation()">
+                <option value="ninguna">— Sin habilidad —</option>
+                <option value="formaFisica">Forma física</option>
+                <option value="combate">Combate</option>
+                <option value="percepcion" selected>Percepción</option>
+                <option value="subterfugio">Subterfugio</option>
+                <option value="comunicacion">Comunicación</option>
+                <option value="cultura">Cultura</option>
+                <option value="ocultismo">Ocultismo</option>
+                <option value="gestionEmocional">Gestión emocional</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="calculation" id="calculation">
+        Inteligencia 6 + Percepción 7 = 13
+    </div>
+
+
+    <!-- MODOS -->
+
+    <div class="modes">
+
+        <button class="mode active" onclick="selectMode('normal')">
+            Normal
+        </button>
+
+        <button class="mode" onclick="selectMode('talent')">
+            Talento
+        </button>
+
+        <button class="mode drama" onclick="startDrama()">
+            🔥 Drama
+        </button>
+
+        <button class="mode drama" onclick="startDramaTalent()">
+            🔥 Drama + Talento
+        </button>
+
+    </div>
+
+
+    <!-- DADOS -->
+
+    <div class="dice-container">
+
+        <div>
+            <div class="die" id="die0">?</div>
+            <div class="die-label">Dado 1</div>
+        </div>
+
+        <div>
+            <div class="die" id="die1">?</div>
+            <div class="die-label">Dado 2</div>
+        </div>
+
+        <div>
+            <div class="die" id="die2">?</div>
+            <div class="die-label">Dado 3</div>
+        </div>
+
+    </div>
+
+    <div class="roll-area">
+
+        <button onclick="rollNormal()">
+            🎲 Tirar 3d10
+        </button>
+
+    </div>
+
+
+    <!-- DRAMA -->
+
+    <div id="dramaPanel" class="drama-panel">
+
+        <h3>🔥 Drama</h3>
+
+        <p class="instruction">
+            Selecciona los dados que quieres volver a tirar.
+            Los dados que no selecciones se conservarán.
+        </p>
 
         <div style="text-align:center;">
-            <button onclick="rollNormal()">🎲 Tirar 3d10</button>
-        </div>
 
-        <div id="dramaPanel" class="drama-panel">
+            <button
+                class="drama"
+                id="confirmDrama"
+                onclick="confirmDramaRoll()"
+                disabled
+            >
+                🔥 Volver a tirar seleccionados
+            </button>
 
-            <h3>🔥 Drama</h3>
-
-            <p class="instruction">
-                Selecciona los dados que quieres volver a tirar.
-                Los dados que no selecciones se conservarán.
-            </p>
-
-            <div style="text-align:center;">
-                <button class="drama" id="confirmDrama" onclick="confirmDramaRoll()" disabled>
-                    🔥 Volver a tirar seleccionados
-                </button>
-
-                <button class="secondary" onclick="cancelDrama()">
-                    Cancelar
-                </button>
-            </div>
-
-            <div class="status" id="dramaStatus">
-                Selecciona uno o más dados.
-            </div>
+            <button
+                class="secondary"
+                onclick="cancelDrama()"
+            >
+                Cancelar
+            </button>
 
         </div>
 
-        <div id="result" class="result">
-
-            <div>Resultado</div>
-
-            <div class="result-number" id="resultNumber">
-                —
-            </div>
-
-            <div class="explanation" id="explanation">
-                Realiza una tirada para comenzar.
-            </div>
-
+        <div class="status" id="dramaStatus">
+            Selecciona uno o más dados.
         </div>
 
-    </section>
+    </div>
+
+
+    <!-- RESULTADO -->
+
+    <div id="result" class="result">
+
+        <div>Resultado de la tirada</div>
+
+        <div class="result-number" id="resultNumber">
+            —
+        </div>
+
+        <div class="explanation" id="explanation">
+            Realiza una tirada para comenzar.
+        </div>
+
+    </div>
+
+</section>
 
 </main>
 
+
 <script>
+
+/* =========================================
+   DATOS DEL PERSONAJE
+========================================= */
+
+const defaultCharacter = {
+
+    name: "Archie Montgomery",
+
+    fortaleza: 4,
+    reflejos: 4,
+    voluntad: 4,
+    inteligencia: 6,
+
+    formaFisica: 4,
+    combate: 3,
+    percepcion: 7,
+    subterfugio: 4,
+    comunicacion: 5,
+    cultura: 6,
+    ocultismo: 4,
+    gestionEmocional: 3
+};
+
+
+/* =========================================
+   GUARDAR PERSONAJE
+========================================= */
+
+function saveCharacter() {
+
+    const character = {
+
+        name: document.getElementById("characterName").value,
+
+        fortaleza: Number(document.getElementById("fortaleza").value),
+        reflejos: Number(document.getElementById("reflejos").value),
+        voluntad: Number(document.getElementById("voluntad").value),
+        inteligencia: Number(document.getElementById("inteligencia").value),
+
+        formaFisica: Number(document.getElementById("formaFisica").value),
+        combate: Number(document.getElementById("combate").value),
+        percepcion: Number(document.getElementById("percepcion").value),
+        subterfugio: Number(document.getElementById("subterfugio").value),
+        comunicacion: Number(document.getElementById("comunicacion").value),
+        cultura: Number(document.getElementById("cultura").value),
+        ocultismo: Number(document.getElementById("ocultismo").value),
+        gestionEmocional: Number(document.getElementById("gestionEmocional").value)
+    };
+
+    localStorage.setItem(
+        "adom_archie_character",
+        JSON.stringify(character)
+    );
+
+    document.getElementById("saveMessage").textContent =
+        "✓ Cambios guardados correctamente.";
+
+    updateCalculation();
+
+    setTimeout(() => {
+        document.getElementById("saveMessage").textContent = "";
+    }, 3000);
+}
+
+
+/* =========================================
+   CARGAR PERSONAJE
+========================================= */
+
+function loadCharacter() {
+
+    const saved =
+        localStorage.getItem("adom_archie_character");
+
+    const character =
+        saved ? JSON.parse(saved) : defaultCharacter;
+
+    document.getElementById("characterName").value =
+        character.name;
+
+    document.getElementById("fortaleza").value =
+        character.fortaleza;
+
+    document.getElementById("reflejos").value =
+        character.reflejos;
+
+    document.getElementById("voluntad").value =
+        character.voluntad;
+
+    document.getElementById("inteligencia").value =
+        character.inteligencia;
+
+    document.getElementById("formaFisica").value =
+        character.formaFisica;
+
+    document.getElementById("combate").value =
+        character.combate;
+
+    document.getElementById("percepcion").value =
+        character.percepcion;
+
+    document.getElementById("subterfugio").value =
+        character.subterfugio;
+
+    document.getElementById("comunicacion").value =
+        character.comunicacion;
+
+    document.getElementById("cultura").value =
+        character.cultura;
+
+    document.getElementById("ocultismo").value =
+        character.ocultismo;
+
+    document.getElementById("gestionEmocional").value =
+        character.gestionEmocional;
+
+    updateCalculation();
+}
+
+
+/* =========================================
+   RESTABLECER
+========================================= */
+
+function resetCharacter() {
+
+    const confirmed =
+        confirm(
+            "¿Quieres restablecer la ficha a los últimos datos guardados?"
+        );
+
+    if (!confirmed) return;
+
+    loadCharacter();
+
+    document.getElementById("saveMessage").textContent =
+        "Ficha restablecida.";
+
+    setTimeout(() => {
+        document.getElementById("saveMessage").textContent = "";
+    }, 2000);
+}
+
+
+/* =========================================
+   OBTENER VALORES
+========================================= */
+
+function getValue(id) {
+
+    return Number(
+        document.getElementById(id).value
+    ) || 0;
+}
+
+
+/* =========================================
+   CALCULAR ATRIBUTO + HABILIDAD
+========================================= */
+
+function updateCalculation() {
+
+    const attribute =
+        document.getElementById("attributeSelect").value;
+
+    const skill =
+        document.getElementById("skillSelect").value;
+
+
+    const attributeNames = {
+
+        fortaleza: "Fortaleza",
+        reflejos: "Reflejos",
+        voluntad: "Voluntad",
+        inteligencia: "Inteligencia"
+    };
+
+
+    const skillNames = {
+
+        formaFisica: "Forma física",
+        combate: "Combate",
+        percepcion: "Percepción",
+        subterfugio: "Subterfugio",
+        comunicacion: "Comunicación",
+        cultura: "Cultura",
+        ocultismo: "Ocultismo",
+        gestionEmocional: "Gestión emocional"
+    };
+
+
+    const attributeValue =
+        getValue(attribute);
+
+    if (skill === "ninguna") {
+
+        document.getElementById("calculation").textContent =
+            attributeNames[attribute] +
+            " " +
+            attributeValue +
+            " + 3d10";
+
+        return;
+    }
+
+
+    const skillValue =
+        getValue(skill);
+
+
+    document.getElementById("calculation").textContent =
+
+        attributeNames[attribute] +
+        " " +
+        attributeValue +
+
+        " + " +
+
+        skillNames[skill] +
+        " " +
+        skillValue +
+
+        " = " +
+
+        (attributeValue + skillValue) +
+
+        " + 3d10";
+}
+
+
+/* =========================================
+   MOTOR DE DADOS
+========================================= */
 
 let dice = [null, null, null];
 
@@ -369,11 +829,8 @@ let dramaTalentActive = false;
 let selectedDice = [];
 
 
-// --------------------------------
-// UTILIDADES
-// --------------------------------
-
 function rollD10() {
+
     return Math.floor(Math.random() * 10) + 1;
 }
 
@@ -383,35 +840,53 @@ function setDice(values) {
     dice = values.slice();
 
     for (let i = 0; i < 3; i++) {
-        document.getElementById("die" + i).textContent = dice[i];
-    }
 
+        document.getElementById(
+            "die" + i
+        ).textContent = dice[i];
+
+    }
 }
 
 
-// --------------------------------
-// MODOS
-// --------------------------------
+/* =========================================
+   MODOS
+========================================= */
 
 function selectMode(mode) {
 
     currentMode = mode;
 
     dramaActive = false;
+
     dramaTalentActive = false;
 
-    document.getElementById("dramaPanel").classList.remove("visible");
+    document
+        .getElementById("dramaPanel")
+        .classList.remove("visible");
 
-    document.querySelectorAll(".mode").forEach(button => {
-        button.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".mode")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
+
 
     if (mode === "normal") {
-        document.querySelectorAll(".mode")[0].classList.add("active");
+
+        document
+            .querySelectorAll(".mode")[0]
+            .classList.add("active");
+
     }
 
+
     if (mode === "talent") {
-        document.querySelectorAll(".mode")[1].classList.add("active");
+
+        document
+            .querySelectorAll(".mode")[1]
+            .classList.add("active");
+
     }
 
     updateResult();
@@ -421,93 +896,116 @@ function selectMode(mode) {
 function startDrama() {
 
     currentMode = "drama";
+
     dramaActive = true;
+
     dramaTalentActive = false;
 
     selectedDice = [];
 
-    document.querySelectorAll(".mode").forEach(button => {
-        button.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".mode")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
 
-    document.querySelectorAll(".mode")[2].classList.add("active");
+    document
+        .querySelectorAll(".mode")[2]
+        .classList.add("active");
 
-    document.getElementById("dramaPanel").classList.add("visible");
+    document
+        .getElementById("dramaPanel")
+        .classList.add("visible");
 
     makeDiceSelectable();
 
     updateDramaStatus();
-
 }
 
 
 function startDramaTalent() {
 
     currentMode = "dramaTalent";
+
     dramaActive = true;
+
     dramaTalentActive = true;
 
     selectedDice = [];
 
-    document.querySelectorAll(".mode").forEach(button => {
-        button.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".mode")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
 
-    document.querySelectorAll(".mode")[3].classList.add("active");
+    document
+        .querySelectorAll(".mode")[3]
+        .classList.add("active");
 
-    document.getElementById("dramaPanel").classList.add("visible");
+    document
+        .getElementById("dramaPanel")
+        .classList.add("visible");
 
     makeDiceSelectable();
 
     updateDramaStatus();
-
 }
 
 
-// --------------------------------
-// TIRADA NORMAL
-// --------------------------------
+/* =========================================
+   TIRADA
+========================================= */
 
 function rollNormal() {
 
     dramaActive = false;
+
     dramaTalentActive = false;
+
     selectedDice = [];
 
-    document.getElementById("dramaPanel").classList.remove("visible");
+    document
+        .getElementById("dramaPanel")
+        .classList.remove("visible");
+
 
     setDice([
+
         rollD10(),
         rollD10(),
         rollD10()
+
     ]);
 
-    updateResult();
 
+    updateResult();
 }
 
 
-// --------------------------------
-// SELECCIÓN DE DADOS PARA DRAMA
-// --------------------------------
+/* =========================================
+   SELECCIÓN DRAMA
+========================================= */
 
 function makeDiceSelectable() {
 
     for (let i = 0; i < 3; i++) {
 
-        const die = document.getElementById("die" + i);
+        const die =
+            document.getElementById("die" + i);
 
         die.classList.add("selectable");
 
         die.classList.remove("selected");
+
         die.classList.remove("kept");
 
         die.onclick = function() {
+
             toggleDieSelection(i);
+
         };
-
     }
-
 }
 
 
@@ -515,7 +1013,9 @@ function toggleDieSelection(index) {
 
     if (!dramaActive) return;
 
-    const position = selectedDice.indexOf(index);
+    const position =
+        selectedDice.indexOf(index);
+
 
     if (position === -1) {
 
@@ -527,10 +1027,10 @@ function toggleDieSelection(index) {
 
     }
 
+
     updateSelectedVisuals();
 
     updateDramaStatus();
-
 }
 
 
@@ -538,124 +1038,163 @@ function updateSelectedVisuals() {
 
     for (let i = 0; i < 3; i++) {
 
-        const die = document.getElementById("die" + i);
+        const die =
+            document.getElementById("die" + i);
 
         die.classList.remove("selected");
+
         die.classList.remove("kept");
 
+
         if (selectedDice.includes(i)) {
+
             die.classList.add("selected");
+
         } else {
+
             die.classList.add("kept");
+
         }
-
     }
-
 }
 
 
 function updateDramaStatus() {
 
-    const status = document.getElementById("dramaStatus");
+    const status =
+        document.getElementById("dramaStatus");
 
-    const confirm = document.getElementById("confirmDrama");
+    const confirmButton =
+        document.getElementById("confirmDrama");
+
 
     if (selectedDice.length === 0) {
 
         status.textContent =
             "Selecciona uno o más dados para volver a tirarlos.";
 
-        confirm.disabled = true;
+        confirmButton.disabled = true;
 
         return;
     }
+
 
     const kept = [];
 
     for (let i = 0; i < 3; i++) {
 
         if (!selectedDice.includes(i)) {
-            kept.push(dice[i]);
-        }
 
+            kept.push(dice[i]);
+
+        }
     }
 
+
     status.textContent =
+
         "Vas a volver a tirar " +
+
         selectedDice.length +
+
         " dado" +
+
         (selectedDice.length === 1 ? "" : "s") +
+
         ". Conservas: " +
+
         (kept.length ? kept.join(" y ") : "ninguno") +
+
         ".";
 
-    confirm.disabled = false;
 
+    confirmButton.disabled = false;
 }
 
 
-// --------------------------------
-// CONFIRMAR DRAMA
-// --------------------------------
+/* =========================================
+   CONFIRMAR DRAMA
+========================================= */
 
 function confirmDramaRoll() {
 
     if (selectedDice.length === 0) return;
 
-    const oldDice = dice.slice();
+    const oldDice =
+        dice.slice();
+
 
     for (const index of selectedDice) {
+
         dice[index] = rollD10();
+
     }
+
 
     setDice(dice);
 
     dramaActive = false;
 
-    document.getElementById("dramaPanel").classList.remove("visible");
+
+    document
+        .getElementById("dramaPanel")
+        .classList.remove("visible");
+
 
     for (let i = 0; i < 3; i++) {
 
-        const die = document.getElementById("die" + i);
+        const die =
+            document.getElementById("die" + i);
 
         die.classList.remove("selectable");
+
         die.classList.remove("selected");
+
         die.classList.remove("kept");
 
         die.onclick = null;
 
     }
 
-    calculateDramaResult(oldDice);
 
+    calculateDramaResult(oldDice);
 }
 
 
-// --------------------------------
-// RESULTADO DRAMA
-// --------------------------------
+/* =========================================
+   RESULTADO DRAMA
+========================================= */
 
 function calculateDramaResult(oldDice) {
 
-    const sorted = [...dice].sort((a, b) => a - b);
+    const sorted =
+        [...dice].sort((a, b) => a - b);
 
     const low = sorted[0];
-    const middle = sorted[1];
+
     const high = sorted[2];
 
-    let result = middle;
+    let result = sorted[1];
 
     let explanation =
+
         "Dados finales: " +
+
         dice.join(" — ") +
+
         ". ";
 
-    // Dobles
-    if (dice[0] === dice[1] && dice[1] === dice[2]) {
 
-        result = dice[0] * 3;
+    if (
+        dice[0] === dice[1] &&
+        dice[1] === dice[2]
+    ) {
+
+        result =
+            dice[0] * 3;
 
         explanation +=
+
             "Triple " +
             dice[0] +
             ": " +
@@ -668,27 +1207,48 @@ function calculateDramaResult(oldDice) {
             result +
             ".";
 
-    } else if (
+    }
+
+    else if (
+
         dice[0] === dice[1] ||
         dice[0] === dice[2] ||
         dice[1] === dice[2]
+
     ) {
 
         let repeated;
 
+
         if (dice[0] === dice[1]) {
+
             repeated = dice[0];
-        } else if (dice[0] === dice[2]) {
-            repeated = dice[0];
-        } else {
-            repeated = dice[1];
+
         }
 
-        const doubleResult = repeated * 2;
+        else if (dice[0] === dice[2]) {
 
-        result = Math.max(high, doubleResult);
+            repeated = dice[0];
+
+        }
+
+        else {
+
+            repeated = dice[1];
+
+        }
+
+
+        const doubleResult =
+            repeated * 2;
+
+
+        result =
+            Math.max(high, doubleResult);
+
 
         explanation +=
+
             "Hay un doble de " +
             repeated +
             ". Drama permite considerar " +
@@ -699,27 +1259,34 @@ function calculateDramaResult(oldDice) {
             doubleResult +
             ". ";
 
+
         explanation +=
+
             "Se toma el valor más beneficioso: " +
             result +
             ".";
 
-    } else {
+    }
+
+    else {
 
         result = high;
 
         explanation +=
+
             "Drama permite quedarse con el dado más alto: " +
             high +
             ".";
 
     }
 
+
     if (dramaTalentActive) {
 
         result += low;
 
         explanation +=
+
             " Además, Talento añade el dado más bajo (" +
             low +
             "), dando un total de " +
@@ -728,37 +1295,40 @@ function calculateDramaResult(oldDice) {
 
     }
 
-    document.getElementById("resultNumber").textContent = result;
 
-    document.getElementById("explanation").textContent = explanation;
-
+    applyBaseValue(result, explanation);
 }
 
 
-// --------------------------------
-// RESULTADO NORMAL / TALENTO
-// --------------------------------
+/* =========================================
+   RESULTADO NORMAL / TALENTO
+========================================= */
 
 function updateResult() {
 
-    if (dice.includes(null)) {
-        return;
-    }
+    if (dice.includes(null)) return;
 
-    const sorted = [...dice].sort((a, b) => a - b);
+
+    const sorted =
+        [...dice].sort((a, b) => a - b);
+
 
     const low = sorted[0];
+
     const middle = sorted[1];
 
     let result;
 
     let explanation;
 
+
     if (currentMode === "talent") {
 
-        result = middle + low;
+        result =
+            middle + low;
 
         explanation =
+
             "Talento: dado central (" +
             middle +
             ") + dado más bajo (" +
@@ -767,59 +1337,152 @@ function updateResult() {
             result +
             ".";
 
-    } else {
+    }
+
+    else {
 
         result = middle;
 
         explanation =
+
             "Normal: se toma el dado central (" +
             middle +
             ").";
-
     }
 
-    document.getElementById("resultNumber").textContent = result;
 
-    document.getElementById("explanation").textContent = explanation;
-
+    applyBaseValue(result, explanation);
 }
 
 
-// --------------------------------
-// CANCELAR DRAMA
-// --------------------------------
+/* =========================================
+   RESULTADO FINAL
+========================================= */
+
+function applyBaseValue(
+    diceResult,
+    explanation
+) {
+
+    const attribute =
+        document.getElementById(
+            "attributeSelect"
+        ).value;
+
+
+    const skill =
+        document.getElementById(
+            "skillSelect"
+        ).value;
+
+
+    const attributeValue =
+        getValue(attribute);
+
+
+    let base =
+        attributeValue;
+
+
+    if (skill !== "ninguna") {
+
+        base += getValue(skill);
+
+    }
+
+
+    const finalResult =
+        base + diceResult;
+
+
+    document.getElementById(
+        "resultNumber"
+    ).textContent =
+        finalResult;
+
+
+    document.getElementById(
+        "explanation"
+    ).textContent =
+
+        explanation +
+
+        " Base de personaje: " +
+
+        base +
+
+        ". Resultado final: " +
+
+        base +
+
+        " + " +
+
+        diceResult +
+
+        " = " +
+
+        finalResult +
+        ".";
+}
+
+
+/* =========================================
+   CANCELAR DRAMA
+========================================= */
 
 function cancelDrama() {
 
     dramaActive = false;
+
     dramaTalentActive = false;
+
     selectedDice = [];
 
-    document.getElementById("dramaPanel").classList.remove("visible");
+
+    document
+        .getElementById("dramaPanel")
+        .classList.remove("visible");
+
 
     for (let i = 0; i < 3; i++) {
 
-        const die = document.getElementById("die" + i);
+        const die =
+            document.getElementById("die" + i);
 
         die.classList.remove("selectable");
+
         die.classList.remove("selected");
+
         die.classList.remove("kept");
 
         die.onclick = null;
-
     }
+
 
     currentMode = "normal";
 
-    document.querySelectorAll(".mode").forEach(button => {
-        button.classList.remove("active");
-    });
 
-    document.querySelectorAll(".mode")[0].classList.add("active");
+    document
+        .querySelectorAll(".mode")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
+
+
+    document
+        .querySelectorAll(".mode")[0]
+        .classList.add("active");
+
 
     updateResult();
-
 }
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+loadCharacter();
 
 </script>
 
