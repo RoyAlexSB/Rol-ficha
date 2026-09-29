@@ -1,192 +1,255 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rol-Ficha — Sistema de pruebas</title>
 
-    <title>Rol-Ficha</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #111318;
+        color: #f2f2f2;
+    }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #17171c;
-            color: white;
-            min-height: 100vh;
-            padding: 30px 15px;
-        }
+    header {
+        padding: 24px;
+        text-align: center;
+        background: #191c24;
+        border-bottom: 1px solid #303542;
+    }
 
-        .app {
-            width: 100%;
-            max-width: 650px;
-            margin: auto;
-        }
+    header h1 {
+        margin: 0;
+        font-size: 32px;
+    }
 
-        h1 {
-            text-align: center;
-            font-size: 40px;
-            margin-bottom: 5px;
-        }
+    header p {
+        margin: 8px 0 0;
+        color: #aeb4c2;
+    }
 
-        .subtitle {
-            text-align: center;
-            color: #aaa;
-            margin-bottom: 30px;
-        }
+    main {
+        width: min(900px, 92%);
+        margin: 30px auto;
+    }
 
-        .panel {
-            background: #24242c;
-            border: 1px solid #3b3b47;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
+    .card {
+        background: #191c24;
+        border: 1px solid #303542;
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
 
-        .panel h2 {
-            margin-top: 0;
-        }
+    h2 {
+        margin-top: 0;
+    }
 
-        .modes {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
+    .attributes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
 
-        .mode {
-            background: #30303a;
-            color: white;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 14px 10px;
-            cursor: pointer;
-            font-size: 15px;
-        }
+    .attribute {
+        background: #222631;
+        border-radius: 10px;
+        padding: 16px;
+    }
 
-        .mode.selected {
-            border-color: white;
-            background: #3d3d49;
-        }
+    .attribute-name {
+        color: #aeb4c2;
+        font-size: 14px;
+    }
 
-        .roll-button {
-            width: 100%;
-            margin-top: 20px;
-            background: white;
-            color: #17171c;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 19px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .attribute-value {
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
 
-        .roll-button:hover {
-            opacity: 0.85;
-        }
+    .dice-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 25px 0;
+        flex-wrap: wrap;
+    }
 
-        .dice {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 25px 0;
+    .die {
+        width: 85px;
+        height: 85px;
+        border-radius: 14px;
+        background: #292e3a;
+        border: 2px solid #454c5c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: bold;
+        cursor: default;
+        transition: 0.15s;
+        user-select: none;
+    }
+
+    .die.selectable {
+        cursor: pointer;
+    }
+
+    .die.selectable:hover {
+        transform: translateY(-3px);
+        border-color: #8f99ad;
+    }
+
+    .die.selected {
+        border-color: #ffb84d;
+        background: #3a3020;
+        transform: translateY(-5px);
+    }
+
+    .die.kept {
+        border-color: #65d68a;
+        background: #203528;
+    }
+
+    .die-label {
+        text-align: center;
+        color: #8e96a6;
+        font-size: 12px;
+        margin-top: 7px;
+    }
+
+    button {
+        border: 0;
+        border-radius: 9px;
+        padding: 12px 18px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #5865f2;
+        color: white;
+        margin: 4px;
+    }
+
+    button:hover {
+        filter: brightness(1.12);
+    }
+
+    button.secondary {
+        background: #303642;
+    }
+
+    button.drama {
+        background: #a56b19;
+    }
+
+    button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    .modes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .mode {
+        background: #303642;
+    }
+
+    .mode.active {
+        background: #5865f2;
+    }
+
+    .result {
+        text-align: center;
+        margin-top: 25px;
+        padding: 20px;
+        border-radius: 12px;
+        background: #222631;
+    }
+
+    .result-number {
+        font-size: 48px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .explanation {
+        color: #aeb4c2;
+        line-height: 1.5;
+    }
+
+    .drama-panel {
+        display: none;
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 12px;
+        background: #252a35;
+        border: 1px solid #454c5c;
+    }
+
+    .drama-panel.visible {
+        display: block;
+    }
+
+    .drama-panel h3 {
+        margin-top: 0;
+    }
+
+    .instruction {
+        color: #c3c8d3;
+        line-height: 1.5;
+    }
+
+    .status {
+        margin-top: 15px;
+        color: #aeb4c2;
+    }
+
+    .action-box {
+        padding: 16px;
+        border-radius: 10px;
+        background: #222631;
+        margin-top: 15px;
+    }
+
+    @media (max-width: 600px) {
+        .attributes {
+            grid-template-columns: 1fr;
         }
 
         .die {
             width: 70px;
             height: 70px;
-            background: #30303a;
-            border: 1px solid #555565;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: bold;
+            font-size: 26px;
         }
-
-        .result {
-            text-align: center;
-            background: #30303a;
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .result-label {
-            color: #aaa;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .result-number {
-            font-size: 48px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-
-        .explanation {
-            color: #ccc;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .attributes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .attribute {
-            background: #30303a;
-            border-radius: 10px;
-            padding: 15px;
-        }
-
-        .attribute-name {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        .attribute-value {
-            font-size: 25px;
-            font-weight: bold;
-            margin-top: 4px;
-        }
-
-        @media (max-width: 450px) {
-            .modes {
-                grid-template-columns: 1fr;
-            }
-
-            .die {
-                width: 60px;
-                height: 60px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
 
-<div class="app">
-
+<header>
     <h1>🎲 Rol-Ficha</h1>
+    <p>Sistema de pruebas — Amor de Otro Mundo</p>
+</header>
 
-    <p class="subtitle">
-        Sistema de tiradas
-    </p>
+<main>
 
-    <div class="panel">
-
-        <h2>Personaje</h2>
+    <section class="card">
+        <h2>👤 Personaje de prueba</h2>
 
         <div class="attributes">
-
             <div class="attribute">
                 <div class="attribute-name">Inteligencia</div>
                 <div class="attribute-value">7</div>
@@ -196,298 +259,567 @@
                 <div class="attribute-name">Percepción</div>
                 <div class="attribute-value">9</div>
             </div>
-
         </div>
+    </section>
 
-    </div>
-
-
-    <div class="panel">
+    <section class="card">
 
         <h2>🔎 Búsqueda / Atención</h2>
 
-        <p>
-            Inteligencia + Percepción
-        </p>
-
-        <p><strong>Tipo de tirada:</strong></p>
+        <div class="action-box">
+            <strong>Prueba:</strong> Inteligencia + Percepción
+            <br>
+            <span style="color:#aeb4c2;">
+                Inteligencia 7 + Percepción 9
+            </span>
+        </div>
 
         <div class="modes">
-
-            <button class="mode selected" onclick="selectMode('normal', this)">
-                ⚪ Normal
+            <button class="mode active" onclick="selectMode('normal')">
+                Normal
             </button>
 
-            <button class="mode" onclick="selectMode('drama', this)">
+            <button class="mode" onclick="selectMode('talent')">
+                Talento
+            </button>
+
+            <button class="mode drama" onclick="startDrama()">
                 🔥 Drama
             </button>
 
-            <button class="mode" onclick="selectMode('talento', this)">
-                ✨ Talento
+            <button class="mode drama" onclick="startDramaTalent()">
+                🔥 Drama + Talento
             </button>
-
-            <button class="mode" onclick="selectMode('dramaTalento', this)">
-                🔥✨ Drama + Talento
-            </button>
-
         </div>
 
-        <button class="roll-button" onclick="rollDice()">
-            🎲 TIRAR 3d10
-        </button>
-
-    </div>
-
-
-    <div class="panel">
-
-        <h2>Resultado</h2>
-
-        <div class="dice">
-
-            <div class="die" id="die1">–</div>
-            <div class="die" id="die2">–</div>
-            <div class="die" id="die3">–</div>
-
-        </div>
-
-        <div class="result">
-
-            <div class="result-label">
-                Resultado de la tirada
+        <div class="dice-container" id="diceContainer">
+            <div>
+                <div class="die" id="die0">?</div>
+                <div class="die-label">Dado 1</div>
             </div>
 
-            <div class="result-number" id="result">
-                –
+            <div>
+                <div class="die" id="die1">?</div>
+                <div class="die-label">Dado 2</div>
+            </div>
+
+            <div>
+                <div class="die" id="die2">?</div>
+                <div class="die-label">Dado 3</div>
+            </div>
+        </div>
+
+        <div style="text-align:center;">
+            <button onclick="rollNormal()">🎲 Tirar 3d10</button>
+        </div>
+
+        <div id="dramaPanel" class="drama-panel">
+
+            <h3>🔥 Drama</h3>
+
+            <p class="instruction">
+                Selecciona los dados que quieres volver a tirar.
+                Los dados que no selecciones se conservarán.
+            </p>
+
+            <div style="text-align:center;">
+                <button class="drama" id="confirmDrama" onclick="confirmDramaRoll()" disabled>
+                    🔥 Volver a tirar seleccionados
+                </button>
+
+                <button class="secondary" onclick="cancelDrama()">
+                    Cancelar
+                </button>
+            </div>
+
+            <div class="status" id="dramaStatus">
+                Selecciona uno o más dados.
             </div>
 
         </div>
 
-        <p class="explanation" id="explanation">
-            Pulsa "Tirar 3d10" para comenzar.
-        </p>
+        <div id="result" class="result">
 
-    </div>
+            <div>Resultado</div>
 
-</div>
+            <div class="result-number" id="resultNumber">
+                —
+            </div>
 
+            <div class="explanation" id="explanation">
+                Realiza una tirada para comenzar.
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
 
 <script>
 
-    let currentMode = "normal";
+let dice = [null, null, null];
+
+let currentMode = "normal";
+
+let dramaActive = false;
+
+let dramaTalentActive = false;
+
+let selectedDice = [];
 
 
-    function selectMode(mode, button) {
+// --------------------------------
+// UTILIDADES
+// --------------------------------
 
-        currentMode = mode;
+function rollD10() {
+    return Math.floor(Math.random() * 10) + 1;
+}
 
-        document.querySelectorAll(".mode").forEach(function(btn) {
-            btn.classList.remove("selected");
-        });
 
-        button.classList.add("selected");
+function setDice(values) {
+
+    dice = values.slice();
+
+    for (let i = 0; i < 3; i++) {
+        document.getElementById("die" + i).textContent = dice[i];
     }
 
+}
 
-    function rollD10() {
 
-        return Math.floor(Math.random() * 10) + 1;
+// --------------------------------
+// MODOS
+// --------------------------------
+
+function selectMode(mode) {
+
+    currentMode = mode;
+
+    dramaActive = false;
+    dramaTalentActive = false;
+
+    document.getElementById("dramaPanel").classList.remove("visible");
+
+    document.querySelectorAll(".mode").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    if (mode === "normal") {
+        document.querySelectorAll(".mode")[0].classList.add("active");
+    }
+
+    if (mode === "talent") {
+        document.querySelectorAll(".mode")[1].classList.add("active");
+    }
+
+    updateResult();
+}
+
+
+function startDrama() {
+
+    currentMode = "drama";
+    dramaActive = true;
+    dramaTalentActive = false;
+
+    selectedDice = [];
+
+    document.querySelectorAll(".mode").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    document.querySelectorAll(".mode")[2].classList.add("active");
+
+    document.getElementById("dramaPanel").classList.add("visible");
+
+    makeDiceSelectable();
+
+    updateDramaStatus();
+
+}
+
+
+function startDramaTalent() {
+
+    currentMode = "dramaTalent";
+    dramaActive = true;
+    dramaTalentActive = true;
+
+    selectedDice = [];
+
+    document.querySelectorAll(".mode").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    document.querySelectorAll(".mode")[3].classList.add("active");
+
+    document.getElementById("dramaPanel").classList.add("visible");
+
+    makeDiceSelectable();
+
+    updateDramaStatus();
+
+}
+
+
+// --------------------------------
+// TIRADA NORMAL
+// --------------------------------
+
+function rollNormal() {
+
+    dramaActive = false;
+    dramaTalentActive = false;
+    selectedDice = [];
+
+    document.getElementById("dramaPanel").classList.remove("visible");
+
+    setDice([
+        rollD10(),
+        rollD10(),
+        rollD10()
+    ]);
+
+    updateResult();
+
+}
+
+
+// --------------------------------
+// SELECCIÓN DE DADOS PARA DRAMA
+// --------------------------------
+
+function makeDiceSelectable() {
+
+    for (let i = 0; i < 3; i++) {
+
+        const die = document.getElementById("die" + i);
+
+        die.classList.add("selectable");
+
+        die.classList.remove("selected");
+        die.classList.remove("kept");
+
+        die.onclick = function() {
+            toggleDieSelection(i);
+        };
 
     }
 
+}
 
-    function rollDice() {
 
-        let dice = [
-            rollD10(),
-            rollD10(),
-            rollD10()
-        ];
+function toggleDieSelection(index) {
 
+    if (!dramaActive) return;
 
-        // Ordenamos los dados de menor a mayor
-        let sorted = [...dice].sort((a, b) => a - b);
+    const position = selectedDice.indexOf(index);
 
-        let menor = sorted[0];
-        let central = sorted[1];
-        let mayor = sorted[2];
+    if (position === -1) {
 
+        selectedDice.push(index);
 
-        // Detectamos dobles
-        let isDouble = (
-            dice[0] === dice[1] ||
-            dice[0] === dice[2] ||
-            dice[1] === dice[2]
-        );
+    } else {
 
-
-        // Detectamos triples
-        let isTriple = (
-            dice[0] === dice[1] &&
-            dice[1] === dice[2]
-        );
-
-
-        let result;
-        let explanation = "";
-
-
-        // -------------------------
-        // TIRADA NORMAL
-        // -------------------------
-
-        if (currentMode === "normal") {
-
-            result = central;
-
-            explanation =
-                "Dado central: " + central;
-
-        }
-
-
-        // -------------------------
-        // TALENTO
-        // -------------------------
-
-        else if (currentMode === "talento") {
-
-            result = central + menor;
-
-            explanation =
-                "Dado central " + central +
-                " + dado menor " + menor +
-                " = " + result;
-
-        }
-
-
-        // -------------------------
-        // DRAMA
-        // -------------------------
-
-        else if (currentMode === "drama") {
-
-            let dramaOptions = [
-                mayor
-            ];
-
-            if (isDouble) {
-
-                // En un triple también existe un doble,
-                // pero posteriormente añadiremos el triple
-                // como opción independiente.
-                let doubleValue;
-
-                if (dice[0] === dice[1]) {
-                    doubleValue = dice[0];
-                } else if (dice[0] === dice[2]) {
-                    doubleValue = dice[0];
-                } else {
-                    doubleValue = dice[1];
-                }
-
-                dramaOptions.push(doubleValue * 2);
-            }
-
-
-            if (isTriple) {
-
-                dramaOptions.push(dice[0] * 3);
-
-            }
-
-
-            result = Math.max(...dramaOptions);
-
-
-            if (isTriple && result === dice[0] * 3) {
-
-                explanation =
-                    "Triple " + dice[0] +
-                    " → " + result;
-
-            } else if (isDouble && result === mayor) {
-
-                explanation =
-                    "El dado mayor (" + mayor +
-                    ") supera al doble → " + result;
-
-            } else if (isDouble) {
-
-                explanation =
-                    "Doble " + (result / 2) +
-                    " → " + result;
-
-            } else {
-
-                explanation =
-                    "Dado mayor: " + mayor;
-
-            }
-
-        }
-
-
-        // -------------------------
-        // DRAMA + TALENTO
-        // -------------------------
-
-        else if (currentMode === "dramaTalento") {
-
-            let dramaOptions = [
-                mayor
-            ];
-
-
-            if (isDouble) {
-
-                let doubleValue;
-
-                if (dice[0] === dice[1]) {
-                    doubleValue = dice[0];
-                } else if (dice[0] === dice[2]) {
-                    doubleValue = dice[0];
-                } else {
-                    doubleValue = dice[1];
-                }
-
-                dramaOptions.push(doubleValue * 2);
-            }
-
-
-            if (isTriple) {
-
-                dramaOptions.push(dice[0] * 3);
-
-            }
-
-
-            let dramaResult = Math.max(...dramaOptions);
-
-            result = dramaResult + menor;
-
-
-            explanation =
-                "Drama: " + dramaResult +
-                " + Talento (dado menor " +
-                menor + ") = " + result;
-
-        }
-
-
-        // Mostramos los dados
-        document.getElementById("die1").textContent = dice[0];
-        document.getElementById("die2").textContent = dice[1];
-        document.getElementById("die3").textContent = dice[2];
-
-
-        // Mostramos resultado
-        document.getElementById("result").textContent = result;
-
-        document.getElementById("explanation").textContent = explanation;
+        selectedDice.splice(position, 1);
 
     }
+
+    updateSelectedVisuals();
+
+    updateDramaStatus();
+
+}
+
+
+function updateSelectedVisuals() {
+
+    for (let i = 0; i < 3; i++) {
+
+        const die = document.getElementById("die" + i);
+
+        die.classList.remove("selected");
+        die.classList.remove("kept");
+
+        if (selectedDice.includes(i)) {
+            die.classList.add("selected");
+        } else {
+            die.classList.add("kept");
+        }
+
+    }
+
+}
+
+
+function updateDramaStatus() {
+
+    const status = document.getElementById("dramaStatus");
+
+    const confirm = document.getElementById("confirmDrama");
+
+    if (selectedDice.length === 0) {
+
+        status.textContent =
+            "Selecciona uno o más dados para volver a tirarlos.";
+
+        confirm.disabled = true;
+
+        return;
+    }
+
+    const kept = [];
+
+    for (let i = 0; i < 3; i++) {
+
+        if (!selectedDice.includes(i)) {
+            kept.push(dice[i]);
+        }
+
+    }
+
+    status.textContent =
+        "Vas a volver a tirar " +
+        selectedDice.length +
+        " dado" +
+        (selectedDice.length === 1 ? "" : "s") +
+        ". Conservas: " +
+        (kept.length ? kept.join(" y ") : "ninguno") +
+        ".";
+
+    confirm.disabled = false;
+
+}
+
+
+// --------------------------------
+// CONFIRMAR DRAMA
+// --------------------------------
+
+function confirmDramaRoll() {
+
+    if (selectedDice.length === 0) return;
+
+    const oldDice = dice.slice();
+
+    for (const index of selectedDice) {
+        dice[index] = rollD10();
+    }
+
+    setDice(dice);
+
+    dramaActive = false;
+
+    document.getElementById("dramaPanel").classList.remove("visible");
+
+    for (let i = 0; i < 3; i++) {
+
+        const die = document.getElementById("die" + i);
+
+        die.classList.remove("selectable");
+        die.classList.remove("selected");
+        die.classList.remove("kept");
+
+        die.onclick = null;
+
+    }
+
+    calculateDramaResult(oldDice);
+
+}
+
+
+// --------------------------------
+// RESULTADO DRAMA
+// --------------------------------
+
+function calculateDramaResult(oldDice) {
+
+    const sorted = [...dice].sort((a, b) => a - b);
+
+    const low = sorted[0];
+    const middle = sorted[1];
+    const high = sorted[2];
+
+    let result = middle;
+
+    let explanation =
+        "Dados finales: " +
+        dice.join(" — ") +
+        ". ";
+
+    // Dobles
+    if (dice[0] === dice[1] && dice[1] === dice[2]) {
+
+        result = dice[0] * 3;
+
+        explanation +=
+            "Triple " +
+            dice[0] +
+            ": " +
+            dice[0] +
+            " + " +
+            dice[0] +
+            " + " +
+            dice[0] +
+            " = " +
+            result +
+            ".";
+
+    } else if (
+        dice[0] === dice[1] ||
+        dice[0] === dice[2] ||
+        dice[1] === dice[2]
+    ) {
+
+        let repeated;
+
+        if (dice[0] === dice[1]) {
+            repeated = dice[0];
+        } else if (dice[0] === dice[2]) {
+            repeated = dice[0];
+        } else {
+            repeated = dice[1];
+        }
+
+        const doubleResult = repeated * 2;
+
+        result = Math.max(high, doubleResult);
+
+        explanation +=
+            "Hay un doble de " +
+            repeated +
+            ". Drama permite considerar " +
+            repeated +
+            " + " +
+            repeated +
+            " = " +
+            doubleResult +
+            ". ";
+
+        explanation +=
+            "Se toma el valor más beneficioso: " +
+            result +
+            ".";
+
+    } else {
+
+        result = high;
+
+        explanation +=
+            "Drama permite quedarse con el dado más alto: " +
+            high +
+            ".";
+
+    }
+
+    if (dramaTalentActive) {
+
+        result += low;
+
+        explanation +=
+            " Además, Talento añade el dado más bajo (" +
+            low +
+            "), dando un total de " +
+            result +
+            ".";
+
+    }
+
+    document.getElementById("resultNumber").textContent = result;
+
+    document.getElementById("explanation").textContent = explanation;
+
+}
+
+
+// --------------------------------
+// RESULTADO NORMAL / TALENTO
+// --------------------------------
+
+function updateResult() {
+
+    if (dice.includes(null)) {
+        return;
+    }
+
+    const sorted = [...dice].sort((a, b) => a - b);
+
+    const low = sorted[0];
+    const middle = sorted[1];
+
+    let result;
+
+    let explanation;
+
+    if (currentMode === "talent") {
+
+        result = middle + low;
+
+        explanation =
+            "Talento: dado central (" +
+            middle +
+            ") + dado más bajo (" +
+            low +
+            ") = " +
+            result +
+            ".";
+
+    } else {
+
+        result = middle;
+
+        explanation =
+            "Normal: se toma el dado central (" +
+            middle +
+            ").";
+
+    }
+
+    document.getElementById("resultNumber").textContent = result;
+
+    document.getElementById("explanation").textContent = explanation;
+
+}
+
+
+// --------------------------------
+// CANCELAR DRAMA
+// --------------------------------
+
+function cancelDrama() {
+
+    dramaActive = false;
+    dramaTalentActive = false;
+    selectedDice = [];
+
+    document.getElementById("dramaPanel").classList.remove("visible");
+
+    for (let i = 0; i < 3; i++) {
+
+        const die = document.getElementById("die" + i);
+
+        die.classList.remove("selectable");
+        die.classList.remove("selected");
+        die.classList.remove("kept");
+
+        die.onclick = null;
+
+    }
+
+    currentMode = "normal";
+
+    document.querySelectorAll(".mode").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    document.querySelectorAll(".mode")[0].classList.add("active");
+
+    updateResult();
+
+}
 
 </script>
 
