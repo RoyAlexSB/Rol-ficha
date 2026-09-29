@@ -925,22 +925,136 @@ const defaultCharacter = {
     gestionEmocional: 3
 };
 
+/* =========================================
+   SUPABASE — ALMACENAMIENTO COMPARTIDO
+========================================= */
+
+const SUPABASE_URL = "https://wnpwcnssmicctnhhljbd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_y5RLUMa7KnHuVLmy4IaRYg_bCxp7oPI";
+const DEFAULT_CAMPAIGN_NAME = "Amor de Otro Mundo";
+let currentCampaignId = null;
+let currentCharacterId = null;
+
+function supabaseHeaders(extra = {}) {
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        ...extra
+    };
+}
+
+async function supabaseRequest(path, options = {}) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
+        ...options,
+        headers: supabaseHeaders(options.headers || {})
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP ${response.status}`);
+    }
+
+    if (response.status === 204) return null;
+    return response.json();
+}
+
+async function getOrCreateDefaultCampaign() {
+    const encodedName = encodeURIComponent(DEFAULT_CAMPAIGN_NAME);
+
+    const existing = await supabaseRequest(
+        `/campaigns?name=eq.${encodedName}&select=*`
+    );
+
+    if (existing.length > 0) {
+        return existing[0];
+    }
+
+    const created = await supabaseRequest("/campaigns", {
+        method: "POST",
+        headers: { "Prefer": "return=representation" },
+        body: JSON.stringify({
+            name: DEFAULT_CAMPAIGN_NAME,
+            description: "Campaña principal de Rol-Ficha",
+            accent_color: "#5865f2"
+        })
+    });
+
+    return created[0];
+}
+
+function characterToDatabase(character) {
+    return {
+        name: character.name,
+        campaign_id: currentCampaignId,
+        character_type: "pj",
+        player_slot: 1,
+        attributes: {
+            fortaleza: character.fortaleza,
+            reflejos: character.reflejos,
+            voluntad: character.voluntad,
+            inteligencia: character.inteligencia
+        },
+        skills: {
+            formaFisica: character.formaFisica,
+            combate: character.combate,
+            percepcion: character.percepcion,
+            subterfugio: character.subterfugio,
+            comunicacion: character.comunicacion,
+            cultura: character.cultura,
+            ocultismo: character.ocultismo,
+            gestionEmocional: character.gestionEmocional
+        }
+    };
+}
+
+function databaseToCharacter(row) {
+    return {
+        name: row.name || defaultCharacter.name,
+        fortaleza: Number(row.attributes?.fortaleza ?? defaultCharacter.fortaleza),
+        reflejos: Number(row.attributes?.reflejos ?? defaultCharacter.reflejos),
+        voluntad: Number(row.attributes?.voluntad ?? defaultCharacter.voluntad),
+        inteligencia: Number(row.attributes?.inteligencia ?? defaultCharacter.inteligencia),
+        formaFisica: Number(row.skills?.formaFisica ?? defaultCharacter.formaFisica),
+        combate: Number(row.skills?.combate ?? defaultCharacter.combate),
+        percepcion: Number(row.skills?.percepcion ?? defaultCharacter.percepcion),
+        subterfugio: Number(row.skills?.subterfugio ?? defaultCharacter.subterfugio),
+        comunicacion: Number(row.skills?.comunicacion ?? defaultCharacter.comunicacion),
+        cultura: Number(row.skills?.cultura ?? defaultCharacter.cultura),
+        ocultismo: Number(row.skills?.ocultismo ?? defaultCharacter.ocultismo),
+        gestionEmocional: Number(row.skills?.gestionEmocional ?? defaultCharacter.gestionEmocional)
+    };
+}
+
+function applyCharacterToForm(character) {
+    document.getElementById("characterName").value = character.name;
+    document.getElementById("fortaleza").value = character.fortaleza;
+    document.getElementById("reflejos").value = character.reflejos;
+    document.getElementById("voluntad").value = character.voluntad;
+    document.getElementById("inteligencia").value = character.inteligencia;
+    document.getElementById("formaFisica").value = character.formaFisica;
+    document.getElementById("combate").value = character.combate;
+    document.getElementById("percepcion").value = character.percepcion;
+    document.getElementById("subterfugio").value = character.subterfugio;
+    document.getElementById("comunicacion").value = character.comunicacion;
+    document.getElementById("cultura").value = character.cultura;
+    document.getElementById("ocultismo").value = character.ocultismo;
+    document.getElementById("gestionEmocional").value = character.gestionEmocional;
+    updateCalculation();
+}
 
 /* =========================================
    GUARDAR PERSONAJE
 ========================================= */
 
-function saveCharacter() {
+async function saveCharacter() {
 
     const character = {
-
-        name: document.getElementById("characterName").value,
-
+        name: document.getElementById("characterName").value.trim() || defaultCharacter.name,
         fortaleza: Number(document.getElementById("fortaleza").value),
         reflejos: Number(document.getElementById("reflejos").value),
         voluntad: Number(document.getElementById("voluntad").value),
         inteligencia: Number(document.getElementById("inteligencia").value),
-
         formaFisica: Number(document.getElementById("formaFisica").value),
         combate: Number(document.getElementById("combate").value),
         percepcion: Number(document.getElementById("percepcion").value),
@@ -951,13 +1065,37 @@ function saveCharacter() {
         gestionEmocional: Number(document.getElementById("gestionEmocional").value)
     };
 
-    localStorage.setItem(
-        "adom_archie_character",
-        JSON.stringify(character)
-    );
+    localStorage.setItem("adom_archie_character", JSON.stringify(character));
 
-    document.getElementById("saveMessage").textContent =
-        "✓ Cambios guardados correctamente.";
+    try {
+        if (!currentCampaignId) {
+            await initializeSharedStorage();
+        }
+
+        const payload = characterToDatabase(character);
+
+        if (currentCharacterId) {
+            await supabaseRequest(`/characters?id=eq.${encodeURIComponent(currentCharacterId)}`, {
+                method: "PATCH",
+                headers: { "Prefer": "return=representation" },
+                body: JSON.stringify(payload)
+            });
+        } else {
+            const created = await supabaseRequest("/characters", {
+                method: "POST",
+                headers: { "Prefer": "return=representation" },
+                body: JSON.stringify(payload)
+            });
+            currentCharacterId = created[0]?.id || null;
+        }
+
+        document.getElementById("saveMessage").textContent =
+            "✓ Cambios guardados en la nube.";
+    } catch (error) {
+        console.error("Supabase save error:", error);
+        document.getElementById("saveMessage").textContent =
+            "⚠ Guardado local. No se pudo sincronizar con Supabase.";
+    }
 
     updateCalculation();
 
@@ -966,57 +1104,56 @@ function saveCharacter() {
     }, 3000);
 }
 
-
 /* =========================================
    CARGAR PERSONAJE
 ========================================= */
 
-function loadCharacter() {
+async function loadCharacter() {
 
-    const saved =
-        localStorage.getItem("adom_archie_character");
+    try {
+        await initializeSharedStorage();
+        return;
+    } catch (error) {
+        console.error("Supabase load error:", error);
+        const saved = localStorage.getItem("adom_archie_character");
+        applyCharacterToForm(saved ? JSON.parse(saved) : defaultCharacter);
+        document.getElementById("saveMessage").textContent =
+            "Modo local: no se pudo conectar con la nube.";
+    }
+}
 
-    const character =
-        saved ? JSON.parse(saved) : defaultCharacter;
+async function initializeSharedStorage() {
+    const campaign = await getOrCreateDefaultCampaign();
+    currentCampaignId = campaign.id;
 
-    document.getElementById("characterName").value =
-        character.name;
+    const encodedCampaignId = encodeURIComponent(currentCampaignId);
+    const encodedName = encodeURIComponent(defaultCharacter.name);
 
-    document.getElementById("fortaleza").value =
-        character.fortaleza;
+    const existingCharacters = await supabaseRequest(
+        `/characters?campaign_id=eq.${encodedCampaignId}&name=eq.${encodedName}&select=*`
+    );
 
-    document.getElementById("reflejos").value =
-        character.reflejos;
+    let row;
 
-    document.getElementById("voluntad").value =
-        character.voluntad;
+    if (existingCharacters.length > 0) {
+        row = existingCharacters[0];
+        currentCharacterId = row.id;
+        applyCharacterToForm(databaseToCharacter(row));
+        localStorage.setItem("adom_archie_character", JSON.stringify(databaseToCharacter(row)));
+    } else {
+        const localSaved = localStorage.getItem("adom_archie_character");
+        const character = localSaved ? JSON.parse(localSaved) : defaultCharacter;
 
-    document.getElementById("inteligencia").value =
-        character.inteligencia;
+        const created = await supabaseRequest("/characters", {
+            method: "POST",
+            headers: { "Prefer": "return=representation" },
+            body: JSON.stringify(characterToDatabase(character))
+        });
 
-    document.getElementById("formaFisica").value =
-        character.formaFisica;
-
-    document.getElementById("combate").value =
-        character.combate;
-
-    document.getElementById("percepcion").value =
-        character.percepcion;
-
-    document.getElementById("subterfugio").value =
-        character.subterfugio;
-
-    document.getElementById("comunicacion").value =
-        character.comunicacion;
-
-    document.getElementById("cultura").value =
-        character.cultura;
-
-    document.getElementById("ocultismo").value =
-        character.ocultismo;
-
-    document.getElementById("gestionEmocional").value =
-        character.gestionEmocional;
+        row = created[0];
+        currentCharacterId = row?.id || null;
+        applyCharacterToForm(character);
+    }
 
     updateCalculation();
 }
