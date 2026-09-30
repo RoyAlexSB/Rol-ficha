@@ -845,6 +845,45 @@ select {
 .campaign-modal-status{min-height:18px;margin:0;color:#aeb4c2;font-size:.82rem;}
 @media(max-width:600px){.campaign-modal{padding:18px}.campaign-modal-actions{flex-direction:column}.campaign-modal-actions button{width:100%}}
 
+/* =========================
+   MOMENTOS ESPECIALES DE TIRADA
+========================= */
+.result{position:relative;overflow:hidden;}
+.result.special-critical{animation:resultCriticalPulse .7s ease-out;}
+.result.special-fumble{animation:resultFumbleShake .55s ease-out;}
+.result-special-banner{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    opacity:0;
+    z-index:5;
+}
+.result-special-banner.show{animation:specialBannerIn 2.4s ease forwards;}
+.result-special-content{
+    padding:13px 24px;
+    border-radius:16px;
+    text-align:center;
+    font-weight:900;
+    letter-spacing:.06em;
+    text-shadow:0 2px 14px rgba(0,0,0,.55);
+    backdrop-filter:blur(5px);
+    box-shadow:0 12px 35px rgba(0,0,0,.32);
+}
+.result-special-title{display:block;font-size:1.65rem;}
+.result-special-subtitle{display:block;font-size:.72rem;letter-spacing:.12em;margin-top:4px;opacity:.9;}
+.special-critical .result-special-content{background:rgba(255,190,62,.18);border:1px solid rgba(255,218,119,.72);color:#ffe39a;}
+.special-fumble .result-special-content{background:rgba(120,24,42,.22);border:1px solid rgba(255,105,125,.68);color:#ffabb8;}
+.special-critical .die{animation:criticalDie .65s ease-out;}
+.special-fumble .die{animation:fumbleDie .55s ease-out;}
+@keyframes specialBannerIn{0%{opacity:0;transform:scale(.72)}12%{opacity:1;transform:scale(1.04)}22%{transform:scale(1)}72%{opacity:1}100%{opacity:0;transform:scale(1.02)}}
+@keyframes resultCriticalPulse{0%{box-shadow:0 0 0 rgba(255,205,90,0)}35%{box-shadow:0 0 45px rgba(255,205,90,.28)}100%{box-shadow:0 0 0 rgba(255,205,90,0)}}
+@keyframes resultFumbleShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes criticalDie{0%{transform:scale(1)}35%{transform:scale(1.13) rotate(-3deg)}70%{transform:scale(1.05) rotate(2deg)}100%{transform:scale(1)}}
+@keyframes fumbleDie{0%{transform:translateX(0)}25%{transform:translateX(-7px) rotate(-3deg)}50%{transform:translateX(7px) rotate(3deg)}75%{transform:translateX(-3px)}100%{transform:translateX(0)}}
+
 </style>
 </head>
 
@@ -1436,6 +1475,13 @@ select {
 
         <div class="explanation" id="explanation">
             Realiza una tirada para comenzar.
+        </div>
+
+        <div id="resultSpecialBanner" class="result-special-banner" aria-live="polite">
+            <div class="result-special-content">
+                <span id="resultSpecialTitle" class="result-special-title"></span>
+                <span id="resultSpecialSubtitle" class="result-special-subtitle"></span>
+            </div>
         </div>
 
     </div>
@@ -2637,6 +2683,41 @@ let dramaTalentActive = false;
 let selectedDice = [];
 
 
+function detectSpecialRoll(){
+    if(dice.includes(null)) return null;
+    const tens=dice.filter(v=>v===10).length;
+    const ones=dice.filter(v=>v===1).length;
+    if(tens>=2) return "critical";
+    if(ones>=2) return "fumble";
+    return null;
+}
+
+function showSpecialRoll(type){
+    const resultBox=document.getElementById("result");
+    const diceBox=document.querySelector(".dice-container");
+    const banner=document.getElementById("resultSpecialBanner");
+    const title=document.getElementById("resultSpecialTitle");
+    const subtitle=document.getElementById("resultSpecialSubtitle");
+    if(!resultBox||!banner||!title||!subtitle) return;
+    resultBox.classList.remove("special-critical","special-fumble");
+    diceBox?.classList.remove("special-critical","special-fumble");
+    banner.classList.remove("show");
+    if(!type) return;
+    void banner.offsetWidth;
+    const specialClass=type==="critical"?"special-critical":"special-fumble";
+    resultBox.classList.add(specialClass);
+    diceBox?.classList.add(specialClass);
+    banner.classList.add(specialClass,"show");
+    title.textContent=type==="critical"?"✨ ¡CRÍTICO!":"💀 ¡PIFIA!";
+    subtitle.textContent=type==="critical"?"ÉXITO EXTRAORDINARIO":"FRACASO CATASTRÓFICO";
+    window.clearTimeout(window.__specialRollTimer);
+    window.__specialRollTimer=window.setTimeout(()=>{
+        resultBox.classList.remove("special-critical","special-fumble");
+        diceBox?.classList.remove("special-critical","special-fumble");
+        banner.classList.remove("show","special-critical","special-fumble");
+    },2500);
+}
+
 function rollD10() {
 
     return Math.floor(Math.random() * 10) + 1;
@@ -2843,6 +2924,7 @@ function rollNormal() {
 
 
     updateResult();
+    showSpecialRoll(detectSpecialRoll());
 }
 
 
@@ -3160,6 +3242,7 @@ function calculateDramaResult(oldDice) {
 
 
     applyBaseValue(result, explanation);
+    showSpecialRoll(detectSpecialRoll());
 }
 
 
