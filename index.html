@@ -94,6 +94,12 @@ h3 {
     margin-bottom: 8px;
 }
 
+.attribute-card{display:grid;grid-template-columns:minmax(70px,.55fr) minmax(0,1fr);gap:8px;align-items:center;}
+.attribute-card .stat-name{grid-column:1 / -1;margin-bottom:0;}
+.attribute-aspect-wrap{display:flex;align-items:center;gap:7px;margin-top:0;min-width:0;}
+.attribute-aspect-label{font-size:.68rem;color:#9fa9bb;white-space:nowrap;}
+.attribute-aspect-input{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.12);border-radius:7px;background:rgba(0,0,0,.22);color:#fff;padding:7px 8px;font:inherit;font-size:.74rem;outline:none;}
+.attribute-aspect-input:focus{border-color:#7d88ff;box-shadow:0 0 0 2px rgba(88,101,232,.14);}
 .skill-card{display:grid;grid-template-columns:minmax(70px,.55fr) minmax(0,1fr);gap:8px;align-items:center;}
 .skill-card .stat-name{grid-column:1 / -1;margin-bottom:0;}
 .skill-talent-wrap{display:flex;align-items:center;gap:7px;margin-top:0;min-width:0;}
@@ -106,7 +112,6 @@ h3 {
 .wound-help{margin-top:7px;color:#929aaa;font-size:.7rem;}
 #characterView{position:relative;}
 #characterView > *{position:relative;z-index:1;}
-.reality-glitch-layer{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:var(--glitch-opacity,0);background-image:var(--reality-bg);background-position:center;background-size:cover;background-repeat:no-repeat;mix-blend-mode:screen;filter:saturate(calc(1 + var(--glitch-strength,0))) contrast(calc(1 + var(--glitch-strength,0)));transform:translate3d(var(--glitch-x,0px),var(--glitch-y,0px),0);transition:opacity .25s ease,filter .25s ease,transform .12s ease;overflow:hidden}.reality-glitch-layer::before{content:"";position:absolute;inset:0;background-image:var(--reality-bg);background-position:center;background-size:cover;background-repeat:no-repeat;mix-blend-mode:difference;opacity:calc(var(--glitch-opacity,0) * .9);transform:translate3d(calc(var(--glitch-x,0px) * -2.2),calc(var(--glitch-y,0px) * -1),0);animation:realityGlitchShift .72s steps(2,end) infinite}.reality-glitch-layer::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(145,111,255,.16) 2px 3px,transparent 3px 7px);opacity:calc(var(--glitch-opacity,0) * 1.1);mix-blend-mode:screen;animation:realityGlitchScan .55s steps(4,end) infinite}@keyframes realityGlitchShift{0%,100%{clip-path:inset(0 0 0 0);transform:translate3d(0,0,0)}10%{clip-path:inset(7% 0 79% 0);transform:translate3d(18px,-2px,0)}11%{clip-path:inset(68% 0 13% 0);transform:translate3d(-22px,3px,0)}27%{clip-path:inset(43% 0 39% 0);transform:translate3d(12px,0,0)}28%{clip-path:inset(0 0 0 0);transform:translate3d(0,0,0)}61%{clip-path:inset(19% 0 61% 0);transform:translate3d(-14px,2px,0)}62%{clip-path:inset(72% 0 8% 0);transform:translate3d(20px,-1px,0)}}@keyframes realityGlitchScan{0%,100%{transform:translateY(0)}25%{transform:translateY(5px)}50%{transform:translateY(-7px)}75%{transform:translateY(3px)}}35%{transform:translateY(3px);}70%{transform:translateY(-5px);}}
 .session-arc{background:rgba(8,11,18,.18);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px;margin-bottom:12px;backdrop-filter:blur(2px);}
 .session-arc-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;}
 .session-arc-title{margin:0;font-size:1rem;}
@@ -116,7 +121,7 @@ h3 {
 .session-episode-title{flex:1;color:#e3e7ef;font-size:.85rem;}
 .session-empty{color:#8f9bb2;font-size:.82rem;margin:4px 0;}
 .session-actions{display:flex;gap:7px;flex-wrap:wrap;}
-@media(max-width:600px){.skill-card{grid-template-columns:1fr;}.skill-talent-wrap{align-items:stretch;flex-direction:row;gap:7px;}.skill-talent-label{white-space:nowrap;}}
+@media(max-width:600px){.skill-card,.attribute-card{grid-template-columns:1fr;}.skill-talent-wrap,.attribute-aspect-wrap{align-items:stretch;flex-direction:row;gap:7px;}.skill-talent-label,.attribute-aspect-label{white-space:nowrap;}}
 .stat-input {
     width: 75px;
     padding: 8px;
@@ -210,6 +215,11 @@ select {
     color: #c5cad4;
 }
 
+.drama-tracker{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px auto 8px;padding:12px 14px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(0,0,0,.16);max-width:520px;}
+.drama-tracker-title{font-size:.82rem;color:#d9deea;font-weight:700;margin-right:4px;}
+.drama-track{display:flex;gap:7px;align-items:center;}
+.drama-point{width:24px;height:24px;margin:0;accent-color:#d18a32;cursor:pointer;}
+.drama-tracker-help{font-size:.68rem;color:#8f9bb2;width:100%;text-align:center;}
 .dice-container {
     display: flex;
     justify-content: center;
@@ -848,7 +858,6 @@ select {
 </section>
 
 <div id="characterView">
-<div class="reality-glitch-layer" aria-hidden="true"></div>
 
 <div class="character-context">
     <button class="secondary back-button" onclick="showCampaignView()">← Volver a la campaña</button>
@@ -881,24 +890,28 @@ select {
 
     <div class="stats-grid">
 
-        <div class="stat">
+        <div class="stat attribute-card">
             <div class="stat-name">Fortaleza</div>
             <input class="stat-input" id="fortaleza" type="number" min="0" value="4">
+            <div class="attribute-aspect-wrap"><span class="attribute-aspect-label">Aspecto</span><input class="attribute-aspect-input" data-attribute-aspect="fortaleza" type="text" placeholder="Ej.: Peso pluma, Titán"></div>
         </div>
 
-        <div class="stat">
+        <div class="stat attribute-card">
             <div class="stat-name">Reflejos</div>
             <input class="stat-input" id="reflejos" type="number" min="0" value="4">
+            <div class="attribute-aspect-wrap"><span class="attribute-aspect-label">Aspecto</span><input class="attribute-aspect-input" data-attribute-aspect="reflejos" type="text" placeholder="Ej.: Dedos ágiles, Agilidad felina"></div>
         </div>
 
-        <div class="stat">
+        <div class="stat attribute-card">
             <div class="stat-name">Voluntad</div>
             <input class="stat-input" id="voluntad" type="number" min="0" value="4">
+            <div class="attribute-aspect-wrap"><span class="attribute-aspect-label">Aspecto</span><input class="attribute-aspect-input" data-attribute-aspect="voluntad" type="text" placeholder="Ej.: Magnético, Imperturbable"></div>
         </div>
 
-        <div class="stat">
+        <div class="stat attribute-card">
             <div class="stat-name">Inteligencia</div>
             <input class="stat-input" id="inteligencia" type="number" min="0" value="6">
+            <div class="attribute-aspect-wrap"><span class="attribute-aspect-label">Aspecto</span><input class="attribute-aspect-input" data-attribute-aspect="inteligencia" type="text" placeholder="Ej.: Observador, Hiperfoco"></div>
         </div>
 
     </div>
@@ -910,49 +923,49 @@ select {
         <div class="stat skill-card">
             <div class="stat-name">Forma física</div>
             <input class="stat-input" id="formaFisica" type="number" min="0" value="4">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="formaFisica" type="text" placeholder="Ej.: Atleta / Practica parkour"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="formaFisica" type="text" placeholder="Ej.: Atleta, Practica parkour"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Combate</div>
             <input class="stat-input" id="combate" type="number" min="0" value="3">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="combate" type="text" placeholder="Ej.: Boxeador / Experto en armas a distancia"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="combate" type="text" placeholder="Ej.: Boxeador, Experto en armas a distancia"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Percepción</div>
             <input class="stat-input" id="percepcion" type="number" min="0" value="7">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="percepcion" type="text" placeholder="Ej.: Ojo avizor / Oído fino"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="percepcion" type="text" placeholder="Ej.: Ojo avizor, Oído fino"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Subterfugio</div>
             <input class="stat-input" id="subterfugio" type="number" min="0" value="4">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="subterfugio" type="text" placeholder="Ej.: Mentiroso convincente / Pasos sigilosos"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="subterfugio" type="text" placeholder="Ej.: Mentiroso convincente, Pasos sigilosos"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Comunicación</div>
             <input class="stat-input" id="comunicacion" type="number" min="0" value="5">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="comunicacion" type="text" placeholder="Ej.: Persuasivo / Leer rostros"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="comunicacion" type="text" placeholder="Ej.: Persuasivo, Leer rostros"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Cultura</div>
             <input class="stat-input" id="cultura" type="number" min="0" value="6">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="cultura" type="text" placeholder="Ej.: Historiador / Psicólogo"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="cultura" type="text" placeholder="Ej.: Historiador, Psicólogo"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Ocultismo</div>
             <input class="stat-input" id="ocultismo" type="number" min="0" value="4">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="ocultismo" type="text" placeholder="Ej.: Ritualista / Detectar energía arcana"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="ocultismo" type="text" placeholder="Ej.: Ritualista, Detectar energía arcana"></div>
         </div>
 
         <div class="stat skill-card">
             <div class="stat-name">Gestión emocional</div>
             <input class="stat-input" id="gestionEmocional" type="number" min="0" value="3">
-            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="gestionEmocional" type="text" placeholder="Ej.: Estoico / Frialdad"></div>
+            <div class="skill-talent-wrap"><span class="skill-talent-label">Talentos</span><input class="skill-talent-input" data-skill-talent="gestionEmocional" type="text" placeholder="Ej.: Estoico, Frialdad"></div>
         </div>
 
     </div>
@@ -1007,7 +1020,7 @@ select {
             <div class="derived-grid">
                 <div class="derived-stat"><span>Iniciativa</span><strong id="sheetInitiative">—</strong><small>Reflejos + ½ Inteligencia</small></div>
                 <div class="derived-stat"><span>Daño a distancia</span><strong id="sheetRangedDamage">—</strong><small>Combate ÷ 4</small></div>
-                <div class="derived-stat"><span>Daño cuerpo a cuerpo</span><strong id="sheetMeleeDamage">—</strong><small>Fortaleza ÷ 4</small></div>
+                <div class="derived-stat"><span>Daño cuerpo a cuerpo</span><strong id="sheetMeleeDamage">—</strong><small>(Fortaleza + Combate) ÷ 4</small></div>
                 <div class="derived-stat"><span>Defensa</span><strong id="sheetDefense">—</strong><small>Reflejos + mejor entre Combate/Forma física + 5</small></div>
                 <div class="derived-stat"><span>Defensa desprevenido</span><strong id="sheetDefenseUnaware">—</strong><small>Defensa − 3</small></div>
             </div>
@@ -1247,6 +1260,20 @@ select {
 
     </div>
 
+
+    <!-- PUNTOS DE DRAMA -->
+
+    <div class="drama-tracker">
+        <span class="drama-tracker-title">🔥 Puntos de Drama</span>
+        <div class="drama-track" aria-label="Puntos de Drama disponibles">
+            <input class="drama-point" type="checkbox" data-drama-point="0" onchange="updateDramaPointsFromUI()">
+            <input class="drama-point" type="checkbox" data-drama-point="1" onchange="updateDramaPointsFromUI()">
+            <input class="drama-point" type="checkbox" data-drama-point="2" onchange="updateDramaPointsFromUI()">
+            <input class="drama-point" type="checkbox" data-drama-point="3" onchange="updateDramaPointsFromUI()">
+            <input class="drama-point" type="checkbox" data-drama-point="4" onchange="updateDramaPointsFromUI()">
+        </div>
+        <span class="drama-tracker-help">Marcadas = puntos de Drama que aún tienes disponibles · Máximo 5</span>
+    </div>
 
     <!-- DADOS -->
 
@@ -1657,10 +1684,10 @@ async function getOrCreateDefaultCampaign() {
 
 
 function defaultSheetData(){
-    return {concepto:"",complicacion:"",aspectoTemporal:"",talentos:"",background:"",notes:[],currentResistance:"",woundMild1:false,woundMild2:false,woundSevere1:false,woundSevere2:false,red:"",weapons:[],distortionLevel:0,ecstasy:0,experience:0,step:1,milestones:"",aspects:"",inventory:"",skillTalents:{},bonds:[]};
+    return {concepto:"",complicacion:"",aspectoTemporal:"",talentos:"",background:"",notes:[],currentResistance:"",woundMild1:false,woundMild2:false,woundSevere1:false,woundSevere2:false,red:"",weapons:[],distortionLevel:0,ecstasy:0,experience:0,step:1,milestones:"",aspects:"",inventory:"",skillTalents:{},attributeAspects:{},dramaPoints:5,bonds:[]};
 }
 function defaultEcstasySheetData(){
-    return {concepto:"",complicacion:"",aspectoTemporal:"",talentos:"",currentResistance:"",woundMild1:false,woundMild2:false,woundSevere1:false,woundSevere2:false,red:"",weapons:[],experience:0,step:1,milestones:"",skillTalents:{},arcaneAbilities:[],anchors:[],artifacts:[]};
+    return {concepto:"",complicacion:"",aspectoTemporal:"",talentos:"",currentResistance:"",woundMild1:false,woundMild2:false,woundSevere1:false,woundSevere2:false,red:"",weapons:[],experience:0,step:1,milestones:"",skillTalents:{},attributeAspects:{},dramaPoints:5,arcaneAbilities:[],anchors:[],artifacts:[]};
 }
 function defaultEcstasyData(){
     return {fortaleza:0,reflejos:0,voluntad:0,inteligencia:0,formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0,sheet:defaultEcstasySheetData()};
@@ -1707,9 +1734,9 @@ async function removeCharacterNote(id){
 
 function getSheetDataFromForm(){
     const bonds=[...document.querySelectorAll("#bondsBody tr")].map(tr=>({name:tr.querySelector(".bond-name")?.value.trim()||"",aspect:tr.querySelector(".bond-aspect")?.value.trim()||"",type:tr.querySelector(".bond-type")?.value||"lazo",value:Number(tr.querySelector(".bond-value")?.value)||0,medium:Number(tr.querySelector(".bond-medium")?.value)||0,major:Number(tr.querySelector(".bond-major")?.value)||0,critical:Number(tr.querySelector(".bond-critical")?.value)||0})).filter(b=>b.name||b.aspect||b.value||b.medium||b.major||b.critical);
-    const skillTalents={};document.querySelectorAll(".skill-talent-input[data-skill-talent]").forEach(el=>{skillTalents[el.dataset.skillTalent]=el.value.trim();});
+    const skillTalents={};document.querySelectorAll(".skill-talent-input[data-skill-talent]").forEach(el=>{skillTalents[el.dataset.skillTalent]=el.value.trim();});const attributeAspects={};document.querySelectorAll(".attribute-aspect-input[data-attribute-aspect]").forEach(el=>{attributeAspects[el.dataset.attributeAspect]=el.value.trim();});const dramaPoints=[...document.querySelectorAll(".drama-point")].filter(el=>el.checked).length;
     const weapons=[...document.querySelectorAll("#weaponsList .dynamic-row")].map(row=>({name:row.querySelector(".weapon-name")?.value.trim()||"",damage:row.querySelector(".weapon-damage")?.value.trim()||"",notes:row.querySelector(".weapon-notes")?.value.trim()||""})).filter(w=>w.name||w.damage||w.notes);
-    const base={concepto:document.getElementById("sheetConcept")?.value||"",complicacion:document.getElementById("sheetComplication")?.value||"",aspectoTemporal:document.getElementById("sheetTemporalAspect")?.value||"",talentos:document.getElementById("sheetTalents")?.value||"",background:document.getElementById('characterBackground')?.value||'',currentResistance:document.getElementById("sheetCurrentResistance")?.value??"",woundMild1:Boolean(document.getElementById("sheetWoundMild1")?.checked),woundMild2:Boolean(document.getElementById("sheetWoundMild2")?.checked),woundSevere1:Boolean(document.getElementById("sheetWoundSevere1")?.checked),woundSevere2:Boolean(document.getElementById("sheetWoundSevere2")?.checked),skillTalents,red:document.getElementById("sheetRed")?.value??"",weapons,experience:Number(document.getElementById("sheetExperience")?.value)||0,step:Number(document.getElementById("sheetStep")?.value)||1,milestones:document.getElementById("sheetMilestones")?.value||""};
+    const base={concepto:document.getElementById("sheetConcept")?.value||"",complicacion:document.getElementById("sheetComplication")?.value||"",aspectoTemporal:document.getElementById("sheetTemporalAspect")?.value||"",talentos:document.getElementById("sheetTalents")?.value||"",background:document.getElementById('characterBackground')?.value||'',currentResistance:document.getElementById("sheetCurrentResistance")?.value??"",woundMild1:Boolean(document.getElementById("sheetWoundMild1")?.checked),woundMild2:Boolean(document.getElementById("sheetWoundMild2")?.checked),woundSevere1:Boolean(document.getElementById("sheetWoundSevere1")?.checked),woundSevere2:Boolean(document.getElementById("sheetWoundSevere2")?.checked),skillTalents,red:document.getElementById("sheetRed")?.value??"",weapons,experience:Number(document.getElementById("sheetExperience")?.value)||0,step:Number(document.getElementById("sheetStep")?.value)||1,milestones:document.getElementById("sheetMilestones")?.value||"",attributeAspects,dramaPoints};
     if(activeSheetMode==="human") return {...base,distortionLevel:Number(document.getElementById("sheetDistortion")?.value)||0,ecstasy:document.querySelectorAll("#ecstasyTrack input:checked").length,aspects:document.getElementById("sheetAspects")?.value||"",inventory:document.getElementById("sheetInventory")?.value||"",bonds};
     return {...base,distortionLevel:Number(document.getElementById("sheetDistortion")?.value)||0,ecstasy:document.querySelectorAll("#ecstasyTrack input:checked").length,arcaneAbilities:[...document.querySelectorAll("#arcaneAbilitiesBody tr")].map(row=>({name:row.querySelector(".arcane-name")?.value.trim()||"",type:row.querySelector(".arcane-type")?.value||"innata",value:Math.max(0,Number(row.querySelector(".arcane-value")?.value)||0)})).filter(a=>a.name||a.value),anchors:[...document.querySelectorAll("#anchorsList .dynamic-row")].map(row=>({name:row.querySelector(".anchor-name")?.value.trim()||"",aspect:row.querySelector(".anchor-aspect")?.value.trim()||""})).filter(a=>a.name||a.aspect),artifacts:[...document.querySelectorAll("#artifactsList .dynamic-row")].map(row=>({name:row.querySelector(".artifact-name")?.value.trim()||"",notes:row.querySelector(".artifact-notes")?.value.trim()||""})).filter(a=>a.name||a.notes)};
 }
@@ -1734,12 +1761,12 @@ function updateEcstasyTrack(){const current=document.querySelectorAll("#ecstasyT
 
 function updateSheetDerived(){
     const fortaleza=getValue("fortaleza"),reflejos=getValue("reflejos"),voluntad=getValue("voluntad"),inteligencia=getValue("inteligencia"),combate=getValue("combate"),formaFisica=getValue("formaFisica");
-    const woundThreshold=fortaleza+Math.floor(voluntad/2),resistanceTotal=woundThreshold*3,initiative=reflejos+Math.floor(inteligencia/2),rangedDamage=Math.floor(combate/4),meleeDamage=Math.floor(fortaleza/4),defense=reflejos+Math.max(combate,formaFisica)+5,defenseUnaware=defense-3,distortion=Math.max(0,Math.min(10,Number(document.getElementById("sheetDistortion")?.value)||0)),ecstasy=document.querySelectorAll("#ecstasyTrack input:checked").length;
+    const woundThreshold=fortaleza+Math.floor(voluntad/2),resistanceTotal=woundThreshold*3,initiative=reflejos+Math.floor(inteligencia/2),rangedDamage=Math.floor(combate/4),meleeDamage=Math.floor((fortaleza+combate)/4),defense=reflejos+Math.max(combate,formaFisica)+5,defenseUnaware=defense-3,distortion=Math.max(0,Math.min(10,Number(document.getElementById("sheetDistortion")?.value)||0)),ecstasy=document.querySelectorAll("#ecstasyTrack input:checked").length;
     const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
     set("sheetWoundThreshold",woundThreshold);set("sheetResistanceTotal",resistanceTotal);set("sheetInitiative",initiative);set("sheetRangedDamage",rangedDamage);set("sheetMeleeDamage",meleeDamage);set("sheetDefense",defense);set("sheetDefenseUnaware",defenseUnaware);set("sheetEcstasyExit",10+distortion);
     const base=[['INT + Percepción',inteligencia+getValue('percepcion')],['INT + Comunicación',inteligencia+getValue('comunicacion')],['INT + Ocultismo',inteligencia+getValue('ocultismo')],['INT + Gestión emocional',inteligencia+getValue('gestionEmocional')],['INT + Cultura',inteligencia+getValue('cultura')],['INT + Subterfugio',inteligencia+getValue('subterfugio')],['REF + Forma física',reflejos+formaFisica],['REF + Combate',reflejos+combate],['REF + Subterfugio',reflejos+getValue('subterfugio')],['VOL + Ocultismo',voluntad+getValue('ocultismo')],['VOL + Gestión emocional',voluntad+getValue('gestionEmocional')],['FOR + Forma física',fortaleza+formaFisica],['FOR + Combate',fortaleza+combate],['FOR + Gestión emocional',fortaleza+getValue('gestionEmocional')]];
     const el=document.getElementById('sheetBaseRolls');if(el)el.innerHTML=base.map(([n,v])=>`<div class="derived-stat"><span>${n}</span><strong>${v}</strong></div>`).join('');
-    const summary=document.getElementById('ecstasySummary');if(summary)summary.textContent=`${ecstasy} / 10 puntos de éxtasis`;const cv=document.getElementById('characterView');if(cv){const level=Math.max(0,Math.min(10,distortion));cv.style.setProperty('--glitch-opacity',level?String(Math.min(0.72,0.07+level*0.055)):'0');cv.style.setProperty('--glitch-strength',String(level*0.055));cv.style.setProperty('--glitch-x',`${level*1.8}px`);cv.style.setProperty('--glitch-y',`${level*0.55}px`);cv.dataset.distortion=String(level);}
+    const summary=document.getElementById('ecstasySummary');if(summary)summary.textContent=`${ecstasy} / 10 puntos de éxtasis`;
     const current=document.getElementById('sheetCurrentResistance');if(current&&current.value!==''){const value=Math.max(0,Math.min(resistanceTotal,Number(current.value)||0));if(String(value)!==current.value)current.value=value;}
     updateEcstasyArcaneRolls();updateSheetModeUI(false);
 }
@@ -1773,13 +1800,15 @@ function updateEcstasyArcaneRolls(){
 
 function applySheetData(data={}){
     const d={...defaultSheetData(),...(data||{})},setValue=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''},setChecked=(id,v)=>{const el=document.getElementById(id);if(el)el.checked=Boolean(v)};
-    setValue('sheetConcept',d.concepto);setValue('sheetComplication',d.complicacion);setValue('sheetTemporalAspect',d.aspectoTemporal);setValue('sheetTalents',d.talentos);setValue('characterBackground',workingCharacter?.profile?.background??d.background??'');renderCharacterNotes(workingCharacter?.profile?.notes||d.notes||[]);setValue('sheetCurrentResistance',d.currentResistance);setChecked('sheetWoundMild1',d.woundMild1??d.woundMild);setChecked('sheetWoundMild2',d.woundMild2);setChecked('sheetWoundSevere1',d.woundSevere1??d.woundSevere);setChecked('sheetWoundSevere2',d.woundSevere2);setValue('sheetRed',d.red);setValue('sheetExperience',d.experience);setValue('sheetStep',d.step);setValue('sheetMilestones',d.milestones);setValue('sheetAspects',d.aspects||'');setValue('sheetInventory',d.inventory||'');document.querySelectorAll('.skill-talent-input[data-skill-talent]').forEach(el=>{el.value=(d.skillTalents||{})[el.dataset.skillTalent]||'';});setValue('sheetDistortion',d.distortionLevel??getSharedDistortion());
+    setValue('sheetConcept',d.concepto);setValue('sheetComplication',d.complicacion);setValue('sheetTemporalAspect',d.aspectoTemporal);setValue('sheetTalents',d.talentos);setValue('characterBackground',workingCharacter?.profile?.background??d.background??'');renderCharacterNotes(workingCharacter?.profile?.notes||d.notes||[]);setValue('sheetCurrentResistance',d.currentResistance);setChecked('sheetWoundMild1',d.woundMild1??d.woundMild);setChecked('sheetWoundMild2',d.woundMild2);setChecked('sheetWoundSevere1',d.woundSevere1??d.woundSevere);setChecked('sheetWoundSevere2',d.woundSevere2);setValue('sheetRed',d.red);setValue('sheetExperience',d.experience);setValue('sheetStep',d.step);setValue('sheetMilestones',d.milestones);setValue('sheetAspects',d.aspects||'');setValue('sheetInventory',d.inventory||'');document.querySelectorAll('.skill-talent-input[data-skill-talent]').forEach(el=>{el.value=(d.skillTalents||{})[el.dataset.skillTalent]||'';});document.querySelectorAll('.attribute-aspect-input[data-attribute-aspect]').forEach(el=>{el.value=(d.attributeAspects||{})[el.dataset.attributeAspect]||'';});setDramaPointsUI(Number(d.dramaPoints??workingCharacter?.shared?.dramaPoints??5));setValue('sheetDistortion',d.distortionLevel??getSharedDistortion());
     renderEcstasy(d.ecstasy??getSharedEcstasy());renderWeapons(d.weapons||[]);renderBonds(Array.isArray(d.bonds)?d.bonds:[]);renderArcaneAbilities(d.arcaneAbilities||[]);renderAnchors(d.anchors||[]);renderArtifacts(d.artifacts||[]);updateSheetDerived();
 }
 function getSharedDistortion(){const live=document.getElementById('sheetDistortion');if(live&&document.getElementById('characterView')?.style.display!=='none')return Number(live.value)||0;return Number(workingCharacter?.shared?.distortionLevel??workingCharacter?.human?.sheet?.distortionLevel??0)||0;}
 function getSharedEcstasy(){const live=document.querySelectorAll('#ecstasyTrack input:checked').length;if(document.getElementById('characterView')?.style.display!=='none')return live;return Number(workingCharacter?.shared?.ecstasy??workingCharacter?.human?.sheet?.ecstasy??0)||0;}
+function setDramaPointsUI(points=5){const safe=Math.max(0,Math.min(5,Number(points)||0));document.querySelectorAll('.drama-point').forEach((el,index)=>{el.checked=index<safe;});}
+function updateDramaPointsFromUI(){if(!workingCharacter)return;const points=[...document.querySelectorAll('.drama-point')].filter(el=>el.checked).length;workingCharacter.shared.dramaPoints=points;workingCharacter.human.sheet.dramaPoints=points;workingCharacter.ecstasy.sheet.dramaPoints=points;}
 function syncCurrentFormToWorkingCharacter(){
-    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
+    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
 }
 function setFormValuesFromCharacterSheet(sheet){const a=sheet.attributes||{},s=sheet.skills||{};document.getElementById('characterName').value=workingCharacter?.name||defaultCharacter.name;['fortaleza','reflejos','voluntad','inteligencia'].forEach(id=>document.getElementById(id).value=Number(a[id]??0));['formaFisica','combate','percepcion','subterfugio','comunicacion','cultura','ocultismo','gestionEmocional'].forEach(id=>document.getElementById(id).value=Number(s[id]??0));applySheetData(sheet.sheet||defaultSheetData());}
 function setSheetMode(mode){if(mode==='ecstasy'&&getSharedDistortion()<1)return;syncCurrentFormToWorkingCharacter();activeSheetMode=mode==='ecstasy'?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(true);}
@@ -1788,12 +1817,12 @@ function updateSheetModeUI(scroll=false){const unlocked=getSharedDistortion()>=1
 function humanizeNumbers(obj={}){const out={};for(const [k,v] of Object.entries(obj||{}))out[k]=Number(v)||0;return out;}
 function characterToDatabase(character){
     syncCurrentFormToWorkingCharacter();const isExistingCharacter=Boolean(currentCharacterId&&currentCharacterRow),h=workingCharacter.human,e=workingCharacter.ecstasy;
-    return {name:workingCharacter.name||defaultCharacter.name,campaign_id:currentCampaignId,character_type:isExistingCharacter?currentCharacterRow.character_type:'pj',player_slot:isExistingCharacter?currentCharacterRow.player_slot:1,attributes:{fortaleza:Number(h.attributes.fortaleza||0),reflejos:Number(h.attributes.reflejos||0),voluntad:Number(h.attributes.voluntad||0),inteligencia:Number(h.attributes.inteligencia||0),sheet:h.sheet,profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])},ecstasy:{attributes:humanizeNumbers(e.attributes),skills:humanizeNumbers(e.skills),sheet:{...defaultEcstasySheetData(),...e.sheet,distortionLevel:workingCharacter.shared.distortionLevel,ecstasy:workingCharacter.shared.ecstasy}}},skills:humanizeNumbers(h.skills)};
+    return {name:workingCharacter.name||defaultCharacter.name,campaign_id:currentCampaignId,character_type:isExistingCharacter?currentCharacterRow.character_type:'pj',player_slot:isExistingCharacter?currentCharacterRow.player_slot:1,attributes:{fortaleza:Number(h.attributes.fortaleza||0),reflejos:Number(h.attributes.reflejos||0),voluntad:Number(h.attributes.voluntad||0),inteligencia:Number(h.attributes.inteligencia||0),sheet:{...h.sheet,dramaPoints:workingCharacter.shared.dramaPoints},profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])},ecstasy:{attributes:humanizeNumbers(e.attributes),skills:humanizeNumbers(e.skills),sheet:{...defaultEcstasySheetData(),...e.sheet,distortionLevel:workingCharacter.shared.distortionLevel,ecstasy:workingCharacter.shared.ecstasy,dramaPoints:workingCharacter.shared.dramaPoints}}},skills:humanizeNumbers(h.skills)};
 }
 function databaseToCharacter(row){
     const attrs=row.attributes||{},skills=row.skills||{};const human={attributes:{fortaleza:Number(attrs.fortaleza??defaultCharacter.fortaleza),reflejos:Number(attrs.reflejos??defaultCharacter.reflejos),voluntad:Number(attrs.voluntad??defaultCharacter.voluntad),inteligencia:Number(attrs.inteligencia??defaultCharacter.inteligencia)},skills:{formaFisica:Number(skills.formaFisica??defaultCharacter.formaFisica),combate:Number(skills.combate??defaultCharacter.combate),percepcion:Number(skills.percepcion??defaultCharacter.percepcion),subterfugio:Number(skills.subterfugio??defaultCharacter.subterfugio),comunicacion:Number(skills.comunicacion??defaultCharacter.comunicacion),cultura:Number(skills.cultura??defaultCharacter.cultura),ocultismo:Number(skills.ocultismo??defaultCharacter.ocultismo),gestionEmocional:Number(skills.gestionEmocional??defaultCharacter.gestionEmocional)},sheet:{...defaultSheetData(),...(attrs.sheet||{})}};
     if(!human.sheet.weapons&&human.sheet.weapon)human.sheet.weapons=[{name:human.sheet.weapon,damage:"",notes:""}];
-    const ec=attrs.ecstasy||{};const def=defaultEcstasyData();const ext={attributes:{fortaleza:Number(ec.attributes?.fortaleza??def.fortaleza),reflejos:Number(ec.attributes?.reflejos??def.reflejos),voluntad:Number(ec.attributes?.voluntad??def.voluntad),inteligencia:Number(ec.attributes?.inteligencia??def.inteligencia)},skills:{formaFisica:Number(ec.skills?.formaFisica??def.formaFisica),combate:Number(ec.skills?.combate??def.combate),percepcion:Number(ec.skills?.percepcion??def.percepcion),subterfugio:Number(ec.skills?.subterfugio??def.subterfugio),comunicacion:Number(ec.skills?.comunicacion??def.comunicacion),cultura:Number(ec.skills?.cultura??def.cultura),ocultismo:Number(ec.skills?.ocultismo??def.ocultismo),gestionEmocional:Number(ec.skills?.gestionEmocional??def.gestionEmocional)},sheet:{...defaultEcstasySheetData(),...(ec.sheet||{})}};const shared={distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0};human.sheet.distortionLevel=shared.distortionLevel;human.sheet.ecstasy=shared.ecstasy;ext.sheet.distortionLevel=shared.distortionLevel;ext.sheet.ecstasy=shared.ecstasy;const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[])};return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
+    const ec=attrs.ecstasy||{};const def=defaultEcstasyData();const ext={attributes:{fortaleza:Number(ec.attributes?.fortaleza??def.fortaleza),reflejos:Number(ec.attributes?.reflejos??def.reflejos),voluntad:Number(ec.attributes?.voluntad??def.voluntad),inteligencia:Number(ec.attributes?.inteligencia??def.inteligencia)},skills:{formaFisica:Number(ec.skills?.formaFisica??def.formaFisica),combate:Number(ec.skills?.combate??def.combate),percepcion:Number(ec.skills?.percepcion??def.percepcion),subterfugio:Number(ec.skills?.subterfugio??def.subterfugio),comunicacion:Number(ec.skills?.comunicacion??def.comunicacion),cultura:Number(ec.skills?.cultura??def.cultura),ocultismo:Number(ec.skills?.ocultismo??def.ocultismo),gestionEmocional:Number(ec.skills?.gestionEmocional??def.gestionEmocional)},sheet:{...defaultEcstasySheetData(),...(ec.sheet||{})}};const shared={distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0,dramaPoints:Math.max(0,Math.min(5,Number(human.sheet.dramaPoints??ext.sheet.dramaPoints??5)||0))};human.sheet.distortionLevel=shared.distortionLevel;human.sheet.ecstasy=shared.ecstasy;human.sheet.dramaPoints=shared.dramaPoints;ext.sheet.distortionLevel=shared.distortionLevel;ext.sheet.ecstasy=shared.ecstasy;ext.sheet.dramaPoints=shared.dramaPoints;const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[])};return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
 }
 function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[]};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();}
 
