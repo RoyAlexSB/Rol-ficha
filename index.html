@@ -1809,13 +1809,66 @@ function updateSheetModeUI(scroll=false){const unlocked=getSharedDistortion()>=1
 
 function humanizeNumbers(obj={}){const out={};for(const [k,v] of Object.entries(obj||{}))out[k]=Number(v)||0;return out;}
 function characterToDatabase(character){
-    syncCurrentFormToWorkingCharacter();const isExistingCharacter=Boolean(currentCharacterId&&currentCharacterRow),h=workingCharacter.human,e=workingCharacter.ecstasy;
-    return {name:workingCharacter.name||defaultCharacter.name,campaign_id:currentCampaignId,character_type:isExistingCharacter?currentCharacterRow.character_type:'pj',player_slot:isExistingCharacter?currentCharacterRow.player_slot:1,attributes:{fortaleza:Number(h.attributes.fortaleza||0),reflejos:Number(h.attributes.reflejos||0),voluntad:Number(h.attributes.voluntad||0),inteligencia:Number(h.attributes.inteligencia||0),sharedSheet:{...(workingCharacter.shared.sheet||{})},sheet:{...h.sheet,dramaPoints:workingCharacter.shared.dramaPoints},profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])},ecstasy:{attributes:humanizeNumbers(e.attributes),skills:humanizeNumbers(e.skills),sheet:{...defaultEcstasySheetData(),...e.sheet,distortionLevel:workingCharacter.shared.distortionLevel,ecstasy:workingCharacter.shared.ecstasy,dramaPoints:workingCharacter.shared.dramaPoints}}},skills:humanizeNumbers(h.skills)};
+    const isExistingCharacter=Boolean(currentCharacterId&&currentCharacterRow);
+    const h=workingCharacter.human||{attributes:{},skills:{},sheet:defaultSheetData()};
+    const e=workingCharacter.ecstasy||{attributes:{},skills:{},sheet:defaultEcstasySheetData()};
+    const previousAttrs=(currentCharacterRow&&currentCharacterRow.attributes)||{};
+    const previousSkills=(currentCharacterRow&&currentCharacterRow.skills)||{};
+    return {
+        name:workingCharacter.name||defaultCharacter.name,
+        campaign_id:currentCampaignId,
+        character_type:isExistingCharacter?currentCharacterRow.character_type:'pj',
+        player_slot:isExistingCharacter?currentCharacterRow.player_slot:1,
+        attributes:{
+            ...previousAttrs,
+            fortaleza:Number(h.attributes?.fortaleza||0),
+            reflejos:Number(h.attributes?.reflejos||0),
+            voluntad:Number(h.attributes?.voluntad||0),
+            inteligencia:Number(h.attributes?.inteligencia||0),
+            sharedSheet:{...(workingCharacter.shared?.sheet||{})},
+            sheet:{...defaultSheetData(),...(h.sheet||{}),dramaPoints:workingCharacter.shared?.dramaPoints??5},
+            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])},
+            ecstasy:{
+                ...((previousAttrs&&previousAttrs.ecstasy)||{}),
+                attributes:humanizeNumbers(e.attributes),
+                skills:humanizeNumbers(e.skills),
+                sheet:{...defaultEcstasySheetData(),...(e.sheet||{}),distortionLevel:workingCharacter.shared?.distortionLevel??0,ecstasy:workingCharacter.shared?.ecstasy??0,dramaPoints:workingCharacter.shared?.dramaPoints??5}
+            }
+        },
+        skills:{...previousSkills,...humanizeNumbers(h.skills)}
+    };
 }
 function databaseToCharacter(row){
-    const attrs=row.attributes||{},skills=row.skills||{};const human={attributes:{fortaleza:Number(attrs.fortaleza??defaultCharacter.fortaleza),reflejos:Number(attrs.reflejos??defaultCharacter.reflejos),voluntad:Number(attrs.voluntad??defaultCharacter.voluntad),inteligencia:Number(attrs.inteligencia??defaultCharacter.inteligencia)},skills:{formaFisica:Number(skills.formaFisica??defaultCharacter.formaFisica),combate:Number(skills.combate??defaultCharacter.combate),percepcion:Number(skills.percepcion??defaultCharacter.percepcion),subterfugio:Number(skills.subterfugio??defaultCharacter.subterfugio),comunicacion:Number(skills.comunicacion??defaultCharacter.comunicacion),cultura:Number(skills.cultura??defaultCharacter.cultura),ocultismo:Number(skills.ocultismo??defaultCharacter.ocultismo),gestionEmocional:Number(skills.gestionEmocional??defaultCharacter.gestionEmocional)},sheet:{...defaultSheetData(),...(attrs.sheet||{})}};
-    if(!human.sheet.weapons&&human.sheet.weapon)human.sheet.weapons=[{name:human.sheet.weapon,damage:"",notes:""}];
-    const ec=attrs.ecstasy||{};const def=defaultEcstasyData();const ext={attributes:{fortaleza:Number(ec.attributes?.fortaleza??def.fortaleza),reflejos:Number(ec.attributes?.reflejos??def.reflejos),voluntad:Number(ec.attributes?.voluntad??def.voluntad),inteligencia:Number(ec.attributes?.inteligencia??def.inteligencia)},skills:{formaFisica:Number(ec.skills?.formaFisica??def.formaFisica),combate:Number(ec.skills?.combate??def.combate),percepcion:Number(ec.skills?.percepcion??def.percepcion),subterfugio:Number(ec.skills?.subterfugio??def.subterfugio),comunicacion:Number(ec.skills?.comunicacion??def.comunicacion),cultura:Number(ec.skills?.cultura??def.cultura),ocultismo:Number(ec.skills?.ocultismo??def.ocultismo),gestionEmocional:Number(ec.skills?.gestionEmocional??def.gestionEmocional)},sheet:{...defaultEcstasySheetData(),...(ec.sheet||{})}};const shared={distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0,dramaPoints:Math.max(0,Math.min(5,Number(human.sheet.dramaPoints??ext.sheet.dramaPoints??5)||0)),sheet:{concepto:String((attrs.sharedSheet||{}).concepto??human.sheet.concepto??ext.sheet.concepto??''),complicacion:String((attrs.sharedSheet||{}).complicacion??human.sheet.complicacion??ext.sheet.complicacion??''),aspectoTemporal:String((attrs.sharedSheet||{}).aspectoTemporal??human.sheet.aspectoTemporal??ext.sheet.aspectoTemporal??''),milestones:String((attrs.sharedSheet||{}).milestones??human.sheet.milestones??ext.sheet.milestones??'')}};human.sheet.distortionLevel=shared.distortionLevel;human.sheet.ecstasy=shared.ecstasy;human.sheet.dramaPoints=shared.dramaPoints;ext.sheet.distortionLevel=shared.distortionLevel;ext.sheet.ecstasy=shared.ecstasy;ext.sheet.dramaPoints=shared.dramaPoints;const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[])};return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
+    const attrs=row.attributes||{},skills=row.skills||{};
+    const human={
+        attributes:{fortaleza:Number(attrs.fortaleza??defaultCharacter.fortaleza),reflejos:Number(attrs.reflejos??defaultCharacter.reflejos),voluntad:Number(attrs.voluntad??defaultCharacter.voluntad),inteligencia:Number(attrs.inteligencia??defaultCharacter.inteligencia)},
+        skills:{formaFisica:Number(skills.formaFisica??defaultCharacter.formaFisica),combate:Number(skills.combate??defaultCharacter.combate),percepcion:Number(skills.percepcion??defaultCharacter.percepcion),subterfugio:Number(skills.subterfugio??defaultCharacter.subterfugio),comunicacion:Number(skills.comunicacion??defaultCharacter.comunicacion),cultura:Number(skills.cultura??defaultCharacter.cultura),ocultismo:Number(skills.ocultismo??defaultCharacter.ocultismo),gestionEmocional:Number(skills.gestionEmocional??defaultCharacter.gestionEmocional)},
+        sheet:{...defaultSheetData(),...(attrs.sheet||{})}
+    };
+    if(!human.sheet.weapons&&human.sheet.weapon)human.sheet.weapons=[{name:human.sheet.weapon,damage:'',notes:''}];
+    const ec=attrs.ecstasy||{};const def=defaultEcstasyData();
+    const ext={
+        attributes:{fortaleza:Number(ec.attributes?.fortaleza??def.fortaleza),reflejos:Number(ec.attributes?.reflejos??def.reflejos),voluntad:Number(ec.attributes?.voluntad??def.voluntad),inteligencia:Number(ec.attributes?.inteligencia??def.inteligencia)},
+        skills:{formaFisica:Number(ec.skills?.formaFisica??def.formaFisica),combate:Number(ec.skills?.combate??def.combate),percepcion:Number(ec.skills?.percepcion??def.percepcion),subterfugio:Number(ec.skills?.subterfugio??def.subterfugio),comunicacion:Number(ec.skills?.comunicacion??def.comunicacion),cultura:Number(ec.skills?.cultura??def.cultura),ocultismo:Number(ec.skills?.ocultismo??def.ocultismo),gestionEmocional:Number(ec.skills?.gestionEmocional??def.gestionEmocional)},
+        sheet:{...defaultEcstasySheetData(),...(ec.sheet||{})}
+    };
+    const storedShared=attrs.sharedSheet||{};
+    const shared={
+        distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,
+        ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0,
+        dramaPoints:Math.max(0,Math.min(5,Number(human.sheet.dramaPoints??ext.sheet.dramaPoints??5)||0)),
+        sheet:{
+            concepto:String(storedShared.concepto??human.sheet.concepto??ext.sheet.concepto??''),
+            complicacion:String(storedShared.complicacion??human.sheet.complicacion??ext.sheet.complicacion??''),
+            aspectoTemporal:String(storedShared.aspectoTemporal??human.sheet.aspectoTemporal??ext.sheet.aspectoTemporal??''),
+            milestones:String(storedShared.milestones??human.sheet.milestones??ext.sheet.milestones??'')
+        }
+    };
+    // Los campos compartidos siempre quedan presentes en ambas formas al cargar.
+    human.sheet={...human.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
+    ext.sheet={...ext.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
+    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[])};
+    return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
 }
 function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[]};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();}
 
