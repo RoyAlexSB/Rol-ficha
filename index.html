@@ -231,6 +231,30 @@ select {
 .drama-track{display:flex;gap:7px;align-items:center;}
 .drama-point{width:24px;height:24px;margin:0;accent-color:#d18a32;cursor:pointer;}
 .drama-tracker-help{font-size:.68rem;color:#8f9bb2;width:100%;text-align:center;}
+/* =========================================
+   HISTORIAL DE TIRADAS
+========================================= */
+.roll-toolbar{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 4px}
+.history-button{position:relative}
+.history-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;font-size:.72rem;background:rgba(255,255,255,.14);margin-left:4px}
+.roll-history-panel{display:none;margin:14px auto 0;max-width:720px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(10,14,30,.82);box-shadow:0 16px 45px rgba(0,0,0,.28);overflow:hidden}
+.roll-history-panel.visible{display:block;animation:historyIn .18s ease-out}
+.roll-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.roll-history-head h3{margin:0;font-size:1rem}
+.roll-history-list{max-height:430px;overflow:auto;padding:8px}
+.roll-history-empty{padding:22px 14px;text-align:center;opacity:.7}
+.roll-history-item{display:grid;grid-template-columns:1fr auto;gap:8px 14px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.045);margin-bottom:7px}
+.roll-history-item:last-child{margin-bottom:0}
+.roll-history-main{min-width:0}
+.roll-history-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+.roll-history-dice{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
+.roll-history-meta{margin-top:4px;font-size:.78rem;opacity:.68}
+.roll-history-total{align-self:center;font-size:1.25rem;font-weight:800;white-space:nowrap}
+.roll-history-special{font-size:.76rem;font-weight:800;padding:3px 7px;border-radius:999px;background:rgba(255,255,255,.09)}
+.roll-history-special.critical{background:rgba(255,205,70,.16)}
+.roll-history-special.fumble{background:rgba(255,80,80,.16)}
+@keyframes historyIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
 .dice-container {
     display: flex;
     justify-content: center;
@@ -1417,11 +1441,24 @@ select {
     </div>
 
     <div class="roll-area">
+        <div class="roll-toolbar">
+            <button onclick="rollNormal()">
+                🎲 Tirar 3d10
+            </button>
+            <button type="button" class="secondary history-button" onclick="toggleRollHistory()">
+                📜 Historial <span id="historyCount" class="history-count">0</span>
+            </button>
+        </div>
 
-        <button onclick="rollNormal()">
-            🎲 Tirar 3d10
-        </button>
-
+        <div id="rollHistoryPanel" class="roll-history-panel" aria-live="polite">
+            <div class="roll-history-head">
+                <h3>📜 Últimas 10 tiradas</h3>
+                <button type="button" class="secondary" onclick="toggleRollHistory(false)">Cerrar</button>
+            </div>
+            <div id="rollHistoryList" class="roll-history-list">
+                <div class="roll-history-empty">Todavía no hay tiradas en esta sesión.</div>
+            </div>
+        </div>
     </div>
 
 
@@ -2682,6 +2719,45 @@ let dramaTalentActive = false;
 
 let selectedDice = [];
 
+let rollHistory = [];
+
+function toggleRollHistory(force){
+    const panel=document.getElementById("rollHistoryPanel");
+    if(!panel) return;
+    const show=typeof force === "boolean" ? force : !panel.classList.contains("visible");
+    panel.classList.toggle("visible",show);
+}
+
+function getRollLabel(){
+    const attr=document.getElementById("attributeSelect")?.selectedOptions?.[0]?.textContent?.trim() || "Atributo";
+    const skill=document.getElementById("skillSelect")?.selectedOptions?.[0]?.textContent?.trim() || "Habilidad";
+    return skill && skill !== "Ninguna" ? `${attr} + ${skill}` : attr;
+}
+
+function getRollModeLabel(){
+    return ({normal:"Normal",talent:"Talento",drama:"Drama",dramaTalent:"Drama + Talento"}[currentMode]) || "Normal";
+}
+
+function addRollToHistory(){
+    if(dice.some(v=>v===null)) return;
+    const special=detectSpecialRoll();
+    const total=Number(document.getElementById("resultNumber")?.textContent);
+    rollHistory.unshift({dice:dice.slice(),total:Number.isFinite(total)?total:null,label:getRollLabel(),mode:getRollModeLabel(),special,time:Date.now()});
+    rollHistory=rollHistory.slice(0,10);
+    renderRollHistory();
+}
+
+function renderRollHistory(){
+    const list=document.getElementById("rollHistoryList"),count=document.getElementById("historyCount");
+    if(!list) return;
+    if(count) count.textContent=String(rollHistory.length);
+    if(!rollHistory.length){list.innerHTML='<div class="roll-history-empty">Todavía no hay tiradas en esta sesión.</div>';return;}
+    list.innerHTML=rollHistory.map(item=>{
+        const specialLabel=item.special==="critical"?'<span class="roll-history-special critical">✨ CRÍTICO</span>':item.special==="fumble"?'<span class="roll-history-special fumble">💀 PIFIA</span>':'';
+        const when=new Date(item.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+        return `<div class="roll-history-item"><div class="roll-history-main"><div class="roll-history-top">${specialLabel}<span class="roll-history-dice">${item.dice.join(" · ")}</span></div><div class="roll-history-meta">${escapeHtml(item.label)} · ${escapeHtml(item.mode)} · ${when}</div></div><div class="roll-history-total">${item.total ?? "—"}</div></div>`;
+    }).join("");
+}
 
 function detectSpecialRoll(){
     if(dice.includes(null)) return null;
@@ -2925,6 +3001,7 @@ function rollNormal() {
 
     updateResult();
     showSpecialRoll(detectSpecialRoll());
+    addRollToHistory();
 }
 
 
@@ -3243,6 +3320,7 @@ function calculateDramaResult(oldDice) {
 
     applyBaseValue(result, explanation);
     showSpecialRoll(detectSpecialRoll());
+    addRollToHistory();
 }
 
 
