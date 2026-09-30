@@ -908,6 +908,26 @@ select {
 @keyframes criticalDie{0%{transform:scale(1)}35%{transform:scale(1.13) rotate(-3deg)}70%{transform:scale(1.05) rotate(2deg)}100%{transform:scale(1)}}
 @keyframes fumbleDie{0%{transform:translateX(0)}25%{transform:translateX(-7px) rotate(-3deg)}50%{transform:translateX(7px) rotate(3deg)}75%{transform:translateX(-3px)}100%{transform:translateX(0)}}
 
+
+<style id="multiDiceStyles">
+.dice-mode-selector{
+  margin:6px 4px;
+  padding:7px 10px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(20,20,35,.75);
+  color:inherit;
+  font:inherit;
+}
+#customDiceControls input{
+  padding:5px 6px;
+  border-radius:7px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(20,20,35,.75);
+  color:inherit;
+  text-align:center;
+}
+</style>
 </style>
 </head>
 
@@ -1442,7 +1462,23 @@ select {
 
     <div class="roll-area">
         <div class="roll-toolbar">
-            <button onclick="rollNormal()">
+            <div class="dice-selector-wrap">
+                <label for="diceModeSelector">Dados</label>
+                <select id="diceModeSelector" aria-label="Tipo de tirada" onchange="updateDiceModeUI()">
+                    <option value="3d10">3d10</option>
+                    <option value="1d4">1d4</option>
+                    <option value="1d6">1d6</option>
+                    <option value="1d10">1d10</option>
+                    <option value="1d20">1d20</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+                <div id="customDiceControls" class="custom-dice-controls" hidden>
+                    <input id="customDiceCount" type="number" min="1" max="10" value="1" aria-label="Número de dados">
+                    <span>d</span>
+                    <input id="customDiceFaces" type="number" min="2" max="50" value="10" aria-label="Número de caras">
+                </div>
+            </div>
+            <button id="mainRollButton" onclick="rollNormal()">
                 🎲 Tirar 3d10
             </button>
             <button type="button" class="secondary history-button" onclick="toggleRollHistory()">
@@ -2801,16 +2837,19 @@ function rollD10() {
 
 
 function setDice(values) {
-
     dice = values.slice();
+    renderDiceFaces(dice);
+}
 
-    for (let i = 0; i < 3; i++) {
-
-        document.getElementById(
-            "die" + i
-        ).textContent = dice[i];
-
-    }
+function renderDiceFaces(values) {
+    const container = document.querySelector(".dice-container");
+    if (!container) return;
+    container.innerHTML = values.map((value, index) => `
+        <div class="dice-slot">
+            <div class="die" id="die${index}">${value ?? "?"}</div>
+            <div class="die-label">Dado ${index + 1}</div>
+        </div>
+    `).join("");
 }
 
 
@@ -2974,35 +3013,99 @@ function rollInitialDrama() {
 }
 
 /* =========================================
+   TIRADAS ALTERNATIVAS
+========================================= */
+
+function getDiceMode() {
+    return document.getElementById("diceModeSelector")?.value || "3d10";
+}
+
+function getAlternativeDiceConfig() {
+    const mode = getDiceMode();
+    if (mode === "custom") {
+        const count = Math.min(10, Math.max(1, Number(document.getElementById("customDiceCount")?.value || 1)));
+        const faces = Math.min(50, Math.max(2, Number(document.getElementById("customDiceFaces")?.value || 10)));
+        return { count, faces, label: `${count}d${faces}` };
+    }
+    const match = /^(\d+)d(\d+)$/.exec(mode);
+    return match ? { count:Number(match[1]), faces:Number(match[2]), label:mode } : { count:3, faces:10, label:"3d10" };
+}
+
+function rollAlternativeDice() {
+    const config = getAlternativeDiceConfig();
+    const values = Array.from({length:config.count}, () => Math.floor(Math.random() * config.faces) + 1);
+    const total = values.reduce((sum, value) => sum + value, 0);
+
+    dramaActive = false;
+    dramaTalentActive = false;
+    selectedDice = [];
+    document.getElementById("dramaPanel")?.classList.remove("visible");
+
+    setDice(values);
+    document.getElementById("resultNumber").textContent = total;
+    document.getElementById("explanation").textContent = `${config.label}: ${values.join(" + ")} = ${total}. Tirada libre, sin Drama ni efectos de crítico/pifia.`;
+    showSpecialRoll(null);
+
+    rollHistory.unshift({
+        dice: values.slice(),
+        total,
+        label: "Tirada libre",
+        mode: config.label,
+        special: null,
+        time: Date.now()
+    });
+    rollHistory = rollHistory.slice(0, 10);
+    renderRollHistory();
+}
+
+function updateDiceModeUI() {
+    const mode = getDiceMode();
+    const custom = document.getElementById("customDiceControls");
+    const button = document.getElementById("mainRollButton");
+    const isStandard = mode === "3d10";
+
+    if (custom) custom.hidden = mode !== "custom";
+    if (button) button.textContent = `🎲 Tirar ${mode === "custom" ? getAlternativeDiceConfig().label : mode}`;
+
+    document.querySelectorAll(".modes .mode").forEach((btn, index) => {
+        btn.disabled = !isStandard;
+        btn.title = isStandard ? "" : "Drama y los modos especiales solo están disponibles con 3d10.";
+    });
+
+    if (!isStandard) {
+        cancelDrama();
+        document.getElementById("resultSpecialBanner")?.classList.remove("show", "critical", "fumble");
+    }
+
+    updateCalculation();
+}
+
+/* =========================================
    TIRADA
 ========================================= */
 
 function rollNormal() {
 
+    const diceMode = getDiceMode();
+
+    if (diceMode !== "3d10") {
+        rollAlternativeDice();
+        return;
+    }
+
     dramaActive = false;
-
     dramaTalentActive = false;
-
     selectedDice = [];
 
-    document
-        .getElementById("dramaPanel")
-        .classList.remove("visible");
+    document.getElementById("dramaPanel").classList.remove("visible");
 
-
-    setDice([
-
-        rollD10(),
-        rollD10(),
-        rollD10()
-
-    ]);
-
-
+    setDice([rollD10(), rollD10(), rollD10()]);
+    renderDiceFaces(dice);
     updateResult();
     showSpecialRoll(detectSpecialRoll());
     addRollToHistory();
 }
+
 
 
 /* =========================================
@@ -3510,6 +3613,9 @@ function cancelDrama() {
    INICIAR
 ========================================= */
 
+renderDiceFaces(dice);
+updateDiceModeUI();
+
 initializeSharedStorage().catch(error=>{
     console.error(error);
     const grid = document.getElementById("campaignsGrid");
@@ -3517,6 +3623,9 @@ initializeSharedStorage().catch(error=>{
 });
 
 </script>
+
+
+
 
 </body>
 </html>
