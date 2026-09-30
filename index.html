@@ -65,6 +65,17 @@ h3 {
    FICHA
 ========================= */
 
+/* =========================
+   RETRATO DEL PERSONAJE
+========================= */
+.portrait-section{margin:0 0 26px;padding:16px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(0,0,0,.14);}
+.portrait-section h3{margin:0 0 12px;}
+.portrait-layout{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.portrait-preview{width:150px;height:190px;border-radius:12px;border:1px dashed rgba(255,255,255,.2);background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#8f99ad;text-align:center;font-size:.8rem;padding:10px;}
+.portrait-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.portrait-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+.portrait-actions input[type=file]{display:none;}
+.portrait-help{margin:0;color:#8f99ad;font-size:.74rem;max-width:420px;line-height:1.45;}
 .character-name {
     width: 100%;
     padding: 14px;
@@ -885,6 +896,22 @@ select {
         value="Archie Montgomery"
         placeholder="Nombre del personaje"
     >
+
+    <div class="portrait-section">
+        <h3>🖼️ Retrato</h3>
+        <div class="portrait-layout">
+            <div class="portrait-preview" id="portraitPreview">Sin retrato</div>
+            <div class="portrait-actions">
+                <label class="secondary" style="display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:12px 18px;font-size:15px;font-weight:bold;cursor:pointer;background:#303642;color:white;">
+                    📷 Subir / cambiar retrato
+                    <input id="portraitInput" type="file" accept="image/*" onchange="uploadCharacterPortrait(event)">
+                </label>
+                <button type="button" class="secondary" id="removePortraitButton" onclick="removeCharacterPortrait()" style="display:none;">🗑️ Eliminar retrato</button>
+                <p class="portrait-help">El retrato pertenece al personaje, así que se mantiene igual en la Ficha Humana y en la Ficha de Éxtasis.</p>
+                <div id="portraitMessage" class="save-message"></div>
+            </div>
+        </div>
+    </div>
 
     <h3>🧬 Atributos</h3>
 
@@ -1801,7 +1828,7 @@ function getSharedEcstasy(){const live=document.querySelectorAll('#ecstasyTrack 
 function setDramaPointsUI(points=5){const safe=Math.max(0,Math.min(5,Number(points)||0));document.querySelectorAll('.drama-point').forEach((el,index)=>{el.checked=index<safe;});}
 function updateDramaPointsFromUI(){if(!workingCharacter)return;const points=[...document.querySelectorAll('.drama-point')].filter(el=>el.checked).length;workingCharacter.shared.dramaPoints=points;workingCharacter.human.sheet.dramaPoints=points;workingCharacter.ecstasy.sheet.dramaPoints=points;}
 function syncCurrentFormToWorkingCharacter(){
-    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones};workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet};workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
+    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones};workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet};workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||'')};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
 }
 function setFormValuesFromCharacterSheet(sheet){
     const a=sheet.attributes||{},s=sheet.skills||{},shared=workingCharacter?.shared?.sheet||{};
@@ -1841,7 +1868,7 @@ function characterToDatabase(character){
             inteligencia:Number(h.attributes?.inteligencia||0),
             sharedSheet:{...(workingCharacter.shared?.sheet||{})},
             sheet:{...defaultSheetData(),...(h.sheet||{}),dramaPoints:workingCharacter.shared?.dramaPoints??5},
-            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[])},
+            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||'')},
             ecstasy:{
                 ...((previousAttrs&&previousAttrs.ecstasy)||{}),
                 attributes:humanizeNumbers(e.attributes),
@@ -1881,10 +1908,90 @@ function databaseToCharacter(row){
     // Los campos compartidos siempre quedan presentes en ambas formas al cargar.
     human.sheet={...human.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
     ext.sheet={...ext.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
-    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[])};
+    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[]),portraitUrl:String(attrs.profile?.portraitUrl||'')};
     return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
 }
-function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[]};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();}
+function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[],portraitUrl:''};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);workingCharacter.profile.portraitUrl=workingCharacter.profile.portraitUrl||'';renderCharacterPortrait(workingCharacter.profile.portraitUrl);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();}
+
+/* =========================================
+   RETRATO DEL PERSONAJE
+========================================= */
+
+function setPortraitMessage(message, error=false){
+    const el=document.getElementById('portraitMessage');
+    if(!el)return;
+    el.textContent=message||'';
+    el.style.color=error?'#ff8f8f':'#65d68a';
+    if(message)setTimeout(()=>{if(el.textContent===message)el.textContent='';},3500);
+}
+
+function renderCharacterPortrait(url=''){
+    const preview=document.getElementById('portraitPreview');
+    const remove=document.getElementById('removePortraitButton');
+    if(!preview)return;
+    if(url){
+        preview.innerHTML=`<img src="${escapeHtml(url)}" alt="Retrato del personaje">`;
+        if(remove)remove.style.display='inline-block';
+    }else{
+        preview.textContent='Sin retrato';
+        if(remove)remove.style.display='none';
+    }
+}
+
+async function uploadCharacterPortrait(event){
+    const file=event?.target?.files?.[0];
+    if(!file)return;
+    if(!file.type.startsWith('image/')){setPortraitMessage('Selecciona una imagen válida.',true);event.target.value='';return;}
+    if(file.size>8*1024*1024){setPortraitMessage('La imagen no puede superar los 8 MB.',true);event.target.value='';return;}
+    try{
+        setPortraitMessage('Subiendo retrato…');
+        if(!currentCharacterId){
+            await saveCharacter();
+            if(!currentCharacterId)throw new Error('No se pudo crear el personaje antes de subir el retrato.');
+        }
+        const extension=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+        const path=`${currentCharacterId}/portrait-${Date.now()}.${extension}`;
+        const response=await fetch(`${SUPABASE_URL}/storage/v1/object/character-portraits/${encodeURIComponent(path).replace(/%2F/g,'/')}`,{
+            method:'POST',
+            headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':file.type,'x-upsert':'true'},
+            body:file
+        });
+        if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+        const publicUrl=`${SUPABASE_URL}/storage/v1/object/public/character-portraits/${path}`;
+        workingCharacter.profile=workingCharacter.profile||{background:'',notes:[]};
+        workingCharacter.profile.portraitUrl=publicUrl;
+        renderCharacterPortrait(publicUrl);
+        await saveCharacter();
+        setPortraitMessage('✓ Retrato guardado.');
+    }catch(error){
+        console.error('Portrait upload error:',error);
+        setPortraitMessage('⚠ No se pudo subir el retrato. Revisa los permisos del bucket.',true);
+    }finally{
+        if(event?.target)event.target.value='';
+    }
+}
+
+async function removeCharacterPortrait(){
+    const url=workingCharacter?.profile?.portraitUrl||'';
+    if(!url)return;
+    if(!confirm('¿Eliminar el retrato de este personaje?'))return;
+    try{
+        const marker='/character-portraits/';
+        const index=url.indexOf(marker);
+        const path=index>=0?decodeURIComponent(url.slice(index+marker.length)) : '';
+        if(path){
+            const response=await fetch(`${SUPABASE_URL}/storage/v1/object/character-portraits/${path.split('/').map(encodeURIComponent).join('/')}`,{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}});
+            if(!response.ok && response.status!==404){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+        }
+        workingCharacter.profile.portraitUrl='';
+        renderCharacterPortrait('');
+        await saveCharacter();
+        setPortraitMessage('✓ Retrato eliminado.');
+    }catch(error){
+        console.error('Portrait delete error:',error);
+        setPortraitMessage('⚠ No se pudo eliminar el archivo del almacenamiento.',true);
+    }
+}
 
 /* =========================================
    GUARDAR PERSONAJE
