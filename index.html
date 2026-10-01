@@ -254,6 +254,25 @@ select {
 .roll-history-special.critical{background:rgba(255,205,70,.16)}
 .roll-history-special.fumble{background:rgba(255,80,80,.16)}
 @keyframes historyIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.history-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.history-clear{font-size:.78rem!important;padding:7px 10px!important}
+.roll-history-item{transition:transform .12s ease,background .12s ease}
+.roll-history-item:hover{transform:translateX(2px);background:rgba(255,255,255,.065)}
+.roll-history-dice{font-size:1rem}
+.roll-history-total{font-size:1.45rem}
+.campaign-character-search{margin:14px 0 18px;padding:13px 15px;border:1px solid rgba(255,255,255,.13);border-radius:12px;background:rgba(0,0,0,.18);backdrop-filter:blur(2px)}
+.campaign-character-search-row{display:flex;align-items:center;gap:10px}
+.campaign-character-search input{flex:1;min-width:0;border:1px solid rgba(255,255,255,.14);border-radius:9px;background:rgba(0,0,0,.22);color:#fff;padding:11px 12px;font:inherit;outline:none}
+.campaign-character-search input:focus{border-color:#7d88ff;box-shadow:0 0 0 2px rgba(88,101,232,.14)}
+.campaign-character-search-hint{margin:7px 0 0;color:#8f9bb2;font-size:.75rem}
+.campaign-character-search-count{font-size:.75rem;color:#bfc6d4;white-space:nowrap}
+.no-search-results{grid-column:1/-1;padding:22px;text-align:center;border:1px dashed rgba(255,255,255,.12);border-radius:12px;color:#aeb4c2;background:rgba(0,0,0,.12)}
+.save-status-line{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:22px;color:#aeb4c2;font-size:.78rem}
+.save-status-dot{width:7px;height:7px;border-radius:50%;background:#65d68a;box-shadow:0 0 10px rgba(101,214,138,.45)}
+.save-status-line.saving .save-status-dot{background:#d18a32;box-shadow:0 0 10px rgba(209,138,50,.4);animation:savePulse .9s ease-in-out infinite}
+.save-status-line.error .save-status-dot{background:#ff7185;box-shadow:0 0 10px rgba(255,113,133,.4)}
+@keyframes savePulse{0%,100%{opacity:.45}50%{opacity:1}}
+@media(max-width:600px){.campaign-character-search-row{align-items:stretch;flex-direction:column}.campaign-character-search-count{align-self:flex-start}}
 
 .dice-container {
     display: flex;
@@ -997,6 +1016,15 @@ select {
         </div>
     </div>
 
+    <div class="campaign-character-search">
+        <div class="campaign-character-search-row">
+            <span aria-hidden="true">🔎</span>
+            <input id="campaignCharacterSearch" type="search" placeholder="Buscar PJ o NPC por nombre…" oninput="filterCampaignCharacters()" autocomplete="off">
+            <span id="campaignCharacterSearchCount" class="campaign-character-search-count"></span>
+        </div>
+        <p class="campaign-character-search-hint">Busca entre todos los personajes de esta campaña, incluidos PJ, NPC y nombre del jugador.</p>
+    </div>
+
     <div class="manager-section">
         <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div>
         <div id="playersGrid" class="manager-grid"></div>
@@ -1350,6 +1378,10 @@ select {
         </button>
 
         <div class="save-message" id="saveMessage"></div>
+        <div class="save-status-line" id="saveStatusLine" aria-live="polite">
+            <span class="save-status-dot"></span>
+            <span id="saveStatusText">Aún no hay cambios guardados en esta ficha.</span>
+        </div>
 
     </div>
 
@@ -1489,7 +1521,10 @@ select {
         <div id="rollHistoryPanel" class="roll-history-panel" aria-live="polite">
             <div class="roll-history-head">
                 <h3>📜 Últimas 10 tiradas</h3>
-                <button type="button" class="secondary" onclick="toggleRollHistory(false)">Cerrar</button>
+                <div class="history-actions">
+                    <button type="button" class="secondary history-clear" onclick="clearRollHistory()">🗑 Limpiar</button>
+                    <button type="button" class="secondary" onclick="toggleRollHistory(false)">Cerrar</button>
+                </div>
             </div>
             <div id="rollHistoryList" class="roll-history-list">
                 <div class="roll-history-empty">Todavía no hay tiradas en esta sesión.</div>
@@ -2175,13 +2210,49 @@ async function removeCharacterPortrait(){
 }
 
 /* =========================================
+   ESTADO DE GUARDADO
+========================================= */
+function getSaveTimestampKey(){
+    return `rol-ficha-last-save-${currentCampaignId||'campaign'}-${currentCharacterId||'new'}`;
+}
+function formatElapsedSince(timestamp){
+    if(!timestamp)return 'Aún no hay cambios guardados en esta ficha.';
+    const seconds=Math.max(0,Math.floor((Date.now()-Number(timestamp))/1000));
+    if(seconds<5)return 'Guardado ahora mismo';
+    if(seconds<60)return `Guardado hace ${seconds} segundo${seconds===1?'':'s'}`;
+    const minutes=Math.floor(seconds/60);
+    if(minutes<60)return `Guardado hace ${minutes} minuto${minutes===1?'':'s'}`;
+    const hours=Math.floor(minutes/60);
+    if(hours<24)return `Guardado hace ${hours} hora${hours===1?'':'s'}`;
+    const days=Math.floor(hours/24);
+    return `Guardado hace ${days} día${days===1?'':'s'}`;
+}
+function updateSaveStatus(timestamp=null,state='saved'){
+    const line=document.getElementById('saveStatusLine'),text=document.getElementById('saveStatusText');
+    if(!line||!text)return;
+    line.classList.remove('saving','error');
+    if(state==='saving'){line.classList.add('saving');text.textContent='Guardando cambios…';return;}
+    if(state==='error'){line.classList.add('error');text.textContent='No se pudo sincronizar el último cambio.';return;}
+    const ts=timestamp||Number(localStorage.getItem(getSaveTimestampKey())||0);
+    text.textContent=formatElapsedSince(ts);
+}
+function refreshSaveStatus(){
+    const line=document.getElementById('saveStatusLine');
+    if(!line||line.classList.contains('saving'))return;
+    updateSaveStatus();
+}
+setInterval(refreshSaveStatus,10000);
+
+/* =========================================
    GUARDAR PERSONAJE
 ========================================= */
 
 async function saveCharacter(){
     syncCurrentFormToWorkingCharacter();const payload=characterToDatabase(workingCharacter);localStorage.setItem('adom_archie_character',JSON.stringify(workingCharacter));
-    try{if(!currentCampaignId)await initializeSharedStorage();if(currentCharacterId)await supabaseRequest(`/characters?id=eq.${encodeURIComponent(currentCharacterId)}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(payload)});else{const created=await supabaseRequest('/characters',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(payload)});currentCharacterId=created[0]?.id||null;}if(currentCharacterRow)currentCharacterRow={...currentCharacterRow,...payload};document.getElementById('saveMessage').textContent='✓ Cambios guardados en la nube.';}catch(error){console.error('Supabase save error:',error);document.getElementById('saveMessage').textContent='⚠ Guardado local. No se pudo sincronizar con Supabase.';}updateCalculation();setTimeout(()=>{document.getElementById('saveMessage').textContent='';},3000);
+    updateSaveStatus(null,'saving');
+    try{if(!currentCampaignId)await initializeSharedStorage();if(currentCharacterId)await supabaseRequest(`/characters?id=eq.${encodeURIComponent(currentCharacterId)}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(payload)});else{const created=await supabaseRequest('/characters',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(payload)});currentCharacterId=created[0]?.id||null;}if(currentCharacterRow)currentCharacterRow={...currentCharacterRow,...payload};const savedAt=Date.now();localStorage.setItem(getSaveTimestampKey(),String(savedAt));document.getElementById('saveMessage').textContent='✓ Cambios guardados en la nube.';updateSaveStatus(savedAt,'saved');}catch(error){console.error('Supabase save error:',error);document.getElementById('saveMessage').textContent='⚠ Guardado local. No se pudo sincronizar con Supabase.';updateSaveStatus(null,'error');}updateCalculation();setTimeout(()=>{document.getElementById('saveMessage').textContent='';},3000);
 }
+
 function resetCharacter(){if(currentCharacterRow)applyCharacterToForm(databaseToCharacter(currentCharacterRow),'human');else applyCharacterToForm(databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}}),'human');document.getElementById('saveMessage').textContent='Ficha restablecida sin guardar.';setTimeout(()=>{document.getElementById('saveMessage').textContent='';},2500);}
 
 /* =========================================
@@ -2571,32 +2642,66 @@ async function removeSessionEpisode(id){
     }catch(error){console.error(error);alert("No se pudo eliminar la sesión.");}
 }
 
+function normalizeSearchText(value){
+    return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+
+function renderCampaignCharacters(rows){
+    const query=normalizeSearchText(document.getElementById('campaignCharacterSearch')?.value||'');
+    const playerNamesByCampaign=campaignPlayerNamesByCampaign[currentCampaign?.name]||{};
+    const filtered=rows.filter(r=>{
+        if(!query)return true;
+        const playerName=(playerNamesByCampaign[r.player_slot]||campaignPlayerNames[r.player_slot]||'');
+        const type=r.character_type==='npc'?'npc':'pj';
+        return [r.name,playerName,type,type==='pj'?'jugador':'master','npc'].some(v=>normalizeSearchText(v).includes(query));
+    });
+
+    const players=document.getElementById('playersGrid');
+    const npcs=document.getElementById('npcsGrid');
+    if(!players||!npcs)return;
+
+    const slots=[...new Set([...Object.keys(campaignPlayerNames).map(Number),...rows.filter(r=>r.character_type==='pj'&&r.player_slot).map(r=>Number(r.player_slot))])].sort((a,b)=>a-b);
+    const filteredPlayerRows=filtered.filter(r=>r.character_type==='pj');
+    const visiblePlayerSlots=slots.filter(slot=>{
+        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
+        const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot]||`Jugador ${slot}`);
+        if(!query)return true;
+        return normalizeSearchText(playerName).includes(query)||!!filteredPlayerRows.some(r=>Number(r.player_slot)===slot);
+    });
+
+    players.innerHTML=visiblePlayerSlots.map(slot=>{
+        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
+        const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
+        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
+    }).join('');
+
+    const filteredNpcs=filtered.filter(r=>r.character_type==='npc');
+    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
+
+    const count=document.getElementById('campaignCharacterSearchCount');
+    if(count) count.textContent=query ? `${filtered.length} resultado${filtered.length===1?'':'s'}` : `${rows.length} personajes`;
+}
+
+function filterCampaignCharacters(){
+    renderCampaignCharacters(window.__campaignCharacterRows||[]);
+}
+
 async function renderCampaign(){
     const rows=await getCampaignCharacters();
+    window.__campaignCharacterRows=rows;
     const config = getCampaignConfig(currentCampaign);
-    document.getElementById("campaignTitle").textContent=currentCampaign.name;
-    document.getElementById("campaignDescription").textContent=config?.description || currentCampaign.description || "Campaña de rol";
-    document.getElementById("headerSubtitle").textContent=currentCampaign.name;
+    document.getElementById('campaignTitle').textContent=currentCampaign.name;
+    document.getElementById('campaignDescription').textContent=config?.description || currentCampaign.description || 'Campaña de rol';
+    document.getElementById('headerSubtitle').textContent=currentCampaign.name;
     const logo = getCampaignLogo(currentCampaign);
-    if (logo) {
-        const logoEl = document.getElementById("campaignLogo");
-        logoEl.src = logo;
-        logoEl.alt = `Logo de ${currentCampaign.name}`;
-        logoEl.style.display = "block";
-    }
-    const players=document.getElementById("playersGrid");
-    const slots=[...new Set([...Object.keys(campaignPlayerNames).map(Number),...rows.filter(r=>r.character_type==="pj"&&r.player_slot).map(r=>Number(r.player_slot))])].sort((a,b)=>a-b);
-    players.innerHTML=slots.map(slot=>{
-      const row=rows.find(r=>r.character_type==="pj"&&Number(r.player_slot)===slot);
-      const playerName=(campaignPlayerNamesByCampaign[currentCampaign.name]?.[slot] || campaignPlayerNames[slot])||`Jugador ${slot}`;
-      return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === "Marte Cygnus" ? "☀️" : row.name === "Gaia Dione" ? "🔥" : ""}${row.name === "Marte Cygnus" || row.name === "Gaia Dione" ? " " : ""}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
-    }).join("");
-    const npcs=rows.filter(r=>r.character_type==="npc");
-    document.getElementById("npcsGrid").innerHTML=npcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === "Asterion Delmaris" ? "📖 " : ""}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button></article>`).join("")||`<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>`;
+    const logoEl=document.getElementById('campaignLogo');
+    if(logo){logoEl.src=logo;logoEl.alt=`Logo de ${currentCampaign.name}`;logoEl.style.display='block';}
+    else{logoEl.style.display='none';}
+    renderCampaignCharacters(rows);
     await renderSessions();
-    document.getElementById("campaignSelectorView").style.display="none";
-    document.getElementById("campaignView").style.display="block";
-    document.getElementById("characterView").style.display="none";
+    document.getElementById('campaignSelectorView').style.display='none';
+    document.getElementById('campaignView').style.display='block';
+    document.getElementById('characterView').style.display='none';
 }
 
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
@@ -2612,6 +2717,7 @@ async function openCharacter(id){
   activeSheetMode="human";
   applyCharacterToForm(workingCharacter,"human");
   document.getElementById("characterContext").textContent=(rows[0].character_type==="npc"?"NPC · ":`Jugador ${rows[0].player_slot||""} · `)+rows[0].name;
+  updateSaveStatus();
   document.getElementById("campaignView").style.display="none";
   document.getElementById("characterView").style.display="block";
   window.scrollTo({top:0,behavior:"smooth"});
@@ -2783,6 +2889,13 @@ function addRollToHistory(){
     renderRollHistory();
 }
 
+function clearRollHistory(){
+    if(!rollHistory.length)return;
+    if(!confirm('¿Quieres borrar todo el historial de tiradas de esta sesión?'))return;
+    rollHistory=[];
+    renderRollHistory();
+}
+
 function renderRollHistory(){
     const list=document.getElementById("rollHistoryList"),count=document.getElementById("historyCount");
     if(!list) return;
@@ -2791,7 +2904,8 @@ function renderRollHistory(){
     list.innerHTML=rollHistory.map(item=>{
         const specialLabel=item.special==="critical"?'<span class="roll-history-special critical">✨ CRÍTICO</span>':item.special==="fumble"?'<span class="roll-history-special fumble">💀 PIFIA</span>':'';
         const when=new Date(item.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
-        return `<div class="roll-history-item"><div class="roll-history-main"><div class="roll-history-top">${specialLabel}<span class="roll-history-dice">${item.dice.join(" · ")}</span></div><div class="roll-history-meta">${escapeHtml(item.label)} · ${escapeHtml(item.mode)} · ${when}</div></div><div class="roll-history-total">${item.total ?? "—"}</div></div>`;
+        const dieType=item.dice.length===3?'3d10':(item.mode&&/^\d+d\d+$/.test(item.mode)?item.mode:`${item.dice.length} dados`);
+        return `<div class="roll-history-item"><div class="roll-history-main"><div class="roll-history-top">${specialLabel}<span class="roll-history-dice">${item.dice.join(" · ")}</span></div><div class="roll-history-meta"><strong>${escapeHtml(dieType)}</strong> · ${escapeHtml(item.label)} · ${escapeHtml(item.mode)} · ${when}</div></div><div class="roll-history-total">${item.total ?? "—"}</div></div>`;
     }).join("");
 }
 
