@@ -887,6 +887,13 @@ select {
 .campaign-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px;}
 .campaign-modal-status{min-height:18px;margin:0;color:#aeb4c2;font-size:.82rem;}
 @media(max-width:600px){.campaign-modal{padding:18px}.campaign-modal-actions{flex-direction:column}.campaign-modal-actions button{width:100%}}
+.delete-button{background:rgba(170,55,70,.82)!important;color:#fff!important;}
+.delete-button:hover{filter:brightness(1.12);}
+.campaign-hero-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none;}
+.manager-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.manager-card-actions button{flex:1;min-width:120px;}
+@media(max-width:760px){.campaign-hero-actions{margin-left:0;width:100%;}.campaign-hero{flex-wrap:wrap;}.campaign-hero-actions button{flex:1;}}
+
 
 /* =========================
    MOMENTOS ESPECIALES DE TIRADA
@@ -1014,6 +1021,9 @@ select {
             <h2 id="campaignTitle">Amor de Otro Mundo: El Olimpo</h2>
             <p id="campaignDescription">Personajes y NPCs de la campaña.</p>
         </div>
+        <div class="campaign-hero-actions">
+            <button class="delete-button" onclick="deleteCurrentCampaign()">🗑 Borrar campaña</button>
+        </div>
     </div>
 
     <div class="campaign-character-search">
@@ -1044,7 +1054,10 @@ select {
 <div id="characterView">
 
 <div class="character-context">
-    <button class="secondary back-button" onclick="showCampaignView()">← Volver a la campaña</button>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button class="secondary back-button" onclick="showCampaignView()">← Volver a la campaña</button>
+        <button class="delete-button" onclick="deleteCurrentCharacter()">🗑 Borrar personaje</button>
+    </div>
     <div class="context-name" id="characterContext"></div>
 </div>
 
@@ -2672,11 +2685,11 @@ function renderCampaignCharacters(rows){
     players.innerHTML=visiblePlayerSlots.map(slot=>{
         const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
-        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
+        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
     }).join('');
 
     const filteredNpcs=filtered.filter(r=>r.character_type==='npc');
-    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><button onclick="openCharacter('${row.id}')">Abrir ficha →</button></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
+    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
 
     const count=document.getElementById('campaignCharacterSearchCount');
     if(count) count.textContent=query ? `${filtered.length} resultado${filtered.length===1?'':'s'}` : `${rows.length} personajes`;
@@ -2724,6 +2737,59 @@ async function openCharacter(id){
 }
 
 function showCampaignView(){renderCampaign();}
+
+async function deleteCharacter(id,event){
+  if(event){event.stopPropagation();event.preventDefault();}
+  if(!id)return;
+  const row=(window.__campaignCharacterRows||[]).find(r=>String(r.id)===String(id));
+  if(!row)return;
+  const type=row.character_type==='npc'?'NPC':'PJ';
+  const confirmed=confirm(`¿Seguro que quieres borrar a ${type} «${row.name}»?\n\nSe eliminará su ficha y todos sus datos guardados. Esta acción no se puede deshacer.`);
+  if(!confirmed)return;
+  try{
+    await supabaseRequest(`/characters?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
+    if(String(currentCharacterId)===String(id)){
+      currentCharacterId=null;
+      currentCharacterRow=null;
+      workingCharacter=null;
+      document.getElementById('characterView').style.display='none';
+      document.getElementById('campaignView').style.display='block';
+    }
+    await renderCampaign();
+  }catch(error){
+    console.error('Delete character error:',error);
+    alert('No se pudo borrar el personaje. Revisa la conexión con Supabase.');
+  }
+}
+
+async function deleteCurrentCharacter(){
+  if(!currentCharacterId)return;
+  await deleteCharacter(currentCharacterId);
+}
+
+async function deleteCurrentCampaign(){
+  if(!currentCampaignId||!currentCampaign)return;
+  const name=currentCampaign.name;
+  const confirmed=confirm(`¿Seguro que quieres borrar la campaña «${name}»?\n\nSe eliminarán también todos sus PJ, NPC, sesiones y demás datos asociados. Esta acción no se puede deshacer.`);
+  if(!confirmed)return;
+  const second=prompt(`Para confirmar el borrado, escribe exactamente el nombre de la campaña:\n\n${name}`);
+  if(second!==name){
+    if(second!==null) alert('El nombre no coincide. La campaña no se ha borrado.');
+    return;
+  }
+  try{
+    await supabaseRequest(`/campaigns?id=eq.${encodeURIComponent(currentCampaignId)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
+    currentCampaign=null;
+    currentCampaignId=null;
+    currentCharacterId=null;
+    currentCharacterRow=null;
+    workingCharacter=null;
+    await showCampaignSelector();
+  }catch(error){
+    console.error('Delete campaign error:',error);
+    alert('No se pudo borrar la campaña. Revisa la conexión con Supabase.');
+  }
+}
 
 async function createPlayerCharacter(slot){
   const name=prompt(`Nombre del PJ para Jugador ${slot}:`); if(!name)return;
