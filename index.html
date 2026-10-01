@@ -1362,7 +1362,7 @@ select {
                 <div class="xp-tracker-title"><span>📊 Recuento de experiencia</span><span id="xpTrackerMode">—</span></div>
                 <div class="xp-tracker-grid">
                     <div class="xp-tracker-card"><span>EXP gastada</span><strong id="xpSpentDisplay">0 EXP</strong></div>
-                    <div class="xp-tracker-card"><span>EXP contabilizada</span><strong id="xpEffectiveDisplay">0 EXP</strong></div>
+                    <div class="xp-tracker-card"><span>Objetivo de Éxtasis</span><strong id="xpEffectiveDisplay">0 EXP</strong></div>
                 </div>
                 <div class="xp-tracker-status" id="xpTrackerStatus">Sin experiencia pendiente.</div>
                 <div class="sheet-note" style="margin-top:8px;">El ajuste de Distorsión solo afecta a este recuento; nunca modifica los valores de la ficha.</div>
@@ -2074,12 +2074,12 @@ function renderEcstasy(value=0){
     const summary=document.getElementById("ecstasySummary"); if(summary)summary.textContent=`${safeValue} / 10 puntos de éxtasis`;
 }
 function renderBonds(bonds=[]){const body=document.getElementById("bondsBody");if(!body)return;body.innerHTML="";bonds.forEach(addBondRow);}
-function addBondRow(data={}){const body=document.getElementById("bondsBody");if(!body)return;const row=document.createElement("tr"),value=Math.max(0,Number(data.value)||0),type=data.type==="ancla"?"ancla":"lazo";row.innerHTML=`<td><input class="bond-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Nombre" oninput="syncAnchorsFromBonds()"></td><td><input class="bond-aspect" type="text" value="${escapeHtml(data.aspect||"")}" placeholder="Cómo lo ve" oninput="syncAnchorsFromBonds()"></td><td><select class="bond-type" onchange="syncAnchorsFromBonds()"><option value="lazo" ${type==="lazo"?"selected":""}>Lazo</option><option value="ancla" ${type==="ancla"?"selected":""}>⚓ Ancla</option></select></td><td><input class="bond-value" type="number" min="0" value="${value}" oninput="updateBondDerived(this)"></td><td><input class="bond-medium" type="number" value="${Math.max(1,Math.floor(value/2))}" readonly tabindex="-1"></td><td><input class="bond-major" type="number" value="${value}" readonly tabindex="-1"></td><td><input class="bond-critical" type="number" value="${value*2}" readonly tabindex="-1"></td><td><button type="button" class="secondary bond-remove" onclick="this.closest('tr').remove();syncAnchorsFromBonds()">×</button></td>`;body.appendChild(row);syncAnchorsFromBonds();}
-function updateBondDerived(input){const row=input?.closest("tr");if(!row)return;const value=Math.max(0,Number(input.value)||0);row.querySelector(".bond-medium").value=Math.max(1,Math.floor(value/2));row.querySelector(".bond-major").value=value;row.querySelector(".bond-critical").value=value*2;}
+function addBondRow(data={}){const body=document.getElementById("bondsBody");if(!body)return;const row=document.createElement("tr"),value=Math.max(0,Number(data.value)||0),type=data.type==="ancla"?"ancla":"lazo";row.innerHTML=`<td><input class="bond-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Nombre" oninput="syncAnchorsFromBonds()"></td><td><input class="bond-aspect" type="text" value="${escapeHtml(data.aspect||"")}" placeholder="Cómo lo ve" oninput="syncAnchorsFromBonds()"></td><td><select class="bond-type" onchange="syncAnchorsFromBonds()"><option value="lazo" ${type==="lazo"?"selected":""}>Lazo</option><option value="ancla" ${type==="ancla"?"selected":""}>⚓ Ancla</option></select></td><td><input class="bond-value" type="number" min="0" value="${value}" oninput="updateBondDerived(this)"></td><td><input class="bond-medium" type="number" value="${Math.max(1,Math.floor(value/2))}" readonly tabindex="-1"></td><td><input class="bond-major" type="number" value="${value}" readonly tabindex="-1"></td><td><input class="bond-critical" type="number" value="${value*2}" readonly tabindex="-1"></td><td><button type="button" class="secondary bond-remove" onclick="this.closest('tr').remove();syncAnchorsFromBonds();updateExperienceTracker()">×</button></td>`;body.appendChild(row);syncAnchorsFromBonds();updateExperienceTracker();}
+function updateBondDerived(input){const row=input?.closest("tr");if(!row)return;const value=Math.max(0,Number(input.value)||0);row.querySelector(".bond-medium").value=Math.max(1,Math.floor(value/2));row.querySelector(".bond-major").value=value;row.querySelector(".bond-critical").value=value*2;updateExperienceTracker();}
 function addWeaponRow(data={}){const list=document.getElementById("weaponsList");if(!list)return;const row=document.createElement("div");row.className="dynamic-row weapon-row";row.innerHTML=`<input class="weapon-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Arma / ataque"><input class="weapon-damage" type="text" value="${escapeHtml(data.damage??"")}" placeholder="Daño"><input class="weapon-notes" type="text" value="${escapeHtml(data.notes||"")}" placeholder="Notas"><button type="button" class="secondary" onclick="this.closest('.dynamic-row').remove()">×</button>`;list.appendChild(row);}
 function renderWeapons(weapons=[]){const list=document.getElementById("weaponsList");if(!list)return;list.innerHTML="";normalizeWeapons(weapons).forEach(addWeaponRow);}
-function addArcaneAbilityRow(data={}){const body=document.getElementById("arcaneAbilitiesBody");if(!body)return;const row=document.createElement("tr"),type=data.type==="aprendida"?"aprendida":"innata",value=Math.max(0,Number(data.value)||0);row.innerHTML=`<td><input class="arcane-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Nombre del poder"></td><td><select class="arcane-type" onchange="updateArcaneRollLabel(this)"><option value="innata" ${type==="innata"?"selected":""}>Innata</option><option value="aprendida" ${type==="aprendida"?"selected":""}>Aprendida</option></select></td><td><input class="arcane-value" type="number" min="0" max="10" value="${value}" oninput="updateArcaneRollLabel(this)"></td><td class="arcane-roll-label">${type==="innata"?"VOL":"INT"} + ${escapeHtml(data.name||"Habilidad arcana")}</td><td><button type="button" class="secondary" onclick="this.closest('tr').remove();updateEcstasyArcaneRolls()">×</button></td>`;body.appendChild(row);updateEcstasyQuickTests();}
-function updateArcaneRollLabel(input){const row=input?.closest("tr");if(!row)return;const name=row.querySelector(".arcane-name")?.value.trim()||"Habilidad arcana",type=row.querySelector(".arcane-type")?.value||"innata";row.querySelector(".arcane-roll-label").textContent=`${type==="innata"?"VOL":"INT"} + ${name}`;updateEcstasyArcaneRolls();refreshSkillSelectorForMode();updateEcstasyQuickTests();}
+function addArcaneAbilityRow(data={}){const body=document.getElementById("arcaneAbilitiesBody");if(!body)return;const row=document.createElement("tr"),type=data.type==="aprendida"?"aprendida":"innata",value=Math.max(0,Number(data.value)||0);row.innerHTML=`<td><input class="arcane-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Nombre del poder"></td><td><select class="arcane-type" onchange="updateArcaneRollLabel(this)"><option value="innata" ${type==="innata"?"selected":""}>Innata</option><option value="aprendida" ${type==="aprendida"?"selected":""}>Aprendida</option></select></td><td><input class="arcane-value" type="number" min="0" max="10" value="${value}" oninput="updateArcaneRollLabel(this)"></td><td class="arcane-roll-label">${type==="innata"?"VOL":"INT"} + ${escapeHtml(data.name||"Habilidad arcana")}</td><td><button type="button" class="secondary" onclick="this.closest('tr').remove();updateEcstasyArcaneRolls();updateExperienceTracker()">×</button></td>`;body.appendChild(row);updateEcstasyQuickTests();updateExperienceTracker();}
+function updateArcaneRollLabel(input){const row=input?.closest("tr");if(!row)return;const name=row.querySelector(".arcane-name")?.value.trim()||"Habilidad arcana",type=row.querySelector(".arcane-type")?.value||"innata";row.querySelector(".arcane-roll-label").textContent=`${type==="innata"?"VOL":"INT"} + ${name}`;updateEcstasyArcaneRolls();refreshSkillSelectorForMode();updateEcstasyQuickTests();updateExperienceTracker();}
 function renderArcaneAbilities(list=[]){const body=document.getElementById("arcaneAbilitiesBody");if(!body)return;body.innerHTML="";(Array.isArray(list)?list:[]).forEach(addArcaneAbilityRow);updateEcstasyArcaneRolls();refreshSkillSelectorForMode();updateEcstasyQuickTests();}
 function syncAnchorsFromBonds(){const el=document.getElementById("anchorsList");if(!el)return;let bonds=[];if(activeSheetMode==="ecstasy"&&workingCharacter?.human?.sheet?.bonds)bonds=workingCharacter.human.sheet.bonds;else bonds=[...document.querySelectorAll("#bondsBody tr")].map(row=>({name:row.querySelector(".bond-name")?.value.trim()||"",aspect:row.querySelector(".bond-aspect")?.value.trim()||"",type:row.querySelector(".bond-type")?.value||"lazo"}));const anchors=bonds.filter(b=>b.type==="ancla"&&(b.name||b.aspect));el.innerHTML=anchors.length?anchors.map(a=>`<div class="dynamic-row anchor-row"><input type="text" value="${escapeHtml(a.name||"")}" readonly tabindex="-1"><input class="anchor-aspect" type="text" value="${escapeHtml(a.aspect||"")}" readonly tabindex="-1"><span class="sheet-note">⚓ Ancla</span></div>`).join(""):'<p class="session-empty">Todavía no hay Anclas. Marca un vínculo como Ancla en la Ficha Humana.</p>';}
 function renderAnchors(list=[]){syncAnchorsFromBonds();}
@@ -2133,57 +2133,122 @@ function calculateXpFromSheetData(mode, dataOverride=null){
     const sheet=data.sheet||{};
     const attributeXp=["fortaleza","reflejos","voluntad","inteligencia"].reduce((sum,id)=>sum+Math.max(0,Number(attributes[id])||0),0)*15;
     const skillXp=["formaFisica","combate","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].reduce((sum,id)=>sum+Math.max(0,Number(skills[id])||0),0)*5;
-    const talentXp=Object.values(sheet.skillTalents||{}).reduce((sum,value)=>sum+String(value||"").split(/[\n,;]+/).map(v=>v.trim()).filter(Boolean).length*10,0);
-    const bondXp=mode==="human" && Array.isArray(sheet.bonds)?sheet.bonds.reduce((sum,b)=>sum+Math.max(0,Number(b.value)||0)*5,0):0;
-    const arcaneXp=mode==="ecstasy" && Array.isArray(sheet.arcaneAbilities)?sheet.arcaneAbilities.reduce((sum,a)=>sum+Math.max(0,Number(a.value)||0)*5,0):0;
+    const talentXp=Object.values(sheet.skillTalents||{}).reduce((sum,value)=>sum+String(value||"").split(/[\n,;\/]+/).map(v=>v.trim()).filter(Boolean).length*10,0);
+    const bondXp=mode==="human" && Array.isArray(sheet.bonds)
+        ? sheet.bonds.reduce((sum,b)=>sum+Math.max(0,Number(b.value)||0)*5,0)
+        : 0;
+    const arcaneXp=mode==="ecstasy" && Array.isArray(sheet.arcaneAbilities)
+        ? sheet.arcaneAbilities.reduce((sum,a)=>sum+Math.max(0,Number(a.value)||0)*5,0)
+        : 0;
     return attributeXp+skillXp+talentXp+bondXp+arcaneXp;
 }
-function calculateAutomaticXpSpent(mode=activeSheetMode){
-    const live={
-        attributes:{fortaleza:Number(document.getElementById("fortaleza")?.value)||0,reflejos:Number(document.getElementById("reflejos")?.value)||0,voluntad:Number(document.getElementById("voluntad")?.value)||0,inteligencia:Number(document.getElementById("inteligencia")?.value)||0},
-        skills:{},sheet:{skillTalents:{}}
+
+function getXpTrackerLiveData(mode){
+    const data={attributes:{},skills:{},sheet:{skillTalents:{}}};
+    ["fortaleza","reflejos","voluntad","inteligencia"].forEach(id=>{
+        data.attributes[id]=Number(document.getElementById(id)?.value)||0;
+    });
+    ["formaFisica","combate","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].forEach(id=>{
+        data.skills[id]=Number(document.getElementById(id)?.value)||0;
+    });
+    document.querySelectorAll(".skill-talent-input[data-skill-talent]").forEach(el=>{
+        data.sheet.skillTalents[el.dataset.skillTalent]=el.value||"";
+    });
+    if(mode==='human'){
+        data.sheet.bonds=[...document.querySelectorAll('#bondsBody tr')].map(tr=>({
+            value:Number(tr.querySelector('.bond-value')?.value)||0
+        }));
+    }else{
+        data.sheet.arcaneAbilities=[...document.querySelectorAll('#arcaneAbilitiesBody tr')].map(tr=>({
+            value:Number(tr.querySelector('.arcane-value')?.value)||0
+        }));
+    }
+    return data;
+}
+
+function getXpTrackerData(mode){
+    if(activeSheetMode===mode && document.getElementById('characterView')?.style.display!=='none'){
+        return getXpTrackerLiveData(mode);
+    }
+    return {
+        attributes:workingCharacter?.[mode]?.attributes||{},
+        skills:workingCharacter?.[mode]?.skills||{},
+        sheet:workingCharacter?.[mode]?.sheet||{}
     };
-    ["formaFisica","combate","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].forEach(id=>live.skills[id]=Number(document.getElementById(id)?.value)||0);
-    document.querySelectorAll(".skill-talent-input[data-skill-talent]").forEach(el=>live.sheet.skillTalents[el.dataset.skillTalent]=el.value||"");
-    if(mode==="human"){
-        live.sheet.bonds=[...document.querySelectorAll("#bondsBody tr")].map(tr=>({value:Number(tr.querySelector(".bond-value")?.value)||0}));
-    }else{
-        live.sheet.arcaneAbilities=[...document.querySelectorAll("#arcaneAbilitiesBody tr")].map(tr=>({value:Number(tr.querySelector(".arcane-value")?.value)||0}));
-    }
-    return calculateXpFromSheetData(mode,live);
 }
+
 function getCharacterModeXp(mode){
-    const data={attributes:workingCharacter?.[mode]?.attributes||{},skills:workingCharacter?.[mode]?.skills||{},sheet:workingCharacter?.[mode]?.sheet||{}};
-    return calculateXpFromSheetData(mode,data);
+    return calculateXpFromSheetData(mode,getXpTrackerData(mode));
 }
+
+function getXpComparison(humanSpent, ecstasySpent, distortion, humanBondXp=0){
+    const human=Math.max(0,Number(humanSpent)||0);
+    const ecstasy=Math.max(0,Number(ecstasySpent)||0);
+    const bonds=Math.max(0,Number(humanBondXp)||0);
+    const level=Math.max(0,Math.min(10,Number(distortion)||0));
+    const distortionXp=level*30;
+    // Los lazos pertenecen físicamente a Humano, pero su EXP también
+    // cuenta para comprobar cuánto de la EXP objetivo de Éxtasis está ya
+    // cubierta. No se copia ni modifica ningún lazo en la ficha de Éxtasis.
+    const ecstasyTarget=human+distortionXp;
+    const ecstasyAccounted=ecstasy+bonds;
+    const pending=Math.max(0,ecstasyTarget-ecstasyAccounted);
+    const over=Math.max(0,ecstasyAccounted-ecstasyTarget);
+    return {human,ecstasy,bonds,level,distortionXp,ecstasyTarget,ecstasyAccounted,pending,over};
+}
+
 function updateExperienceTracker(){
-    const distortion=Math.max(0,Number(document.getElementById("sheetDistortion")?.value)||0);
-    const humanSpent=activeSheetMode==="human"?calculateAutomaticXpSpent("human"):getCharacterModeXp("human");
-    /*
-       El recuento sigue la lógica de la ficha de Excel: Éxtasis parte del
-       mismo gasto base que Humano y añade 30 EXP por cada nivel de Distorsión.
-       Ese incremento se muestra como EXP gastada, pero se descuenta únicamente
-       para la comparación entre ambas fichas. No se modifican atributos,
-       habilidades, talentos ni poderes de ninguna ficha.
-    */
-    const ecstasySpent=humanSpent+(distortion*30);
-    const spent=activeSheetMode==="ecstasy"?ecstasySpent:humanSpent;
-    const effective=activeSheetMode==="ecstasy"?Math.max(0,ecstasySpent-(distortion*30)):humanSpent;
-    const pending=Math.max(0,humanSpent-effective);
-    const spentEl=document.getElementById("xpSpentDisplay"),effectiveEl=document.getElementById("xpEffectiveDisplay"),autoEl=document.getElementById("sheetXpSpentAuto"),status=document.getElementById("xpTrackerStatus"),mode=document.getElementById("xpTrackerMode");
+    if(!workingCharacter)return;
+
+    // Regla única del recuento:
+    // Éxtasis debe tener exactamente EXP Humano + (30 × Distorsión).
+    // La Distorsión no modifica ningún valor de la ficha; solo fija el objetivo.
+    const distortion=Math.max(0,Math.min(10,Number(document.getElementById("sheetDistortion")?.value)||0));
+    const humanData=getXpTrackerData('human');
+    const ecstasyData=getXpTrackerData('ecstasy');
+    const humanSpent=Math.max(0,calculateXpFromSheetData('human',humanData));
+    const ecstasySpent=Math.max(0,calculateXpFromSheetData('ecstasy',ecstasyData));
+    const humanBondXp=Array.isArray(humanData?.sheet?.bonds)
+        ? humanData.sheet.bonds.reduce((sum,b)=>sum+Math.max(0,Number(b.value)||0)*5,0)
+        : 0;
+    const comparison=getXpComparison(humanSpent,ecstasySpent,distortion,humanBondXp);
+
+    const spentEl=document.getElementById('xpSpentDisplay');
+    const effectiveEl=document.getElementById('xpEffectiveDisplay');
+    const autoEl=document.getElementById('sheetXpSpentAuto');
+    const status=document.getElementById('xpTrackerStatus');
+    const mode=document.getElementById('xpTrackerMode');
     if(!spentEl||!effectiveEl||!status)return;
-    if(autoEl)autoEl.textContent=`${spent} EXP`;
-    spentEl.textContent=`${spent} EXP`;
-    effectiveEl.textContent=`${effective} EXP`;
-    if(mode)mode.textContent=activeSheetMode==="ecstasy"?"🌀 Éxtasis":"🧑 Humano";
-    if(activeSheetMode==="ecstasy" && distortion>0){
-        status.className="xp-tracker-status "+(pending>0?"pending":"ok");
-        status.textContent=pending>0?`⚠️ Faltan ${pending} EXP por contabilizar en Éxtasis para igualar Humano (incluyendo los ${distortion*30} EXP adicionales de Distorsión).`:`🟢 Éxtasis está al día con la experiencia de Humano.`;
-    }else{
-        status.className="xp-tracker-status";
-        status.textContent=distortion===0?"Sin ajuste de Distorsión en el recuento.":`La Distorsión ${distortion} supone ${distortion*30} EXP adicionales para Éxtasis.`;
+
+    if(activeSheetMode==='ecstasy'){
+        if(autoEl)autoEl.textContent=`${comparison.ecstasy} EXP`;
+        spentEl.textContent=`${comparison.ecstasy} EXP`;
+        effectiveEl.textContent=`${comparison.ecstasyTarget} EXP`;
+        if(mode)mode.textContent='🌀 Éxtasis';
+
+        if(comparison.pending>0){
+            status.className='xp-tracker-status pending';
+            status.textContent=`🟡 Faltan ${comparison.pending} EXP. Humano: ${comparison.human} + ${comparison.distortionXp} por Distorsión ${comparison.level} = objetivo Éxtasis ${comparison.ecstasyTarget}. Éxtasis: ${comparison.ecstasy} + ${comparison.bonds} de lazos = ${comparison.ecstasyAccounted}.`;
+        }else if(comparison.over>0){
+            status.className='xp-tracker-status pending';
+            status.textContent=`⚠️ Éxtasis contabiliza ${comparison.over} EXP de más. Objetivo: ${comparison.ecstasyTarget}; Éxtasis: ${comparison.ecstasy} + ${comparison.bonds} de lazos = ${comparison.ecstasyAccounted}.`;
+        }else{
+            status.className='xp-tracker-status ok';
+            status.textContent=`🟢 Éxtasis está ajustado: ${comparison.ecstasy} + ${comparison.bonds} de lazos = ${comparison.ecstasyAccounted} / ${comparison.ecstasyTarget} EXP objetivo.`;
+        }
+        return;
     }
+
+    if(autoEl)autoEl.textContent=`${comparison.human} EXP`;
+    spentEl.textContent=`${comparison.human} EXP`;
+    effectiveEl.textContent=`${comparison.human} EXP`;
+    if(mode)mode.textContent='🧑 Humano';
+    status.className='xp-tracker-status';
+    status.textContent=comparison.level>0
+        ? `Humano: ${comparison.human} EXP. Éxtasis tiene un objetivo de ${comparison.ecstasyTarget} EXP con Distorsión ${comparison.level}.`
+        : 'La EXP gastada se calcula directamente a partir de esta ficha.';
 }
+
 function calculateSavedSheetXpSpent(mode){
     return getCharacterModeXp(mode);
 }
@@ -2237,6 +2302,7 @@ function characterToDatabase(character){
             voluntad:Number(h.attributes?.voluntad||0),
             inteligencia:Number(h.attributes?.inteligencia||0),
             sharedSheet:{...(workingCharacter.shared?.sheet||{})},
+            xpTracker:workingCharacter.shared?.xpTracker||null,
             sheet:{...defaultSheetData(),...(h.sheet||{}),dramaPoints:workingCharacter.shared?.dramaPoints??5},
             profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||'')},
             ecstasy:{
@@ -2268,6 +2334,7 @@ function databaseToCharacter(row){
         distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,
         ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0,
         dramaPoints:Math.max(0,Math.min(5,Number(human.sheet.dramaPoints??ext.sheet.dramaPoints??5)||0)),
+        xpTracker:attrs.xpTracker||null,
         sheet:{
             concepto:String(storedShared.concepto??human.sheet.concepto??ext.sheet.concepto??''),
             complicacion:String(storedShared.complicacion??human.sheet.complicacion??ext.sheet.complicacion??''),
@@ -2979,6 +3046,10 @@ function getValue(id) {
 
 ["fortaleza","reflejos","voluntad","inteligencia","combate","formaFisica","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].forEach(id => {
     document.getElementById(id)?.addEventListener("input", updateSheetDerived);
+});
+
+document.addEventListener("input", event => {
+    if(event.target.matches(".skill-talent-input")) updateExperienceTracker();
 });
 
 
