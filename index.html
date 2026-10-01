@@ -953,6 +953,43 @@ select {
   color:inherit;
   text-align:center;
 }
+
+/* =========================================
+   GALERÍA DE CAMPAÑA
+========================================= */
+.gallery-section{margin-top:18px}
+.gallery-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.gallery-search{flex:1;min-width:220px;padding:11px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:#fff;font:inherit;outline:none}
+.gallery-search:focus{border-color:#7d88ff;box-shadow:0 0 0 2px rgba(88,101,232,.14)}
+.gallery-albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.gallery-album{position:relative;padding:15px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:rgba(0,0,0,.18);cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.gallery-album:hover{transform:translateY(-2px);border-color:rgba(125,136,255,.55);background:rgba(0,0,0,.25)}
+.gallery-album.active{border-color:#7d88ff;box-shadow:0 0 0 2px rgba(88,101,232,.14)}
+.gallery-album-cover{height:120px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+.gallery-album-cover img{width:100%;height:100%;object-fit:cover}
+.gallery-album-cover span{font-size:2.5rem;opacity:.55}
+.gallery-album h4{margin:0 28px 5px 0;font-size:1rem}
+.gallery-album p{margin:0;color:#9ba5b8;font-size:.76rem;line-height:1.4}
+.gallery-album-delete{position:absolute;right:9px;top:9px;width:30px;height:30px;padding:0!important;border-radius:8px!important;background:rgba(255,70,90,.12)!important;color:#ff9aa7!important;font-size:.9rem!important}
+.gallery-linked{display:inline-flex;margin-top:8px;padding:3px 7px;border-radius:999px;background:rgba(88,101,232,.14);color:#bfc7ff;font-size:.68rem;font-weight:700}
+.gallery-empty{padding:28px 15px;text-align:center;border:1px dashed rgba(255,255,255,.12);border-radius:13px;color:#9ba5b8;background:rgba(0,0,0,.12)}
+.gallery-viewer{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.09)}
+.gallery-viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gallery-viewer-title{margin:0}
+.gallery-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:13px}
+.gallery-photo{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:11px;background:rgba(255,255,255,.05);cursor:pointer;border:1px solid rgba(255,255,255,.08)}
+.gallery-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s ease}
+.gallery-photo:hover img{transform:scale(1.04)}
+.gallery-photo-delete{position:absolute;right:7px;top:7px;width:28px;height:28px;padding:0!important;border-radius:8px!important;background:rgba(0,0,0,.7)!important;font-size:.8rem!important}
+.gallery-photo-name{position:absolute;left:0;right:0;bottom:0;padding:7px 8px;background:linear-gradient(transparent,rgba(0,0,0,.82));font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gallery-lightbox{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(3,5,14,.88);backdrop-filter:blur(8px)}
+.gallery-lightbox.open{display:flex}
+.gallery-lightbox img{max-width:min(94vw,1200px);max-height:88vh;object-fit:contain;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.55)}
+.gallery-lightbox-close{position:absolute;right:20px;top:18px;width:42px;height:42px;padding:0!important;border-radius:50%!important;font-size:1.1rem!important}
+.gallery-photo-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.character-gallery-link{margin-left:auto}
+
+
 </style>
 </style>
 </head>
@@ -1045,6 +1082,24 @@ select {
         <div id="npcsGrid" class="manager-grid"></div>
     </div>
 
+    <div id="gallerySection" class="manager-section gallery-section">
+        <div class="section-heading">
+            <div><span class="eyebrow">ARCHIVO VISUAL</span><h3>🖼️ Galería</h3></div>
+            <div class="gallery-photo-actions">
+                <button class="secondary" onclick="createGalleryAlbum()">＋ Nuevo álbum</button>
+                <button class="secondary" onclick="openLooseGallery()">📷 Fotos sueltas</button>
+                <button onclick="uploadGalleryPhotos()">📷 Subir fotos</button>
+                <input id="galleryPhotoInput" type="file" accept="image/*" multiple style="display:none" onchange="handleGalleryPhotoInput(event)">
+            </div>
+        </div>
+        <div class="gallery-toolbar">
+            <input id="gallerySearch" class="gallery-search" type="search" placeholder="🔎 Buscar álbumes o fotos…" oninput="renderGallery()" autocomplete="off">
+            <span id="galleryCount" class="campaign-character-search-count"></span>
+        </div>
+        <div id="galleryAlbums" class="gallery-albums"></div>
+        <div id="galleryViewer" class="gallery-viewer" style="display:none"></div>
+    </div>
+
     <div class="manager-section sessions-section">
         <div class="section-heading"><div><span class="eyebrow">CAMPAÑA</span><h3>📖 Sesiones</h3></div><button class="secondary" onclick="addSessionArc()">＋ Añadir arco</button></div>
         <div id="sessionsList"></div>
@@ -1056,6 +1111,7 @@ select {
 <div class="character-context">
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <button class="secondary back-button" onclick="showCampaignView()">← Volver a la campaña</button>
+        <button class="secondary character-gallery-link" onclick="openCharacterGallery()">🖼️ Galería</button>
         <button class="delete-button" onclick="deleteCurrentCharacter()">🗑 Borrar personaje</button>
     </div>
     <div class="context-name" id="characterContext"></div>
@@ -2711,6 +2767,7 @@ async function renderCampaign(){
     if(logo){logoEl.src=logo;logoEl.alt=`Logo de ${currentCampaign.name}`;logoEl.style.display='block';}
     else{logoEl.style.display='none';}
     renderCampaignCharacters(rows);
+    await renderGallery();
     await renderSessions();
     document.getElementById('campaignSelectorView').style.display='none';
     document.getElementById('campaignView').style.display='block';
@@ -2778,6 +2835,14 @@ async function deleteCurrentCampaign(){
     return;
   }
   try{
+    try{
+      const galleryItems=await storageList(galleryPrefix());
+      const folders=galleryItems.filter(x=>!x.id&&x.name).map(x=>x.name);
+      for(const folder of folders){
+        const items=await storageList(galleryAlbumPrefix(folder));
+        for(const item of items.filter(x=>x.name&&x.id!==null)) await storageDelete(galleryAlbumPrefix(folder)+item.name);
+      }
+    }catch(galleryCleanupError){ console.warn('Gallery cleanup warning:',galleryCleanupError); }
     await supabaseRequest(`/campaigns?id=eq.${encodeURIComponent(currentCampaignId)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
     currentCampaign=null;
     currentCampaignId=null;
@@ -3806,6 +3871,178 @@ initializeSharedStorage().catch(error=>{
 
 
 
+
+
+<div id="galleryLightbox" class="gallery-lightbox" onclick="if(event.target===this)closeGalleryLightbox()">
+  <button class="gallery-lightbox-close" onclick="closeGalleryLightbox()">✕</button>
+  <img id="galleryLightboxImage" src="" alt="Imagen de galería">
+</div>
+
+
+<script id="galleryFeature">
+const GALLERY_BUCKET='character-portraits';
+let galleryAlbums=[];
+let activeGalleryAlbumId=null;
+
+function galleryPrefix(){return `gallery/${currentCampaignId}/`;}
+function galleryAlbumPrefix(id){return `${galleryPrefix()}${id}/`;}
+function slugifyGallery(value){return String(value||'album').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60)||'album';}
+function galleryPublicUrl(path){return `${SUPABASE_URL}/storage/v1/object/public/${GALLERY_BUCKET}/${path}`;}
+async function storageList(prefix){
+  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/list/${GALLERY_BUCKET}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({prefix,limit:1000,offset:0,sortBy:{column:'name',order:'asc'}})});
+  if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+  return response.json();
+}
+async function storageUpload(path,fileOrBlob,contentType){
+  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/${GALLERY_BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':contentType||fileOrBlob.type||'application/octet-stream','x-upsert':'true'},body:fileOrBlob});
+  if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+}
+async function storageDelete(path){
+  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/${GALLERY_BUCKET}`,{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});
+  if(!response.ok && response.status!==404){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+}
+async function getGalleryCharacters(){return currentCampaignId?await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=id,name,character_type,player_slot&order=name.asc`):[];}
+
+async function loadGalleryAlbums(){
+  if(!currentCampaignId)return [];
+  const items=await storageList(galleryPrefix());
+  const folders=items.filter(x=>!x.id && x.name).map(x=>x.name).filter(n=>n!=='');
+  const albums=[];
+  for(const folder of folders){
+    try{
+      const metaItems=await storageList(galleryAlbumPrefix(folder));
+      if(folder==='_loose'){
+        const photos=metaItems.filter(x=>x.name&&x.id!==null);
+        albums.push({id:'_loose',name:'Fotos sueltas',description:'Fotos de la campaña que no pertenecen a ningún álbum.',section:'Fotos de campaña',characterId:null,characterName:'',createdAt:'',photosCount:photos.length,cover:photos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+photos[0].name):'',photoItems:photos});
+        continue;
+      }
+      const meta=metaItems.find(x=>x.name==='album.json');
+      if(!meta)continue;
+      const url=galleryPublicUrl(galleryAlbumPrefix(folder)+'album.json');
+      const response=await fetch(url,{cache:'no-store'});
+      if(!response.ok)continue;
+      const data=await response.json();
+      const photos=metaItems.filter(x=>x.name!=='album.json' && x.name && x.id!==null);
+      const cover=photos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+photos[0].name):'';
+      albums.push({...data,id:folder,photosCount:photos.length,cover,photoItems:photos});
+    }catch(error){console.warn('Gallery album read error',folder,error);}
+  }
+  return albums.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
+}
+
+function galleryMatches(album,query){
+  if(!query)return true;
+  const q=normalizeSearchText(query);
+  const linked=album.characterName||'';
+  return normalizeSearchText([album.name,album.description,linked,...(album.photoItems||[]).map(x=>x.name)].join(' ')).includes(q);
+}
+
+async function renderGallery(selectAlbumId=null){
+  const albumsEl=document.getElementById('galleryAlbums');
+  if(!albumsEl||!currentCampaignId)return;
+  try{
+    const characters=await getGalleryCharacters();
+    const byId=Object.fromEntries(characters.map(c=>[c.id,c]));
+    galleryAlbums=await loadGalleryAlbums();
+    galleryAlbums.forEach(a=>{a.characterName=byId[a.characterId]?.name||a.characterName||'';});
+    if(selectAlbumId)activeGalleryAlbumId=selectAlbumId;
+    if(activeGalleryAlbumId && !galleryAlbums.some(a=>a.id===activeGalleryAlbumId))activeGalleryAlbumId=null;
+    const query=document.getElementById('gallerySearch')?.value||'';
+    const filtered=galleryAlbums.filter(a=>galleryMatches(a,query));
+    const count=document.getElementById('galleryCount');
+    if(count)count.textContent=`${filtered.length} álbum${filtered.length===1?'':'es'}`;
+    const grouped={};
+    filtered.forEach(album=>{const section=album.section||'General';(grouped[section] ||= []).push(album);});
+    const groupedHtml=Object.entries(grouped).map(([section,items])=>`<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${items.map(album=>`<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" onclick="openGalleryAlbum('${album.id}')">
+      ${album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`}
+      <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
+      <h4>${escapeHtml(album.name||'Álbum')}</h4>
+      <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
+      ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
+    </article>`).join('')}`).join('');
+    albumsEl.innerHTML=filtered.length?groupedHtml:`<div class="gallery-empty">${query?'No se encontraron álbumes que coincidan con la búsqueda.':'Todavía no hay álbumes. Crea el primero para empezar la galería de esta campaña.'}</div>`;
+    if(activeGalleryAlbumId)renderGalleryAlbumViewer(activeGalleryAlbumId);
+    else {const viewer=document.getElementById('galleryViewer');if(viewer){viewer.style.display='none';viewer.innerHTML='';}}
+  }catch(error){console.error('Gallery load error:',error);albumsEl.innerHTML='<div class="gallery-empty">⚠ No se pudo cargar la galería. Revisa los permisos del almacenamiento.</div>';}
+}
+
+async function createGalleryAlbum(){
+  if(!currentCampaignId)return;
+  const name=prompt('Nombre del álbum (ej.: Paul, Baile de máscaras, Lugares…):');
+  if(!name?.trim())return;
+  const description=prompt('Descripción opcional del álbum:')||'';
+  const section=prompt('Sección/carpeta opcional (ej.: Personajes, Lugares, Momentos):')||'';
+  const characters=await getGalleryCharacters();
+  const options=['Ninguno',...characters.map(c=>`${c.id}|||${c.name} (${c.character_type==='npc'?'NPC':'PJ'})`)];
+  const choice=prompt(`Personaje vinculado opcionalmente. Escribe el NÚMERO de la opción:\n\n${options.map((x,i)=>`${i}. ${x==='Ninguno'?'Sin personaje':x.split('|||')[1]||x}`).join('\n')}`, '0');
+  const index=Number(choice);
+  const selected=(Number.isInteger(index)&&index>0&&characters[index-1])?characters[index-1]:null;
+  const albumId=`${Date.now()}-${slugifyGallery(name)}`;
+  const metadata={name:name.trim(),description:description.trim(),section:section.trim()||'General',characterId:selected?.id||null,characterName:selected?.name||'',createdAt:new Date().toISOString()};
+  try{
+    await storageUpload(galleryAlbumPrefix(albumId)+'album.json',new Blob([JSON.stringify(metadata)],{type:'application/json'}),'application/json');
+    activeGalleryAlbumId=albumId;
+    await renderGallery(albumId);
+  }catch(error){console.error('Create gallery album error:',error);alert('No se pudo crear el álbum. Revisa los permisos del almacenamiento.');}
+}
+
+async function openLooseGallery(){
+  activeGalleryAlbumId='_loose';
+  await renderGallery('_loose');
+}
+function uploadGalleryPhotos(){
+  if(!currentCampaignId)return;
+  if(!activeGalleryAlbumId){alert('Primero abre un álbum para subir fotos.');return;}
+  document.getElementById('galleryPhotoInput')?.click();
+}
+async function handleGalleryPhotoInput(event){
+  const files=[...(event?.target?.files||[])];
+  if(!files.length||!activeGalleryAlbumId)return;
+  try{
+    for(const file of files){
+      if(!file.type.startsWith('image/'))continue;
+      if(file.size>12*1024*1024){alert(`La imagen «${file.name}» supera los 12 MB y se omitirá.`);continue;}
+      const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+      const base=file.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80)||'foto';
+      const path=galleryAlbumPrefix(activeGalleryAlbumId)+`${Date.now()}-${base}.${ext}`;
+      await storageUpload(path,file,file.type);
+    }
+    await renderGallery(activeGalleryAlbumId);
+  }catch(error){console.error('Gallery upload error:',error);alert('No se pudieron subir todas las fotos.');}
+  finally{if(event?.target)event.target.value='';}
+}
+
+async function openGalleryAlbum(id){activeGalleryAlbumId=id;await renderGallery(id);}
+async function renderGalleryAlbumViewer(id){
+  const viewer=document.getElementById('galleryViewer');const album=galleryAlbums.find(a=>a.id===id);if(!viewer||!album)return;
+  const items=album.photoItems||[];
+  viewer.style.display='block';
+  viewer.innerHTML=`<div class="gallery-viewer-head"><div><h3 class="gallery-viewer-title">${escapeHtml(album.name||'Álbum')}</h3><p class="campaign-character-search-hint">${escapeHtml(album.description||'')}${album.characterName?` · Vinculado a ${escapeHtml(album.characterName)}`:''}</p></div><div class="gallery-photo-actions"><button class="secondary" onclick="uploadGalleryPhotos()">📷 Añadir fotos</button></div></div><div class="gallery-photos">${items.length?items.map(item=>{const url=galleryPublicUrl(galleryAlbumPrefix(id)+item.name);return `<div class="gallery-photo" onclick="openGalleryLightbox('${escapeHtml(url)}')"><img src="${escapeHtml(url)}" alt="${escapeHtml(item.name)}" loading="lazy"><button class="gallery-photo-delete" onclick="event.stopPropagation();deleteGalleryPhoto('${id}','${encodeURIComponent(item.name)}')">🗑</button><div class="gallery-photo-name">${escapeHtml(item.name)}</div></div>`}).join(''):'<div class="gallery-empty" style="grid-column:1/-1">Este álbum todavía no tiene fotos.</div>'}</div>`;
+}
+async function deleteGalleryPhoto(albumId,encodedName){
+  const name=decodeURIComponent(encodedName);if(!confirm(`¿Eliminar la foto «${name}»?`))return;
+  try{await storageDelete(galleryAlbumPrefix(albumId)+name);await renderGallery(albumId);}catch(error){console.error(error);alert('No se pudo eliminar la foto.');}
+}
+async function deleteGalleryAlbum(id){
+  const album=galleryAlbums.find(a=>a.id===id);if(!album)return;
+  if(!confirm(`¿Eliminar el álbum «${album.name}» y todas sus fotos?\n\nEsta acción no se puede deshacer.`))return;
+  try{
+    const items=await storageList(galleryAlbumPrefix(id));
+    for(const item of items.filter(x=>x.name&&x.id!==null))await storageDelete(galleryAlbumPrefix(id)+item.name);
+    activeGalleryAlbumId=null;await renderGallery();
+  }catch(error){console.error('Delete gallery album error:',error);alert('No se pudo eliminar el álbum.');}
+}
+function openGalleryLightbox(url){const box=document.getElementById('galleryLightbox'),img=document.getElementById('galleryLightboxImage');if(!box||!img)return;img.src=url;box.classList.add('open');}
+function closeGalleryLightbox(){document.getElementById('galleryLightbox')?.classList.remove('open');}
+async function openCharacterGallery(){
+  if(!currentCampaign)return;
+  document.getElementById('characterView').style.display='none';
+  document.getElementById('campaignView').style.display='block';
+  await renderCampaign();
+  await renderGallery();
+  document.getElementById('gallerySection')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
 
 </body>
 </html>
