@@ -838,7 +838,17 @@ select {
 .dynamic-table th,.dynamic-table td{padding:7px;border-bottom:1px solid rgba(255,255,255,.09);text-align:left;vertical-align:middle;}
 .dynamic-table th{color:#c9cfdb;font-size:.74rem;}
 .arcane-roll-label{min-width:180px;color:#d9deea;font-size:.82rem;}
-.xp-shared-note{margin-top:7px;color:#9fa9bb!important;}
+ .xp-shared-note{margin-top:7px;color:#9fa9bb!important;}
+.xp-tracker{margin-top:12px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.16);}
+.xp-tracker-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-size:.82rem;font-weight:800;color:#dce1ed;}
+.xp-tracker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.xp-tracker-card{padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);}
+.xp-tracker-card span{display:block;color:#9fa9bb;font-size:.7rem;margin-bottom:3px;}
+.xp-tracker-card strong{font-size:1rem;color:#fff;}
+.xp-tracker-status{margin-top:9px;padding:8px 10px;border-radius:9px;font-size:.76rem;line-height:1.4;background:rgba(255,255,255,.035);color:#cbd2df;}
+.xp-tracker-status.pending{background:rgba(255,170,70,.09);border:1px solid rgba(255,170,70,.18);color:#ffd39a;}
+.xp-tracker-status.ok{background:rgba(80,210,140,.08);border:1px solid rgba(80,210,140,.16);color:#a9efc7;}
+@media(max-width:760px){.xp-tracker-grid{grid-template-columns:1fr;}}
 @media(max-width:760px){
   .sheet-tab{min-width:0;flex:1;}
   .dynamic-row{grid-template-columns:1fr 1fr;}
@@ -1335,15 +1345,28 @@ select {
             <div class="sheet-fields">
                 <div class="sheet-field">
                     <label for="sheetExperience">Experiencia</label>
-                    <input id="sheetExperience" type="number" min="0" value="0">
+                    <input id="sheetExperience" type="number" min="0" value="0" oninput="updateExperienceTracker()">
                 </div>
                 <div class="sheet-field">
                     <label for="sheetStep">Escalón</label>
                     <input id="sheetStep" type="number" min="1" max="4" value="1">
                 </div>
+                <div class="sheet-field">
+                    <label>EXP gastada en esta ficha</label>
+                    <div class="derived-stat"><strong id="sheetXpSpentAuto">0 EXP</strong><small>Calculada automáticamente a partir de la ficha</small></div>
+                </div>
             </div>
             <div class="sheet-note" style="margin-top:12px;">Habilidad / Arcana: 5 EXP · Talento: 10 EXP · Atributo: 15 EXP · Lazo: 5 EXP</div>
-            <div class="sheet-note xp-shared-note">La EXP ganada en sesiones puede gastarse de forma independiente en Humano y Éxtasis. No se descuenta de una ficha al gastarla en la otra.</div>
+            <div class="sheet-note xp-shared-note">La EXP gastada se calcula automáticamente a partir de los valores actuales de cada ficha. La EXP ganada en sesiones puede gastarse de forma independiente en Humano y Éxtasis.</div>
+            <div class="xp-tracker" id="xpTracker">
+                <div class="xp-tracker-title"><span>📊 Recuento de experiencia</span><span id="xpTrackerMode">—</span></div>
+                <div class="xp-tracker-grid">
+                    <div class="xp-tracker-card"><span>EXP gastada</span><strong id="xpSpentDisplay">0 EXP</strong></div>
+                    <div class="xp-tracker-card"><span>EXP contabilizada</span><strong id="xpEffectiveDisplay">0 EXP</strong></div>
+                </div>
+                <div class="xp-tracker-status" id="xpTrackerStatus">Sin experiencia pendiente.</div>
+                <div class="sheet-note" style="margin-top:8px;">El ajuste de Distorsión solo afecta a este recuento; nunca modifica los valores de la ficha.</div>
+            </div>
         </div>
 
         <div class="sheet-block third human-only-block">
@@ -2062,7 +2085,7 @@ function syncAnchorsFromBonds(){const el=document.getElementById("anchorsList");
 function renderAnchors(list=[]){syncAnchorsFromBonds();}
 function addArtifactRow(data={}){const list=document.getElementById("artifactsList");if(!list)return;const row=document.createElement("div");row.className="dynamic-row artifact-row";row.innerHTML=`<input class="artifact-name" type="text" value="${escapeHtml(data.name||"")}" placeholder="Artefacto arcano"><input class="artifact-notes" type="text" value="${escapeHtml(data.notes||"")}" placeholder="Descripción / efecto"><button type="button" class="secondary" onclick="this.closest('.dynamic-row').remove()">×</button>`;list.appendChild(row);}
 function renderArtifacts(list=[]){const el=document.getElementById("artifactsList");if(!el)return;el.innerHTML="";(Array.isArray(list)?list:[]).forEach(addArtifactRow);}
-function updateEcstasyTrack(){const current=document.querySelectorAll("#ecstasyTrack input:checked").length;renderEcstasy(current);updateSheetDerived();}
+function updateEcstasyTrack(){const current=document.querySelectorAll("#ecstasyTrack input:checked").length;renderEcstasy(current);updateSheetDerived();updateExperienceTracker();}
 
 function updateSheetDerived(){
     const fortaleza=getValue("fortaleza"),reflejos=getValue("reflejos"),voluntad=getValue("voluntad"),inteligencia=getValue("inteligencia"),combate=getValue("combate"),formaFisica=getValue("formaFisica");
@@ -2073,7 +2096,7 @@ function updateSheetDerived(){
     const el=document.getElementById('sheetBaseRolls');if(el)el.innerHTML=base.map(([n,v])=>`<div class="derived-stat"><span>${n}</span><strong>${v}</strong></div>`).join('');
     const summary=document.getElementById('ecstasySummary');if(summary)summary.textContent=`${ecstasy} / 10 puntos de éxtasis`;
     const current=document.getElementById('sheetCurrentResistance');if(current&&current.value!==''){const value=Math.max(0,Math.min(resistanceTotal,Number(current.value)||0));if(String(value)!==current.value)current.value=value;}
-    updateEcstasyArcaneRolls();updateSheetModeUI(false);
+    updateEcstasyArcaneRolls();updateExperienceTracker();updateSheetModeUI(false);
 }
 function updateEcstasyQuickTests(){
     const group=document.getElementById("ecstasyQuickTests"),grid=document.getElementById("ecstasyQuickTestsGrid");
@@ -2101,6 +2124,68 @@ function updateEcstasyArcaneRolls(){
     const intelligence=getValue('inteligencia'),voluntad=getValue('voluntad');
     const arcana=[...document.querySelectorAll('#arcaneAbilitiesBody tr')].map(row=>({name:row.querySelector('.arcane-name')?.value.trim()||'Habilidad arcana',type:row.querySelector('.arcane-type')?.value||'innata',value:Number(row.querySelector('.arcane-value')?.value)||0})).filter(a=>a.name!=='Habilidad arcana'||a.value>0);
     target.innerHTML=[...target.querySelectorAll('.derived-stat:not(.arcane-roll-stat)')].map(x=>x.outerHTML).concat(arcana.map(a=>`<div class="derived-stat arcane-roll-stat"><span>${a.type==='innata'?'VOL':'INT'} + ${escapeHtml(a.name)}</span><strong>${(a.type==='innata'?voluntad:intelligence)+a.value}</strong><small>Habilidad arcana · ${a.value}</small></div>`)).join('');
+}
+
+function calculateXpFromSheetData(mode, dataOverride=null){
+    const data=dataOverride||{};
+    const attributes=data.attributes||{};
+    const skills=data.skills||{};
+    const sheet=data.sheet||{};
+    const attributeXp=["fortaleza","reflejos","voluntad","inteligencia"].reduce((sum,id)=>sum+Math.max(0,Number(attributes[id])||0),0)*15;
+    const skillXp=["formaFisica","combate","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].reduce((sum,id)=>sum+Math.max(0,Number(skills[id])||0),0)*5;
+    const talentXp=Object.values(sheet.skillTalents||{}).reduce((sum,value)=>sum+String(value||"").split(/[\n,;]+/).map(v=>v.trim()).filter(Boolean).length*10,0);
+    const bondXp=mode==="human" && Array.isArray(sheet.bonds)?sheet.bonds.reduce((sum,b)=>sum+Math.max(0,Number(b.value)||0)*5,0):0;
+    const arcaneXp=mode==="ecstasy" && Array.isArray(sheet.arcaneAbilities)?sheet.arcaneAbilities.reduce((sum,a)=>sum+Math.max(0,Number(a.value)||0)*5,0):0;
+    return attributeXp+skillXp+talentXp+bondXp+arcaneXp;
+}
+function calculateAutomaticXpSpent(mode=activeSheetMode){
+    const live={
+        attributes:{fortaleza:Number(document.getElementById("fortaleza")?.value)||0,reflejos:Number(document.getElementById("reflejos")?.value)||0,voluntad:Number(document.getElementById("voluntad")?.value)||0,inteligencia:Number(document.getElementById("inteligencia")?.value)||0},
+        skills:{},sheet:{skillTalents:{}}
+    };
+    ["formaFisica","combate","percepcion","subterfugio","comunicacion","cultura","ocultismo","gestionEmocional"].forEach(id=>live.skills[id]=Number(document.getElementById(id)?.value)||0);
+    document.querySelectorAll(".skill-talent-input[data-skill-talent]").forEach(el=>live.sheet.skillTalents[el.dataset.skillTalent]=el.value||"");
+    if(mode==="human"){
+        live.sheet.bonds=[...document.querySelectorAll("#bondsBody tr")].map(tr=>({value:Number(tr.querySelector(".bond-value")?.value)||0}));
+    }else{
+        live.sheet.arcaneAbilities=[...document.querySelectorAll("#arcaneAbilitiesBody tr")].map(tr=>({value:Number(tr.querySelector(".arcane-value")?.value)||0}));
+    }
+    return calculateXpFromSheetData(mode,live);
+}
+function getCharacterModeXp(mode){
+    const data={attributes:workingCharacter?.[mode]?.attributes||{},skills:workingCharacter?.[mode]?.skills||{},sheet:workingCharacter?.[mode]?.sheet||{}};
+    return calculateXpFromSheetData(mode,data);
+}
+function updateExperienceTracker(){
+    const distortion=Math.max(0,Number(document.getElementById("sheetDistortion")?.value)||0);
+    const humanSpent=activeSheetMode==="human"?calculateAutomaticXpSpent("human"):getCharacterModeXp("human");
+    /*
+       El recuento sigue la lógica de la ficha de Excel: Éxtasis parte del
+       mismo gasto base que Humano y añade 30 EXP por cada nivel de Distorsión.
+       Ese incremento se muestra como EXP gastada, pero se descuenta únicamente
+       para la comparación entre ambas fichas. No se modifican atributos,
+       habilidades, talentos ni poderes de ninguna ficha.
+    */
+    const ecstasySpent=humanSpent+(distortion*30);
+    const spent=activeSheetMode==="ecstasy"?ecstasySpent:humanSpent;
+    const effective=activeSheetMode==="ecstasy"?Math.max(0,ecstasySpent-(distortion*30)):humanSpent;
+    const pending=Math.max(0,humanSpent-effective);
+    const spentEl=document.getElementById("xpSpentDisplay"),effectiveEl=document.getElementById("xpEffectiveDisplay"),autoEl=document.getElementById("sheetXpSpentAuto"),status=document.getElementById("xpTrackerStatus"),mode=document.getElementById("xpTrackerMode");
+    if(!spentEl||!effectiveEl||!status)return;
+    if(autoEl)autoEl.textContent=`${spent} EXP`;
+    spentEl.textContent=`${spent} EXP`;
+    effectiveEl.textContent=`${effective} EXP`;
+    if(mode)mode.textContent=activeSheetMode==="ecstasy"?"🌀 Éxtasis":"🧑 Humano";
+    if(activeSheetMode==="ecstasy" && distortion>0){
+        status.className="xp-tracker-status "+(pending>0?"pending":"ok");
+        status.textContent=pending>0?`⚠️ Faltan ${pending} EXP por contabilizar en Éxtasis para igualar Humano (incluyendo los ${distortion*30} EXP adicionales de Distorsión).`:`🟢 Éxtasis está al día con la experiencia de Humano.`;
+    }else{
+        status.className="xp-tracker-status";
+        status.textContent=distortion===0?"Sin ajuste de Distorsión en el recuento.":`La Distorsión ${distortion} supone ${distortion*30} EXP adicionales para Éxtasis.`;
+    }
+}
+function calculateSavedSheetXpSpent(mode){
+    return getCharacterModeXp(mode);
 }
 
 function applySheetData(data={}){
