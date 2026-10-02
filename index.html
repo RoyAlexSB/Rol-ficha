@@ -833,6 +833,7 @@ select {
 .campaign-card-content p{margin:0 0 16px;color:#aeb4c2;line-height:1.45;min-height:42px;}
 .campaign-card-content button{width:100%;}
 .campaign-card-empty-logo{display:flex;align-items:center;justify-content:center;color:#8f9bb2;font-size:2rem;}
+.order-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}.order-toolbar .order-hint{font-size:.76rem;color:#9ba5b8}.order-controls{display:flex;gap:5px;align-items:center;margin-left:auto}.order-controls button{min-width:32px!important;width:32px!important;height:32px!important;padding:0!important;border-radius:8px!important}.manager-card.ordering,.campaign-card.ordering,.gallery-album.ordering,.bestiary-card.ordering{cursor:default;transform:none!important}.order-position{font-size:.68rem;color:#9ba5b8;font-weight:700;min-width:32px;text-align:center}
 
 .campaign-hero h2{margin:5px 0 4px;font-size:clamp(24px,4vw,34px);}
 .campaign-hero p{margin:0;color:#aeb4c2;}
@@ -1335,7 +1336,7 @@ select {
         <h2>Selecciona una campaña</h2>
         <p>Elige el mundo en el que quieres jugar.</p>
     </div>
-    <div id="campaignsGrid" class="campaigns-grid"></div>
+    <div class="order-toolbar"><button class="secondary" onclick="toggleCampaignOrdering()">↕ Ordenar campañas</button><span class="order-hint">Puedes cambiar el orden de aparición.</span></div><div id="campaignsGrid" class="campaigns-grid"></div>
     <div class="campaign-selector-actions">
         <button class="primary create-campaign-button" onclick="openCreateCampaignModal()">＋ Crear nueva campaña</button>
     </div>
@@ -1400,7 +1401,7 @@ select {
     </div>
 
     <div class="manager-section">
-        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div>
+        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><div><button class="secondary" onclick="toggleCharacterOrdering()">↕ Ordenar fichas</button> <button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div></div>
         <div id="playersGrid" class="manager-grid"></div>
     </div>
 
@@ -1421,7 +1422,7 @@ select {
         </div>
         <div class="gallery-toolbar">
             <input id="gallerySearch" class="gallery-search" type="search" placeholder="🔎 Buscar álbumes o fotos…" oninput="renderGallery()" autocomplete="off">
-            <span id="galleryCount" class="campaign-character-search-count"></span>
+            <span id="galleryCount" class="campaign-character-search-count"></span><button class="secondary" onclick="toggleGalleryOrdering()">↕ Ordenar galería</button>
         </div>
         <div id="galleryAlbums" class="gallery-albums"></div>
         <div id="galleryViewer" class="gallery-viewer" style="display:none"></div>
@@ -1444,7 +1445,7 @@ select {
       </div>
       <div class="bestiary-top-actions">
         <button class="bestiary-btn" onclick="closeBestiary()">← Volver a la campaña</button>
-        <button class="bestiary-btn" id="bestiaryNewButton" onclick="openCreateBestiaryModal()">＋ Nueva criatura</button>
+        <button class="bestiary-btn" id="bestiaryNewButton" onclick="openCreateBestiaryModal()">＋ Nueva criatura</button><button class="bestiary-btn" onclick="toggleBestiaryOrdering()">↕ Ordenar</button>
       </div>
     </div>
 
@@ -2450,6 +2451,8 @@ let currentCampaign = null;
 let currentCharacterRow = null;
 let activeSheetMode = "human";
 let workingCharacter = null;
+let campaignOrdering=false, characterOrdering=false, galleryOrdering=false, bestiaryOrdering=false;
+const APP_ORDER_BUCKET='character-portraits', APP_ORDER_ROOT='app-order/';
 const campaignPlayerNames = { 1: "Alex", 2: "Tessie" };
 const campaignPlayerNamesByCampaign = {
     "Amor de Otro Mundo: El Olimpo": { 1: "Alex", 2: "Tessie" },
@@ -3171,6 +3174,15 @@ async function uploadCampaignLogo(campaignId,file){
     return `${SUPABASE_URL}/storage/v1/object/public/campaign-logos/${path}`;
 }
 
+async function loadAppOrder(path){try{const r=await fetch(`${SUPABASE_URL}/storage/v1/object/public/${APP_ORDER_BUCKET}/${path}?cb=${Date.now()}`,{cache:'no-store'});if(!r.ok)return[];const d=await r.json();return Array.isArray(d)?d:[]}catch(_){return[]}}
+async function saveAppOrder(path,ids){await storageUpload(path,new Blob([JSON.stringify(ids)],{type:'application/json'}),'application/json')}
+function orderedItems(items,ids,sort){const map=new Map(items.map(x=>[String(x.id),x])),out=[];(ids||[]).map(String).forEach(id=>{if(map.has(id)){out.push(map.get(id));map.delete(id)}});const rest=[...map.values()];if(sort)rest.sort(sort);return out.concat(rest)}
+function completeOrder(ids,items){const valid=new Set(items.map(x=>String(x.id))),out=(ids||[]).map(String).filter(x=>valid.has(x));items.forEach(x=>{const id=String(x.id);if(!out.includes(id))out.push(id)});return out}
+async function moveOrder(path,items,id,d){const ids=completeOrder(await loadAppOrder(path),items),i=ids.indexOf(String(id)),j=i+d;if(i<0||j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];await saveAppOrder(path,ids)}
+async function toggleCampaignOrdering(){campaignOrdering=!campaignOrdering;await renderCampaignSelector(await supabaseRequest('/campaigns?select=*'))}
+async function moveCampaign(id,d){try{const rows=await supabaseRequest('/campaigns?select=*'),items=rows.filter(x=>x.name!==LEGACY_CAMPAIGN_NAME);await moveOrder(`${APP_ORDER_ROOT}campaigns.json`,items,id,d);await renderCampaignSelector(rows)}catch(e){console.error(e);alert('No se pudo cambiar el orden de las campañas.')}}
+async function toggleCharacterOrdering(){characterOrdering=!characterOrdering;renderCampaignCharacters(window.__campaignCharacterRows||[])}
+async function moveCharacter(id,d){try{const rows=window.__campaignCharacterRows||[],npc=rows.some(x=>String(x.id)===String(id)&&x.character_type==='npc'),items=rows.filter(x=>x.character_type===(npc?'npc':'pj'));await moveOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/${npc?'npcs':'pjs'}.json`,items,id,d);await renderCampaign()}catch(e){console.error(e);alert('No se pudo cambiar el orden de las fichas.')}}
 async function createCampaign(event){
     event.preventDefault();
     const name=document.getElementById("newCampaignName").value.trim();
@@ -3219,13 +3231,15 @@ async function createCampaign(event){
     }
 }
 
-function renderCampaignSelector(campaigns) {
+async function renderCampaignSelector(campaigns) {
     const grid = document.getElementById("campaignsGrid");
     if (!grid) return;
 
     const visibleCampaigns = campaigns.filter(campaign => campaign.name !== LEGACY_CAMPAIGN_NAME);
-
-    grid.innerHTML = visibleCampaigns.map(campaign => {
+    const orderPath=`${APP_ORDER_ROOT}campaigns.json`, saved=await loadAppOrder(orderPath), ids=completeOrder(saved,visibleCampaigns);
+    if(JSON.stringify(ids)!==JSON.stringify(saved))saveAppOrder(orderPath,ids).catch(()=>{});
+    const orderedCampaigns=orderedItems(visibleCampaigns,ids,(a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||'')));
+    grid.innerHTML = orderedCampaigns.map((campaign,index) => {
         const config = getCampaignConfig(campaign);
         const description = config?.description || campaign.description || "Campaña de rol";
         const logo = getCampaignLogo(campaign);
@@ -3233,12 +3247,12 @@ function renderCampaignSelector(campaigns) {
             ? `<img class="campaign-card-logo" src="${logo}" alt="Logo de ${escapeHtml(campaign.name)}">`
             : `<div class="campaign-card-logo campaign-card-empty-logo">🎲</div>`;
 
-        return `<article class="campaign-card" onclick="selectCampaign('${campaign.id}')">
+        const orderControls=campaignOrdering?`<div class="order-controls" onclick="event.stopPropagation()"><span class="order-position">${index+1}</span><button ${index===0?'disabled':''} onclick="moveCampaign('${campaign.id}',-1)">↑</button><button ${index===orderedCampaigns.length-1?'disabled':''} onclick="moveCampaign('${campaign.id}',1)">↓</button></div>`:''; return `<article class="campaign-card ${campaignOrdering?'ordering':''}" onclick="selectCampaign('${campaign.id}')">
             ${logoHtml}
             <div class="campaign-card-content">
                 <h3>${escapeHtml(campaign.name)}</h3>
                 <p>${escapeHtml(description)}</p>
-                <button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>
+                <button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>${orderControls}
             </div>
         </article>`;
     }).join("");
@@ -3300,7 +3314,10 @@ async function seedOlimpoCharacters(){
 }
 
 async function getCampaignCharacters(){
-    return await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*&order=player_slot.asc,name.asc`);
+ const rows=await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*`);
+ const pjs=orderedItems(rows.filter(x=>x.character_type==='pj'),await loadAppOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/pjs.json`),(a,b)=>Number(a.player_slot||999)-Number(b.player_slot||999)||String(a.name||'').localeCompare(String(b.name||''),'es'));
+ const npcs=orderedItems(rows.filter(x=>x.character_type==='npc'),await loadAppOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/npcs.json`),(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+ return pjs.concat(npcs);
 }
 
 const SESSION_ARC_PLACEHOLDER = "__ROL_FICHA_EMPTY_ARC__";
@@ -3436,14 +3453,21 @@ function renderCampaignCharacters(rows){
         return normalizeSearchText(playerName).includes(query)||!!filteredPlayerRows.some(r=>Number(r.player_slot)===slot);
     });
 
-    players.innerHTML=visiblePlayerSlots.map(slot=>{
-        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
+    const orderedPjs=rows.filter(r=>r.character_type==='pj');
+    const emptySlots=visiblePlayerSlots.filter(slot=>!orderedPjs.some(r=>Number(r.player_slot)===slot));
+    const visiblePjRows=query?orderedPjs.filter(r=>filteredPlayerRows.includes(r)):orderedPjs;
+    players.innerHTML=visiblePjRows.map((row,idx)=>{
+        const slot=Number(row.player_slot), playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
+        const controls=characterOrdering?`<div class="order-controls" onclick="event.stopPropagation()"><span class="order-position">${idx+1}</span><button ${idx===0?'disabled':''} onclick="moveCharacter('${row.id}',-1)">↑</button><button ${idx===visiblePjRows.length-1?'disabled':''} onclick="moveCharacter('${row.id}',1)">↓</button></div>`:'';
+        return `<article class="manager-card ${characterOrdering?'ordering':''}"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div><h4>${row.name === 'Marte Cygnus' ? '☀️ ' : row.name === 'Gaia Dione' ? '🔥 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>${controls}</div></article>`;
+    }).join('') + emptySlots.map(slot=>{
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
-        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
+        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div><p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button></article>`;
     }).join('');
 
+    const allNpcs=rows.filter(r=>r.character_type==='npc');
     const filteredNpcs=filtered.filter(r=>r.character_type==='npc');
-    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
+    npcs.innerHTML=filteredNpcs.map(row=>{const i=allNpcs.findIndex(x=>String(x.id)===String(row.id));const controls=characterOrdering?`<div class="order-controls" onclick="event.stopPropagation()"><span class="order-position">${i+1}</span><button ${i===0?'disabled':''} onclick="moveCharacter('${row.id}',-1)">↑</button><button ${i===allNpcs.length-1?'disabled':''} onclick="moveCharacter('${row.id}',1)">↓</button></div>`:'';return `<article class="manager-card ${characterOrdering?'ordering':''}"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>${controls}</div></article>`}).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
 
     const count=document.getElementById('campaignCharacterSearchCount');
     if(count) count.textContent=query ? `${filtered.length} resultado${filtered.length===1?'':'s'}` : `${rows.length} personajes`;
@@ -4820,9 +4844,11 @@ async function loadBestiaryEntries(){
       entries.push({...data,id,photos:photos.map(x=>x.name)});
     }catch(error){console.warn('Bestiary entry load warning:',error);}
   }
-  return entries.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
+  const path=`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/bestiary.json`, saved=await loadAppOrder(path), orderedIds=completeOrder(saved,entries); if(JSON.stringify(orderedIds)!==JSON.stringify(saved))saveAppOrder(path,orderedIds).catch(()=>{}); return orderedItems(entries,orderedIds,(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
 }
 
+async function toggleBestiaryOrdering(){bestiaryOrdering=!bestiaryOrdering;await renderBestiaryIndex()}
+async function moveBestiaryEntry(id,d){try{await moveOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/bestiary.json`,bestiaryEntries,id,d);await renderBestiaryIndex()}catch(e){console.error(e);alert('No se pudo cambiar el orden del bestiario.')}}
 async function openBestiary(){
   if(!currentCampaignId||!currentCampaign)return;
   const campaignName=String(currentCampaign.name||'');
@@ -4863,14 +4889,16 @@ async function renderBestiaryIndex(){
     const filtered=bestiaryEntries.filter(e=>[e.name,e.epithet,e.classification,e.habitat,e.description,e.taxonomia,e.codigoEspecimen,e.periodo,e.lugarHallazgo,e.dieta].some(v=>String(v||'').toLocaleLowerCase('es').includes(query)));
     document.getElementById('bestiaryCount').textContent=`${filtered.length} ${filtered.length===1?'registro':'registros'}`;
     index.innerHTML=filtered.length?filtered.map(entry=>{
+      const i=bestiaryEntries.findIndex(x=>String(x.id)===String(entry.id));
+      const orderControls=bestiaryOrdering?`<div class="order-controls" onclick="event.stopPropagation()"><span class="order-position">${i+1}</span><button ${i===0?'disabled':''} onclick="moveBestiaryEntry('${entry.id}',-1)">↑</button><button ${i===bestiaryEntries.length-1?'disabled':''} onclick="moveBestiaryEntry('${entry.id}',1)">↓</button></div>`:'';
       const cover=entry.photos?.[0]?bestiaryEntryUrl(entry.id,entry.photos[0]):'';
       const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(String(currentCampaign?.name||''));
       const cardMeta=isNewEra?(entry.taxonomia||entry.classification||entry.periodo||'Registro paleobiológico'):(entry.epithet||entry.classification||'Registro sin clasificar');
       const cardCover=cover?`<img src="${escapeHtml(cover)}" alt="">`:`<span>${isNewEra?'🦴':'✧'}</span>`;
       const cardStamp=isNewEra&&entry.codigoEspecimen?`<span class="new-era-stamp">${escapeHtml(entry.codigoEspecimen)}</span>`:'';
-      return `<article class="bestiary-card" onclick="openBestiaryEntry('${escapeHtml(entry.id)}')">
+      return `<article class="bestiary-card ${bestiaryOrdering?'ordering':''}" onclick="openBestiaryEntry('${escapeHtml(entry.id)}')">
         <div class="bestiary-card-cover">${cardCover}</div>
-        <div class="bestiary-card-body"><h3>${escapeHtml(entry.name||'Sin nombre')}</h3><p>${escapeHtml(cardMeta)}</p>${cardStamp}</div>
+        <div class="bestiary-card-body"><h3>${escapeHtml(entry.name||'Sin nombre')}</h3><p>${escapeHtml(cardMeta)}</p>${cardStamp}${orderControls}</div>
       </article>`;
     }).join(''):`<div class="bestiary-empty">${query?'No se encontraron criaturas que coincidan con la búsqueda.':'El archivo está vacío. Todavía no se ha registrado ninguna criatura en esta campaña.'}</div>`;
   }catch(error){console.error('Bestiary index error:',error);index.innerHTML='<div class="bestiary-empty">⚠ No se pudo cargar el bestiario. Revisa los permisos del almacenamiento.</div>';}
@@ -5138,7 +5166,8 @@ async function loadGalleryAlbums(){
       const metaItems=await storageList(galleryAlbumPrefix(folder));
       if(folder==='_loose'){
         const photos=metaItems.filter(x=>x.name&&x.id!==null);
-        albums.push({id:'_loose',name:'Fotos sueltas',description:'Fotos de la campaña que no pertenecen a ningún álbum.',section:'Fotos de campaña',characterId:null,characterName:'',createdAt:'',photosCount:photos.length,cover:photos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+photos[0].name):'',photoItems:photos});
+        const orderedPhotos=orderedItems(photos,await loadAppOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/gallery/${folder}/photos.json`),(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+        albums.push({id:'_loose',name:'Fotos sueltas',description:'Fotos de la campaña que no pertenecen a ningún álbum.',section:'Fotos de campaña',characterId:null,characterName:'',createdAt:'',photosCount:orderedPhotos.length,cover:orderedPhotos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+orderedPhotos[0].name):'',photoItems:orderedPhotos});
         continue;
       }
       const meta=metaItems.find(x=>x.name==='album.json');
@@ -5148,11 +5177,12 @@ async function loadGalleryAlbums(){
       if(!response.ok)continue;
       const data=await response.json();
       const photos=metaItems.filter(x=>x.name!=='album.json' && x.name && x.id!==null);
-      const cover=photos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+photos[0].name):'';
-      albums.push({...data,id:folder,photosCount:photos.length,cover,photoItems:photos});
+      const orderedPhotos=orderedItems(photos,await loadAppOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/gallery/${folder}/photos.json`),(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+      const cover=orderedPhotos[0]?.name?galleryPublicUrl(galleryAlbumPrefix(folder)+orderedPhotos[0].name):'';
+      albums.push({...data,id:folder,photosCount:orderedPhotos.length,cover,photoItems:orderedPhotos});
     }catch(error){console.warn('Gallery album read error',folder,error);}
   }
-  return albums.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
+  const path=`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/gallery-albums.json`, saved=await loadAppOrder(path), ids=completeOrder(saved,albums); if(JSON.stringify(ids)!==JSON.stringify(saved))saveAppOrder(path,ids).catch(()=>{}); return orderedItems(albums,ids,(a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
 }
 
 function galleryMatches(album,query){
@@ -5178,19 +5208,21 @@ async function renderGallery(selectAlbumId=null){
     if(count)count.textContent=`${filtered.length} álbum${filtered.length===1?'':'es'}`;
     const grouped={};
     filtered.forEach(album=>{const section=album.section||'General';(grouped[section] ||= []).push(album);});
-    const groupedHtml=Object.entries(grouped).map(([section,items])=>`<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${items.map(album=>`<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" onclick="openGalleryAlbum('${album.id}')">
+    const groupedHtml=Object.entries(grouped).map(([section,items])=>`<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${items.map(album=>{const i=galleryAlbums.findIndex(x=>String(x.id)===String(album.id));const controls=galleryOrdering&&album.id!=='_loose'?`<div class="order-controls" onclick="event.stopPropagation()"><span class="order-position">${i+1}</span><button ${i===0?'disabled':''} onclick="moveGalleryAlbum('${album.id}',-1)">↑</button><button ${i===galleryAlbums.length-1?'disabled':''} onclick="moveGalleryAlbum('${album.id}',1)">↓</button></div>`:'';return `<article class="gallery-album ${album.id===activeGalleryAlbumId?'active ':''}${galleryOrdering?'ordering':''}" onclick="openGalleryAlbum('${album.id}')">
       ${album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`}
       <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
       <h4>${escapeHtml(album.name||'Álbum')}</h4>
       <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
-      ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
-    </article>`).join('')}`).join('');
+      ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}${controls}
+    </article>`}).join('')}`).join('');
     albumsEl.innerHTML=filtered.length?groupedHtml:`<div class="gallery-empty">${query?'No se encontraron álbumes que coincidan con la búsqueda.':'Todavía no hay álbumes. Crea el primero para empezar la galería de esta campaña.'}</div>`;
     if(activeGalleryAlbumId)renderGalleryAlbumViewer(activeGalleryAlbumId);
     else {const viewer=document.getElementById('galleryViewer');if(viewer){viewer.style.display='none';viewer.innerHTML='';}}
   }catch(error){console.error('Gallery load error:',error);albumsEl.innerHTML='<div class="gallery-empty">⚠ No se pudo cargar la galería. Revisa los permisos del almacenamiento.</div>';}
 }
 
+async function toggleGalleryOrdering(){galleryOrdering=!galleryOrdering;await renderGallery(activeGalleryAlbumId)}
+async function moveGalleryAlbum(id,d){try{await moveOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/gallery-albums.json`,galleryAlbums,id,d);await renderGallery(id)}catch(e){console.error(e);alert('No se pudo cambiar el orden de la galería.')}}
 async function createGalleryAlbum(){
   if(!currentCampaignId)return;
   const name=prompt('Nombre del álbum (ej.: Paul, Baile de máscaras, Lugares…):');
@@ -5237,12 +5269,13 @@ async function handleGalleryPhotoInput(event){
   finally{if(event?.target)event.target.value='';}
 }
 
+async function moveGalleryPhoto(albumId,name,d){try{const a=galleryAlbums.find(x=>String(x.id)===String(albumId));if(!a)return;await moveOrder(`${APP_ORDER_ROOT}campaigns/${currentCampaignId}/gallery/${albumId}/photos.json`,a.photoItems||[],name,d);await renderGallery(albumId)}catch(e){console.error(e);alert('No se pudo cambiar el orden de las fotos.')}}
 async function openGalleryAlbum(id){activeGalleryAlbumId=id;await renderGallery(id);}
 async function renderGalleryAlbumViewer(id){
   const viewer=document.getElementById('galleryViewer');const album=galleryAlbums.find(a=>a.id===id);if(!viewer||!album)return;
   const items=album.photoItems||[];
   viewer.style.display='block';
-  viewer.innerHTML=`<div class="gallery-viewer-head"><div><h3 class="gallery-viewer-title">${escapeHtml(album.name||'Álbum')}</h3><p class="campaign-character-search-hint">${escapeHtml(album.description||'')}${album.characterName?` · Vinculado a ${escapeHtml(album.characterName)}`:''}</p></div><div class="gallery-photo-actions"><button class="secondary" onclick="uploadGalleryPhotos()">📷 Añadir fotos</button></div></div><div class="gallery-photos">${items.length?items.map(item=>{const url=galleryPublicUrl(galleryAlbumPrefix(id)+item.name);return `<div class="gallery-photo" onclick="openGalleryLightbox('${escapeHtml(url)}')"><img src="${escapeHtml(url)}" alt="${escapeHtml(item.name)}" loading="lazy"><button class="gallery-photo-delete" onclick="event.stopPropagation();deleteGalleryPhoto('${id}','${encodeURIComponent(item.name)}')">🗑</button><div class="gallery-photo-name">${escapeHtml(item.name)}</div></div>`}).join(''):'<div class="gallery-empty" style="grid-column:1/-1">Este álbum todavía no tiene fotos.</div>'}</div>`;
+  viewer.innerHTML=`<div class="gallery-viewer-head"><div><h3 class="gallery-viewer-title">${escapeHtml(album.name||'Álbum')}</h3><p class="campaign-character-search-hint">${escapeHtml(album.description||'')}${album.characterName?` · Vinculado a ${escapeHtml(album.characterName)}`:''}</p></div><div class="gallery-photo-actions"><button class="secondary" onclick="uploadGalleryPhotos()">📷 Añadir fotos</button></div></div><div class="gallery-photos">${items.length?items.map((item,pi)=>{const url=galleryPublicUrl(galleryAlbumPrefix(id)+item.name);const pc=galleryOrdering?`<div class="order-controls" style="position:absolute;left:7px;bottom:7px;z-index:2" onclick="event.stopPropagation()"><button ${pi===0?'disabled':''} onclick="moveGalleryPhoto('${id}','${encodeURIComponent(item.name)}',-1)">↑</button><button ${pi===items.length-1?'disabled':''} onclick="moveGalleryPhoto('${id}','${encodeURIComponent(item.name)}',1)">↓</button></div>`:'';return `<div class="gallery-photo" onclick="openGalleryLightbox('${escapeHtml(url)}')"><img src="${escapeHtml(url)}" alt="${escapeHtml(item.name)}" loading="lazy"><button class="gallery-photo-delete" onclick="event.stopPropagation();deleteGalleryPhoto('${id}','${encodeURIComponent(item.name)}')">🗑</button><div class="gallery-photo-name">${escapeHtml(item.name)}</div>${pc}</div>`}).join(''):'<div class="gallery-empty" style="grid-column:1/-1">Este álbum todavía no tiene fotos.</div>'}</div>`;
 }
 async function deleteGalleryPhoto(albumId,encodedName){
   const name=decodeURIComponent(encodedName);if(!confirm(`¿Eliminar la foto «${name}»?`))return;
