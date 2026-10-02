@@ -3343,9 +3343,12 @@ function renderRollModifiers(){
 function renderApplicableRollModifiers(){
     const panel=document.getElementById('modifierApplyPanel');if(!panel)return;
     const applicable=getRollModifiers().filter(m=>m.active&&m.value&&modifierAppliesToCurrentRoll(m));
-    if(!applicable.length){panel.hidden=true;panel.innerHTML='';return;}
+    if(!applicable.length){selectedRollModifierIds=[];panel.hidden=true;panel.innerHTML='';return;}
     panel.hidden=false;
-    panel.innerHTML=`<div class="modifier-apply-head"><span>⚙️ Aplicar a esta tirada</span><small style="opacity:.65;font-weight:400">Puedes desmarcar los que no correspondan</small></div><div class="modifier-apply-list">${applicable.map(m=>`<label class="modifier-apply-row"><input class="modifier-use-check" data-modifier-id="${escapeHtml(m.id)}" type="checkbox" checked><span><strong>${escapeHtml(m.name)}</strong> (${m.value>0?'+':''}${m.value})${m.condition?` · ${escapeHtml(m.condition)}`:''}</span></label>`).join('')}</div>`;
+    const applicableIds = applicable.map(m=>m.id);
+    selectedRollModifierIds = selectedRollModifierIds.filter(id=>applicableIds.includes(id));
+    if(!selectedRollModifierIds.length) selectedRollModifierIds = applicableIds.slice();
+    panel.innerHTML=`<div class="modifier-apply-head"><span>⚙️ Aplicar a esta tirada</span><small style="opacity:.65;font-weight:400">Puedes desmarcar los que no correspondan</small></div><div class="modifier-apply-list">${applicable.map(m=>`<label class="modifier-apply-row"><input class="modifier-use-check" data-modifier-id="${escapeHtml(m.id)}" type="checkbox" ${selectedRollModifierIds.includes(m.id)?'checked':''} onchange="syncSelectedRollModifiersFromPanel()"><span><strong>${escapeHtml(m.name)}</strong> (${m.value>0?'+':''}${m.value})${m.condition?` · ${escapeHtml(m.condition)}`:''}</span></label>`).join('')}</div>`;
 }
 
 function toggleModifierEditor(force){
@@ -3387,12 +3390,26 @@ async function removeRollModifier(id){
     try{await saveCharacter();}catch(error){console.error(error);}
 }
 
+let selectedRollModifierIds = [];
+
+function syncSelectedRollModifiersFromPanel(){
+    selectedRollModifierIds = [...document.querySelectorAll('.modifier-use-check:checked')]
+        .map(el=>el.dataset.modifierId)
+        .filter(Boolean);
+}
+
 function getCurrentRollModifierTotal(){
-    return [...document.querySelectorAll('.modifier-use-check:checked')].reduce((sum,el)=>sum+(Number(getRollModifiers().find(m=>m.id===el.dataset.modifierId)?.value)||0),0);
+    const ids = selectedRollModifierIds.length
+        ? selectedRollModifierIds
+        : [...document.querySelectorAll('.modifier-use-check:checked')].map(el=>el.dataset.modifierId);
+    return ids.reduce((sum,id)=>sum+(Number(getRollModifiers().find(m=>m.id===id)?.value)||0),0);
 }
 
 function getCurrentRollModifierSummary(){
-    const selected=[...document.querySelectorAll('.modifier-use-check:checked')].map(el=>getRollModifiers().find(m=>m.id===el.dataset.modifierId)).filter(Boolean);
+    const ids = selectedRollModifierIds.length
+        ? selectedRollModifierIds
+        : [...document.querySelectorAll('.modifier-use-check:checked')].map(el=>el.dataset.modifierId);
+    const selected = ids.map(id=>getRollModifiers().find(m=>m.id===id)).filter(Boolean);
     return {total:selected.reduce((sum,m)=>sum+(Number(m.value)||0),0),items:selected};
 }
 
@@ -3703,6 +3720,7 @@ function quickRoll(attribute, skill, mode) {
     document.getElementById("skillSelect").value = skill;
 
     updateCalculation();
+    renderApplicableRollModifiers();
 
     if (mode === "normal") {
         selectMode("normal");
@@ -3770,6 +3788,8 @@ function rollAlternativeDice() {
     const config = getAlternativeDiceConfig();
     const values = Array.from({length:config.count}, () => Math.floor(Math.random() * config.faces) + 1);
     const total = values.reduce((sum, value) => sum + value, 0);
+    const modifierInfo = getCurrentRollModifierSummary();
+    const finalTotal = total + modifierInfo.total;
 
     dramaActive = false;
     dramaTalentActive = false;
@@ -3777,13 +3797,15 @@ function rollAlternativeDice() {
     document.getElementById("dramaPanel")?.classList.remove("visible");
 
     setDice(values);
-    document.getElementById("resultNumber").textContent = total;
-    document.getElementById("explanation").textContent = `${config.label}: ${values.join(" + ")} = ${total}. Tirada libre, sin Drama ni efectos de crítico/pifia.`;
+    document.getElementById("resultNumber").textContent = finalTotal;
+    document.getElementById("explanation").textContent = `${config.label}: ${values.join(" + ")} = ${total}${modifierInfo.total ? ` ${modifierInfo.total>0?'+':''}${modifierInfo.total} modificador = ${finalTotal}` : ` = ${finalTotal}`}. Tirada libre, sin Drama ni efectos de crítico/pifia.`;
     showSpecialRoll(null);
 
     rollHistory.unshift({
         dice: values.slice(),
-        total,
+        total: finalTotal,
+        modifierTotal: modifierInfo.total,
+        modifierNames: modifierInfo.items.map(m=>m.name),
         label: "Tirada libre",
         mode: config.label,
         special: null,
