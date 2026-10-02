@@ -161,63 +161,6 @@ body.bestiary-infection-mode .bestiary-page-header:after{
   font:900 .66rem/1 Arial,sans-serif;letter-spacing:.12em;transform:rotate(-4deg);
 }
 
-
-/* =========================
-   HERBARIO · EL LEGADO
-========================= */
-body.herbarium-mode{
-  background-color:#d8c98f;
-  color:#3f3020;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900'%3E%3Cg fill='none' stroke='%2364773f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='.34'%3E%3Cpath d='M92 900 C70 720 150 610 95 470 C55 365 82 240 150 105'/%3E%3Cpath d='M1108 900 C1130 720 1050 610 1105 470 C1145 365 1118 240 1050 105'/%3E%3Cpath d='M105 570 C155 540 180 505 185 460'/%3E%3Cpath d='M1095 570 C1045 540 1020 505 1015 460'/%3E%3Cpath d='M95 350 C145 320 170 285 168 240'/%3E%3Cpath d='M1105 350 C1055 320 1030 285 1032 240'/%3E%3Cpath d='M122 735 C175 710 204 670 207 625'/%3E%3Cpath d='M1078 735 C1025 710 996 670 993 625'/%3E%3C/g%3E%3Cg fill='%23788a4e' opacity='.31'%3E%3Cellipse cx='145' cy='515' rx='22' ry='9' transform='rotate(-30 145 515)'/%3E%3Cellipse cx='173' cy='480' rx='22' ry='9' transform='rotate(24 173 480)'/%3E%3Cellipse cx='122' cy='302' rx='22' ry='9' transform='rotate(-35 122 302)'/%3E%3Cellipse cx='163' cy='268' rx='22' ry='9' transform='rotate(28 163 268)'/%3E%3Cellipse cx='156' cy='700' rx='25' ry='10' transform='rotate(-28 156 700)'/%3E%3Cellipse cx='197' cy='660' rx='25' ry='10' transform='rotate(28 197 660)'/%3E%3Cellipse cx='1055' cy='515' rx='22' ry='9' transform='rotate(30 1055 515)'/%3E%3Cellipse cx='1027' cy='480' rx='22' ry='9' transform='rotate(-24 1027 480)'/%3E%3Cellipse cx='1078' cy='302' rx='22' ry='9' transform='rotate(35 1078 302)'/%3E%3Cellipse cx='1037' cy='268' rx='22' ry='9' transform='rotate(-28 1037 268)'/%3E%3Cellipse cx='1044' cy='700' rx='25' ry='10' transform='rotate(28 1044 700)'/%3E%3Cellipse cx='1003' cy='660' rx='25' ry='10' transform='rotate(-28 1003 660)'/%3E%3C/g%3E%3Cg fill='%23a47a45' opacity='.26'%3E%3Ccircle cx='150' cy='105' r='11'/%3E%3Ccircle cx='1050' cy='105' r='11'/%3E%3Ccircle cx='95' cy='470' r='7'/%3E%3Ccircle cx='1105' cy='470' r='7'/%3E%3C/g%3E%3C/svg%3E");
-  background-size:cover;
-  background-attachment:fixed;
-}
-body.herbarium-mode header{display:none;}
-body.herbarium-mode main{width:min(1180px,96%);margin:32px auto 52px;}
-.herbarium-view{display:none;}
-.herbarium-book{
-  position:relative;min-height:720px;padding:34px 42px 38px;overflow:hidden;
-  border:1px solid rgba(102,82,48,.38);border-radius:9px;
-  background:#eee1b8;
-  box-shadow:0 18px 48px rgba(69,53,27,.25),inset 0 0 22px rgba(111,88,47,.07);
-  font-family:Georgia,'Times New Roman',serif;
-}
-.herbarium-book:before{
-  content:"";position:absolute;inset:14px;border:1px solid rgba(116,94,57,.17);pointer-events:none;
-}
-.herbarium-book:after{
-  content:"❦";position:absolute;top:13px;left:50%;transform:translateX(-50%);
-  color:rgba(91,111,61,.45);font-size:22px;pointer-events:none;
-}
-.herbarium-top{position:relative;z-index:1;display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:24px;}
-.herbarium-kicker{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:#687044;margin-bottom:7px;}
-.herbarium-title{margin:0;color:#46351f;font-size:clamp(31px,5vw,50px);font-weight:600;letter-spacing:.015em;}
-.herbarium-title:after{content:"  ❧";color:#6b7548;font-size:.65em;}
-.herbarium-subtitle{margin:7px 0 0;max-width:700px;color:#725d3b;font-style:italic;line-height:1.5;}
-.herbarium-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
-.herbarium-btn{border:1px solid rgba(76,61,36,.45)!important;background:rgba(107,117,72,.10)!important;color:#4a3a23!important;border-radius:5px!important;box-shadow:none!important;}
-.herbarium-btn:hover{background:rgba(107,117,72,.18)!important;border-color:rgba(76,61,36,.7)!important;}
-.herbarium-toolbar{position:relative;z-index:1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding:11px 0;border-top:1px solid rgba(76,61,36,.22);border-bottom:1px solid rgba(76,61,36,.22);}
-.herbarium-search{flex:1;min-width:220px;padding:11px 13px;border:1px solid rgba(76,61,36,.34);border-radius:5px;background:rgba(255,250,226,.58);color:#3f3020;font:inherit;outline:none;}
-.herbarium-count{color:#776344;font-size:.8rem;}
-.herbarium-index{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:17px;}
-.herbarium-card{cursor:pointer;overflow:hidden;border:1px solid rgba(87,66,38,.32);border-radius:5px;background:rgba(255,249,222,.62);box-shadow:0 5px 15px rgba(77,54,31,.11);transition:.18s ease;}
-.herbarium-card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(77,54,31,.17);border-color:rgba(79,101,55,.48);}
-.herbarium-card-cover{height:180px;display:flex;align-items:center;justify-content:center;background:rgba(117,129,82,.12);border-bottom:1px solid rgba(87,66,38,.25);font-size:44px;color:#6b7548;overflow:hidden;}
-.herbarium-card-cover img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) sepia(.12);}
-.herbarium-card-body{padding:13px 14px 15px;}.herbarium-card h3{margin:0;color:#44331e;font-size:1.08rem;}.herbarium-card p{margin:5px 0 0;color:#786345;font-style:italic;font-size:.88rem;}
-.herbarium-page{display:none;position:relative;z-index:1;}.herbarium-page.open{display:block;}
-.herbarium-page-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px;position:relative;}
-.herbarium-page-title{margin:0;color:#44331e;font-size:clamp(30px,4.6vw,46px);font-weight:600;}.herbarium-page-epithet{margin:5px 0 0;color:#766042;font-style:italic;}.herbarium-page-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
-.herbarium-page-grid{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;}
-.herbarium-portrait-frame{min-height:360px;display:flex;align-items:center;justify-content:center;padding:13px;border:1px solid rgba(87,66,38,.38);background:rgba(255,249,222,.55);box-shadow:inset 0 0 28px rgba(93,63,29,.08);}
-.herbarium-portrait{display:block;width:100%;max-height:560px;object-fit:contain;cursor:zoom-in;filter:saturate(.9) sepia(.06);}
-.herbarium-portrait-empty{text-align:center;color:#8a704d;line-height:1.55;padding:35px 20px;font-style:italic;}
-.herbarium-info{min-width:0;}.herbarium-field{padding:0 0 15px;margin:0 0 15px;border-bottom:1px solid rgba(87,66,38,.22);}.herbarium-label{display:block;margin-bottom:5px;color:#69734a;font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;}.herbarium-text{margin:0;color:#4e3c25;line-height:1.65;white-space:pre-line;}.herbarium-classification{display:inline-block;padding:4px 9px;border:1px solid rgba(87,105,61,.38);border-radius:4px;background:rgba(107,117,72,.08);color:#56613c;font-size:.83rem;}
-.herbarium-editor{display:none;margin-top:24px;padding:18px;border:1px solid rgba(87,66,38,.28);background:rgba(255,249,222,.52);}.herbarium-editor.open{display:block;}.herbarium-editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;}.herbarium-editor label{display:flex;flex-direction:column;gap:6px;color:#665137;font-size:.78rem;font-weight:700;}.herbarium-editor label.full{grid-column:1/-1;}.herbarium-editor input,.herbarium-editor textarea,.herbarium-editor select{width:100%;padding:10px 11px;border:1px solid rgba(87,66,38,.32);border-radius:4px;background:rgba(255,253,237,.76);color:#3f3020;font:inherit;outline:none;}.herbarium-editor textarea{min-height:105px;resize:vertical;}.herbarium-editor-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap;}.herbarium-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:24px;padding-top:14px;border-top:1px solid rgba(87,66,38,.22);}.herbarium-page-number{color:#786344;font-size:.8rem;}
-.herbarium-modal-backdrop{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:20px;background:rgba(33,27,18,.68);}.herbarium-modal-backdrop.open{display:flex;}.herbarium-modal{width:min(520px,100%);padding:24px;border:1px solid rgba(76,61,36,.48);border-radius:7px;background:#f0e1b2;box-shadow:0 20px 70px rgba(0,0,0,.42);font-family:Georgia,'Times New Roman',serif;}.herbarium-modal h3{margin:0;color:#46351f;font-size:1.5rem;}.herbarium-modal p{color:#735d3d;line-height:1.5;}.herbarium-modal-form{display:grid;gap:12px;}.herbarium-modal-form label{display:flex;flex-direction:column;gap:6px;color:#665137;font-size:.78rem;font-weight:700;}.herbarium-modal-form input{padding:10px 11px;border:1px solid rgba(87,66,38,.32);border-radius:4px;background:#fffdf0;color:#3f3020;font:inherit;}.herbarium-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
-@media(max-width:760px){.herbarium-book{padding:28px 20px 30px;}.herbarium-top,.herbarium-page-header{flex-direction:column;}.herbarium-actions,.herbarium-page-actions{justify-content:flex-start;}.herbarium-page-grid{grid-template-columns:1fr;}.herbarium-editor-grid{grid-template-columns:1fr;}.herbarium-editor label.full{grid-column:auto;}}
-
 body.bestiary-mode header{display:none;}
 body.bestiary-mode main{width:min(1160px,94%);margin:22px auto 42px;}
 .bestiary-view{display:none;}
@@ -736,6 +679,37 @@ select {
   font-size:.82rem;
 }
 
+.weapon-quick-launch{
+  display:block;
+  width:100%;
+  min-height:38px;
+  margin-top:14px;
+  padding:8px 9px;
+  border:0;
+  border-radius:9px;
+  background:#5865e8;
+  color:#fff;
+  font-weight:700;
+  font-size:.78rem;
+  cursor:pointer;
+  transition:filter .15s ease, transform .1s ease;
+}
+.weapon-quick-launch:hover{filter:brightness(1.1);}
+.weapon-quick-launch:active{transform:scale(.98);}
+.weapon-quick-panel{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid var(--border,rgba(255,255,255,.15));
+  border-radius:12px;
+  background:rgba(0,0,0,.18);
+}
+.weapon-quick-panel h5{margin:0 0 8px;font-size:.92rem;}
+.weapon-quick-list{display:grid;gap:8px;}
+.weapon-quick-choice{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;}
+.weapon-quick-choice small{opacity:.72;}
+.weapon-quick-selected{margin:0 0 10px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.06);}
+.weapon-quick-panel .quick-modes{margin-top:8px;}
+
 @media (max-width:760px){
   .quick-group{padding:15px;margin-bottom:20px}
   .quick-grid{grid-template-columns:1fr;gap:11px}
@@ -785,16 +759,6 @@ select {
 .character-context{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
 .character-context .context-name{color:#aeb4c2;font-size:.9rem;}
 @media(max-width:760px){.campaign-selector{padding:22px 18px;}.campaigns-grid{grid-template-columns:1fr;}.campaign-card-content p{min-height:0;}.section-heading{align-items:stretch;flex-direction:column}.section-heading button{width:100%}.campaign-hero{align-items:flex-start}.campaign-logo-placeholder{width:120px;height:68px}}
-
-/* ===== ORDEN MANUAL ===== */
-.sort-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:0 0 12px;}
-.sort-hint{font-size:.78rem;color:#9ba5b8;margin-right:auto;}
-.sort-actions{display:flex;gap:6px;align-items:center;margin-top:10px;}
-.sort-actions button{width:36px!important;min-width:36px;height:34px;padding:0!important;border-radius:9px!important;}
-.sort-order-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 7px;border-radius:999px;background:rgba(125,136,255,.12);border:1px solid rgba(125,136,255,.25);color:#c9ceff;font-size:.72rem;font-weight:800;}
-.gallery-sort-actions{display:flex;gap:6px;align-items:center;margin-top:8px;}
-.gallery-sort-actions button{width:34px!important;min-width:34px;height:32px;padding:0!important;border-radius:8px!important;}
-@media(max-width:760px){.sort-toolbar{justify-content:stretch}.sort-hint{width:100%;margin-right:0}.sort-toolbar button{width:100%}}
 
 
 /* ===== FONDO INTEGRADO: la ilustración debe formar parte de la interfaz ===== */
@@ -1281,7 +1245,6 @@ select {
     <div id="campaignsGrid" class="campaigns-grid"></div>
     <div class="campaign-selector-actions">
         <button class="primary create-campaign-button" onclick="openCreateCampaignModal()">＋ Crear nueva campaña</button>
-        <button class="secondary" onclick="toggleCampaignOrderMode()">⚙️ Ordenar campañas</button>
     </div>
 </section>
 
@@ -1330,7 +1293,6 @@ select {
         </div>
         <div class="campaign-hero-actions">
             <button class="secondary" onclick="openBestiary()">📖 Bestiario</button>
-            <button class="secondary" id="legacyHerbariumButton" onclick="openHerbarium()" style="display:none;">🌿 Herbario</button>
             <button class="delete-button" onclick="deleteCurrentCampaign()">🗑 Borrar campaña</button>
         </div>
     </div>
@@ -1345,7 +1307,7 @@ select {
     </div>
 
     <div class="manager-section">
-        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><div><button class="secondary" onclick="toggleCharacterOrderMode()">⚙️ Ordenar fichas</button> <button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div></div>
+        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div>
         <div id="playersGrid" class="manager-grid"></div>
     </div>
 
@@ -1358,7 +1320,6 @@ select {
         <div class="section-heading">
             <div><span class="eyebrow">ARCHIVO VISUAL</span><h3>🖼️ Galería</h3></div>
             <div class="gallery-photo-actions">
-                <button class="secondary" onclick="toggleGalleryOrderMode()">⚙️ Ordenar álbumes</button>
                 <button class="secondary" onclick="createGalleryAlbum()">＋ Nuevo álbum</button>
                 <button class="secondary" onclick="openLooseGallery()">📷 Fotos sueltas</button>
                 <button onclick="uploadGalleryPhotos()">📷 Subir fotos</button>
@@ -1469,88 +1430,6 @@ select {
     </article>
   </div>
 </section>
-
-
-<section id="herbariumView" class="herbarium-view">
-  <div class="herbarium-book">
-    <div class="herbarium-top">
-      <div>
-        <div class="herbarium-kicker">CUADERNO BOTÁNICO · EL LEGADO</div>
-        <h1 class="herbarium-title" id="herbariumTitle">Herbario</h1>
-        <p class="herbarium-subtitle" id="herbariumSubtitle">Registro de plantas, flores y especies mágicas conocidas en la campaña.</p>
-      </div>
-      <div class="herbarium-actions">
-        <button class="herbarium-btn" onclick="closeHerbarium()">← Volver a la campaña</button>
-        <button class="herbarium-btn" onclick="openCreateHerbariumModal()">＋ Nueva planta</button>
-      </div>
-    </div>
-    <div id="herbariumIndexView">
-      <div class="herbarium-toolbar">
-        <input id="herbariumSearch" class="herbarium-search" type="search" placeholder="🔎 Buscar planta…" oninput="renderHerbariumIndex()" autocomplete="off">
-        <span id="herbariumCount" class="herbarium-count"></span>
-      </div>
-      <div id="herbariumIndex" class="herbarium-index"></div>
-    </div>
-    <article id="herbariumPageView" class="herbarium-page">
-      <div class="herbarium-page-header">
-        <div><h2 class="herbarium-page-title" id="herbariumPageTitle"></h2><p class="herbarium-page-epithet" id="herbariumPageEpithet"></p></div>
-        <div class="herbarium-page-actions">
-          <button class="herbarium-btn" onclick="showHerbariumIndex()">☰ Índice</button>
-          <button class="herbarium-btn" onclick="toggleHerbariumEditor()">✒ Editar</button>
-          <button class="herbarium-btn" onclick="deleteCurrentHerbariumEntry()">🗑 Borrar</button>
-        </div>
-      </div>
-      <div class="herbarium-page-grid">
-        <div>
-          <div class="herbarium-portrait-frame" id="herbariumPortraitFrame"></div>
-          <div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;">
-            <button class="herbarium-btn" onclick="uploadHerbariumImages()">📷 Añadir imágenes</button>
-            <input id="herbariumImageInput" type="file" accept="image/*" multiple style="display:none" onchange="handleHerbariumImageInput(event)">
-          </div>
-        </div>
-        <div class="herbarium-info" id="herbariumInfo"></div>
-      </div>
-      <div id="herbariumEditor" class="herbarium-editor">
-        <div class="herbarium-editor-grid">
-          <label>Nombre<input id="heName" maxlength="120"></label>
-          <label>Nombre alternativo / título<input id="heEpithet" maxlength="180"></label>
-          <label>Clasificación<input id="heClassification" maxlength="120" placeholder="Flor · Hierba · Árbol · Hongo…"></label>
-          <label>Rareza<input id="heRarity" maxlength="100" placeholder="Común · Rara · Única…"></label>
-          <label>Hábitat<input id="heHabitat" maxlength="180"></label>
-          <label>Origen<input id="heOrigin" maxlength="180"></label>
-          <label class="full">Descripción<textarea id="heDescription"></textarea></label>
-          <label class="full">Propiedades / efectos mágicos<textarea id="heEffects" placeholder="Efectos, usos, reacciones, propiedades sobrenaturales…"></textarea></label>
-          <label class="full">Cultivo y cuidados<textarea id="heCultivation" placeholder="Cómo cuidarla, qué necesita, cómo se reproduce…"></textarea></label>
-          <label class="full">Riesgos / advertencias<textarea id="heWarnings"></textarea></label>
-          <label class="full">Notas / observaciones<textarea id="heNotes"></textarea></label>
-        </div>
-        <div class="herbarium-editor-actions">
-          <button class="herbarium-btn" onclick="toggleHerbariumEditor(false)">Cancelar</button>
-          <button class="herbarium-btn" onclick="saveCurrentHerbariumEntry()">💾 Guardar planta</button>
-        </div>
-      </div>
-      <div class="herbarium-pagination">
-        <button class="herbarium-btn" id="herbariumPrevButton" onclick="navigateHerbarium(-1)">← Anterior</button>
-        <span class="herbarium-page-number" id="herbariumPageNumber"></span>
-        <button class="herbarium-btn" id="herbariumNextButton" onclick="navigateHerbarium(1)">Siguiente →</button>
-      </div>
-    </article>
-  </div>
-</section>
-<div id="createHerbariumModal" class="herbarium-modal-backdrop" onclick="if(event.target===this)closeCreateHerbariumModal()">
-  <div class="herbarium-modal" role="dialog" aria-modal="true" aria-labelledby="createHerbariumTitle">
-    <h3 id="createHerbariumTitle">Registrar planta</h3>
-    <p>Abre una nueva página del cuaderno para documentar una planta y sus propiedades.</p>
-    <form class="herbarium-modal-form" onsubmit="createHerbariumEntry(event)">
-      <label>Nombre de la planta<input id="newHerbariumName" maxlength="120" placeholder="Ej.: Rosa de la Luna" required></label>
-      <label>Nombre alternativo / título<input id="newHerbariumEpithet" maxlength="180" placeholder="Ej.: La flor que despierta al anochecer"></label>
-      <div class="herbarium-modal-actions">
-        <button type="button" class="herbarium-btn" onclick="closeCreateHerbariumModal()">Cancelar</button>
-        <button type="submit" class="herbarium-btn">✒ Abrir página</button>
-      </div>
-    </form>
-  </div>
-</div>
 
 <div id="createBestiaryModal" class="bestiary-modal-backdrop" onclick="if(event.target===this)closeCreateBestiaryModal()">
   <div class="bestiary-modal" role="dialog" aria-modal="true" aria-labelledby="createBestiaryTitle">
@@ -2255,6 +2134,8 @@ select {
           <button onclick="quickRoll('reflejos','combate','drama')">Drama</button>
           <button onclick="quickRoll('reflejos','combate','dramaTalent')">Drama + Talento</button>
         </div>
+        <button type="button" class="secondary weapon-quick-launch" onclick="openWeaponQuickPanel()">⚔️ Ataque con arma</button>
+        <div id="weaponQuickPanel" class="weapon-quick-panel" hidden></div>
       </div>
 
       <div class="quick-card">
@@ -2503,7 +2384,7 @@ function defaultSheetData(){
 function defaultEcstasySheetData(){
     return {concepto:"",complicacion:"",aspectoTemporal:"",talentos:"",currentResistance:"",woundMild1:false,woundMild2:false,woundSevere1:false,woundSevere2:false,red:"",weapons:[],experience:0,step:1,milestones:"",skillTalents:{},attributeAspects:{},dramaPoints:5,arcaneAbilities:[],anchors:[],artifacts:[]};
 }
-function defaultSharedSheetData(){return {concepto:"",complicacion:"",aspectoTemporal:"",milestones:""};}
+function defaultSharedSheetData(){return {concepto:"",complicacion:"",aspectoTemporal:"",milestones:"",weapons:[]};}
 function defaultEcstasyData(){
     return {fortaleza:0,reflejos:0,voluntad:0,inteligencia:0,formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0,sheet:defaultEcstasySheetData()};
 }
@@ -2750,7 +2631,15 @@ function getSharedEcstasy(){const live=document.querySelectorAll('#ecstasyTrack 
 function setDramaPointsUI(points=5){const safe=Math.max(0,Math.min(5,Number(points)||0));document.querySelectorAll('.drama-point').forEach((el,index)=>{el.checked=index<safe;});}
 function updateDramaPointsFromUI(){if(!workingCharacter)return;const points=[...document.querySelectorAll('.drama-point')].filter(el=>el.checked).length;workingCharacter.shared.dramaPoints=points;workingCharacter.human.sheet.dramaPoints=points;workingCharacter.ecstasy.sheet.dramaPoints=points;}
 function syncCurrentFormToWorkingCharacter(){
-    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones};workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet};workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
+    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;
+    // Las armas son equipo físico del personaje, no una progresión distinta entre formas.
+    // Por eso se mantienen sincronizadas entre Humana y Éxtasis.
+    const sharedWeapons=normalizeWeapons(sheet.weapons||workingCharacter.shared?.sheet?.weapons||[]);
+    target.sheet={...target.sheet,...sheet,weapons:sharedWeapons};
+    workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones,weapons:sharedWeapons};
+    workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet,weapons:sharedWeapons};
+    workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet,weapons:sharedWeapons};
+    workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
 }
 function setFormValuesFromCharacterSheet(sheet){
     const a=sheet.attributes||{},s=sheet.skills||{},shared=workingCharacter?.shared?.sheet||{};
@@ -2760,7 +2649,8 @@ function setFormValuesFromCharacterSheet(sheet){
         concepto:shared.concepto??sheet.concepto??sheet.sheet?.concepto??'',
         complicacion:shared.complicacion??sheet.complicacion??sheet.sheet?.complicacion??'',
         aspectoTemporal:shared.aspectoTemporal??sheet.aspectoTemporal??sheet.sheet?.aspectoTemporal??'',
-        milestones:shared.milestones??sheet.milestones??sheet.sheet?.milestones??''
+        milestones:shared.milestones??sheet.milestones??sheet.sheet?.milestones??'',
+        weapons:normalizeWeapons(shared.weapons?.length?shared.weapons:(sheet.sheet?.weapons||sheet.weapons||[]))
     };
     document.getElementById('characterName').value=workingCharacter?.name||defaultCharacter.name;
     ['fortaleza','reflejos','voluntad','inteligencia'].forEach(id=>document.getElementById(id).value=Number(a[id]??0));
@@ -2775,6 +2665,9 @@ function characterToDatabase(character){
     const isExistingCharacter=Boolean(currentCharacterId&&currentCharacterRow);
     const h=workingCharacter.human||{attributes:{},skills:{},sheet:defaultSheetData()};
     const e=workingCharacter.ecstasy||{attributes:{},skills:{},sheet:defaultEcstasySheetData()};
+    const sharedWeapons=normalizeWeapons(workingCharacter.shared?.sheet?.weapons||h.sheet?.weapons||e.sheet?.weapons||[]);
+    h.sheet={...h.sheet,weapons:sharedWeapons};
+    e.sheet={...e.sheet,weapons:sharedWeapons};
     const previousAttrs=(currentCharacterRow&&currentCharacterRow.attributes)||{};
     const previousSkills=(currentCharacterRow&&currentCharacterRow.skills)||{};
     return {
@@ -2817,6 +2710,9 @@ function databaseToCharacter(row){
         sheet:{...defaultEcstasySheetData(),...(ec.sheet||{})}
     };
     const storedShared=attrs.sharedSheet||{};
+    const sharedWeapons=normalizeWeapons(storedShared.weapons?.length?storedShared.weapons:(human.sheet.weapons?.length?human.sheet.weapons:ext.sheet.weapons||[]));
+    human.sheet={...human.sheet,weapons:sharedWeapons};
+    ext.sheet={...ext.sheet,weapons:sharedWeapons};
     const shared={
         distortionLevel:Number(human.sheet.distortionLevel??ext.sheet.distortionLevel??0)||0,
         ecstasy:Number(human.sheet.ecstasy??ext.sheet.ecstasy??0)||0,
@@ -2826,7 +2722,8 @@ function databaseToCharacter(row){
             concepto:String(storedShared.concepto??human.sheet.concepto??ext.sheet.concepto??''),
             complicacion:String(storedShared.complicacion??human.sheet.complicacion??ext.sheet.complicacion??''),
             aspectoTemporal:String(storedShared.aspectoTemporal??human.sheet.aspectoTemporal??ext.sheet.aspectoTemporal??''),
-            milestones:String(storedShared.milestones??human.sheet.milestones??ext.sheet.milestones??'')
+            milestones:String(storedShared.milestones??human.sheet.milestones??ext.sheet.milestones??''),
+            weapons:sharedWeapons
         }
     };
     // Los campos compartidos siempre quedan presentes en ambas formas al cargar.
@@ -2982,7 +2879,7 @@ async function loadCharacter() {
 }
 
 async function initializeSharedStorage() {
-    const existing = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+    const existing = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
 
     for (const config of campaignCatalog) {
         if (!existing.some(row => row.name === config.name)) {
@@ -2998,14 +2895,14 @@ async function initializeSharedStorage() {
         }
     }
 
-    let campaigns = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+    let campaigns = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
 
     // Migración de la campaña de prueba antigua:
     // Archie pasa a El Legado como PJ del Jugador 1 · Alex.
     // La campaña antigua deja de mostrarse en la aplicación.
     await migrateLegacyArchie(campaigns);
 
-    campaigns = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+    campaigns = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
     const olympus = campaigns.find(row => row.name === DEFAULT_CAMPAIGN_NAME);
 
     if (olympus) {
@@ -3134,7 +3031,7 @@ async function createCampaign(event){
         const created=await supabaseRequest("/campaigns",{
             method:"POST",
             headers:{"Prefer":"return=representation"},
-            body:JSON.stringify({name,description,accent_color:"#5865f2",sort_order:Date.now()})
+            body:JSON.stringify({name,description,accent_color:"#5865f2"})
         });
         const campaign=created?.[0];
         if(!campaign?.id)throw new Error("Supabase no devolvió la campaña creada.");
@@ -3152,7 +3049,7 @@ async function createCampaign(event){
 
         closeCreateCampaignModal();
         status.textContent="";
-        const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+        const campaigns=await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
         renderCampaignSelector(campaigns);
     }catch(error){
         console.error("Create campaign error:",error);
@@ -3162,83 +3059,26 @@ async function createCampaign(event){
     }
 }
 
-let campaignOrderMode=false;
-let characterOrderMode=false;
-let galleryOrderMode=false;
-
-function orderValue(value,fallback=0){
-    const n=Number(value);
-    return Number.isFinite(n)?n:fallback;
-}
-
-async function saveCampaignOrder(campaigns){
-    for(let i=0;i<campaigns.length;i++){
-        const c=campaigns[i];
-        await supabaseRequest(`/campaigns?id=eq.${encodeURIComponent(c.id)}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sort_order:i})});
-        c.sort_order=i;
-    }
-}
-
-async function normalizeCampaignOrder(campaigns){
-    const visible=campaigns.filter(c=>c.name!==LEGACY_CAMPAIGN_NAME).slice().sort((a,b)=>{
-        const ao=orderValue(a.sort_order,NaN),bo=orderValue(b.sort_order,NaN);
-        if(Number.isFinite(ao)&&Number.isFinite(bo)&&ao!==bo)return ao-bo;
-        if(Number.isFinite(ao)!==Number.isFinite(bo))return Number.isFinite(ao)?-1:1;
-        return String(a.created_at||'').localeCompare(String(b.created_at||''));
-    });
-    const allEqual=visible.length>1&&visible.every(c=>orderValue(c.sort_order,0)===orderValue(visible[0].sort_order,0));
-    if(allEqual||visible.some(c=>!Number.isFinite(Number(c.sort_order)))) await saveCampaignOrder(visible);
-    return visible;
-}
-
-async function toggleCampaignOrderMode(){
-    if(campaignOrderMode){campaignOrderMode=false;await refreshCampaignSelector();return;}
-    campaignOrderMode=true;
-    const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
-    await normalizeCampaignOrder(campaigns);
-    renderCampaignSelector(campaigns);
-}
-
-async function refreshCampaignSelector(){
-    try{const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);renderCampaignSelector(campaigns);}catch(error){console.error('Campaign selector refresh error:',error);}
-}
-
-async function moveCampaign(id,direction){
-    const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
-    const visible=campaigns.filter(c=>c.name!==LEGACY_CAMPAIGN_NAME);
-    const index=visible.findIndex(c=>String(c.id)===String(id));
-    const target=index+direction;
-    if(index<0||target<0||target>=visible.length)return;
-    [visible[index],visible[target]]=[visible[target],visible[index]];
-    await saveCampaignOrder(visible);
-    renderCampaignSelector(campaigns);
-}
-
 function renderCampaignSelector(campaigns) {
     const grid = document.getElementById("campaignsGrid");
     if (!grid) return;
 
-    const visibleCampaigns = campaigns.filter(campaign => campaign.name !== LEGACY_CAMPAIGN_NAME).slice().sort((a,b)=>{
-        const ao=orderValue(a.sort_order,Number.MAX_SAFE_INTEGER),bo=orderValue(b.sort_order,Number.MAX_SAFE_INTEGER);
-        if(ao!==bo)return ao-bo;
-        return String(a.created_at||'').localeCompare(String(b.created_at||''));
-    });
+    const visibleCampaigns = campaigns.filter(campaign => campaign.name !== LEGACY_CAMPAIGN_NAME);
 
-    grid.innerHTML = visibleCampaigns.map((campaign,index) => {
+    grid.innerHTML = visibleCampaigns.map(campaign => {
         const config = getCampaignConfig(campaign);
         const description = config?.description || campaign.description || "Campaña de rol";
         const logo = getCampaignLogo(campaign);
         const logoHtml = logo
             ? `<img class="campaign-card-logo" src="${logo}" alt="Logo de ${escapeHtml(campaign.name)}">`
             : `<div class="campaign-card-logo campaign-card-empty-logo">🎲</div>`;
-        const openAction=campaignOrderMode?'':`onclick="selectCampaign('${campaign.id}')"`;
-        const sortControls=campaignOrderMode?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCampaign('${campaign.id}',-1)">↑</button><button class="secondary" ${index===visibleCampaigns.length-1?'disabled':''} onclick="moveCampaign('${campaign.id}',1)">↓</button></div>`:'';
-        return `<article class="campaign-card" ${openAction}>
+
+        return `<article class="campaign-card" onclick="selectCampaign('${campaign.id}')">
             ${logoHtml}
             <div class="campaign-card-content">
                 <h3>${escapeHtml(campaign.name)}</h3>
                 <p>${escapeHtml(description)}</p>
-                ${campaignOrderMode?sortControls:`<button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>`}
+                <button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>
             </div>
         </article>`;
     }).join("");
@@ -3246,7 +3086,7 @@ function renderCampaignSelector(campaigns) {
     document.getElementById("campaignSelectorView").style.display = "block";
     document.getElementById("campaignView").style.display = "none";
     document.getElementById("characterView").style.display = "none";
-    document.getElementById("headerSubtitle").textContent = campaignOrderMode ? "Ordena tus campañas" : "Gestor de campañas de rol";
+    document.getElementById("headerSubtitle").textContent = "Gestor de campañas de rol";
 }
 
 async function selectCampaign(id) {
@@ -3258,7 +3098,6 @@ async function selectCampaign(id) {
         currentCampaignId = rows[0].id;
         currentCharacterId = null;
         currentCharacterRow = null;
-        characterOrderMode=false; galleryOrderMode=false;
 
         if (currentCampaign.name === DEFAULT_CAMPAIGN_NAME) {
             await seedOlimpoCharacters();
@@ -3272,7 +3111,6 @@ async function selectCampaign(id) {
 }
 
 function showCampaignSelector() {
-    campaignOrderMode=false; characterOrderMode=false; galleryOrderMode=false;
     document.body.classList.remove("bestiary-mode");
     document.getElementById("bestiaryView")?.style && (document.getElementById("bestiaryView").style.display="none");
     currentCampaign = null;
@@ -3280,7 +3118,7 @@ function showCampaignSelector() {
     currentCharacterId = null;
     currentCharacterRow = null;
 
-    supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`)
+    supabaseRequest(`/campaigns?select=*&order=created_at.asc`)
         .then(campaigns => renderCampaignSelector(campaigns))
         .catch(error => {
             console.error("Campaign selector error:", error);
@@ -3290,9 +3128,9 @@ function showCampaignSelector() {
 async function seedOlimpoCharacters(){
     const existing = await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*`);
     const seeds = [
-      {name:"Marte Cygnus",character_type:"pj",player_slot:1,sort_order:1,attributes:{fortaleza:7,reflejos:3,voluntad:4,inteligencia:6},skills:{formaFisica:7,combate:6,percepcion:5,subterfugio:3,comunicacion:6,cultura:5,ocultismo:5,gestionEmocional:4}},
-      {name:"Gaia Dione",character_type:"pj",player_slot:2,sort_order:2,attributes:{fortaleza:3,reflejos:5,voluntad:5,inteligencia:7},skills:{formaFisica:3,combate:5,percepcion:5,subterfugio:6,comunicacion:7,cultura:6,ocultismo:3,gestionEmocional:5}},
-      {name:"Asterion Delmaris",character_type:"npc",player_slot:null,sort_order:1,attributes:{fortaleza:5,reflejos:5,voluntad:6,inteligencia:7},skills:{formaFisica:6,combate:5,percepcion:8,subterfugio:5,comunicacion:6,cultura:8,ocultismo:8,gestionEmocional:3}}
+      {name:"Marte Cygnus",character_type:"pj",player_slot:1,attributes:{fortaleza:7,reflejos:3,voluntad:4,inteligencia:6},skills:{formaFisica:7,combate:6,percepcion:5,subterfugio:3,comunicacion:6,cultura:5,ocultismo:5,gestionEmocional:4}},
+      {name:"Gaia Dione",character_type:"pj",player_slot:2,attributes:{fortaleza:3,reflejos:5,voluntad:5,inteligencia:7},skills:{formaFisica:3,combate:5,percepcion:5,subterfugio:6,comunicacion:7,cultura:6,ocultismo:3,gestionEmocional:5}},
+      {name:"Asterion Delmaris",character_type:"npc",player_slot:null,attributes:{fortaleza:5,reflejos:5,voluntad:6,inteligencia:7},skills:{formaFisica:6,combate:5,percepcion:8,subterfugio:5,comunicacion:6,cultura:8,ocultismo:8,gestionEmocional:3}}
     ];
     for(const seed of seeds){
       if(!existing.some(r=>r.name===seed.name)){
@@ -3302,7 +3140,7 @@ async function seedOlimpoCharacters(){
 }
 
 async function getCampaignCharacters(){
-    return await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*&order=sort_order.asc,player_slot.asc,name.asc`);
+    return await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*&order=player_slot.asc,name.asc`);
 }
 
 const SESSION_ARC_PLACEHOLDER = "__ROL_FICHA_EMPTY_ARC__";
@@ -3415,55 +3253,6 @@ function normalizeSearchText(value){
     return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
 
-async function saveCharacterOrder(rows){
-    for(let i=0;i<rows.length;i++){
-        const row=rows[i];
-        await supabaseRequest(`/characters?id=eq.${encodeURIComponent(row.id)}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sort_order:i})});
-        row.sort_order=i;
-    }
-}
-
-function characterDisplayOrder(rows,type){
-    return rows.filter(r=>r.character_type===type).slice().sort((a,b)=>{
-        const ao=orderValue(a.sort_order,Number.MAX_SAFE_INTEGER),bo=orderValue(b.sort_order,Number.MAX_SAFE_INTEGER);
-        if(ao!==bo)return ao-bo;
-        if(type==='pj')return Number(a.player_slot||999)-Number(b.player_slot||999);
-        return String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'});
-    });
-}
-
-async function normalizeCharacterOrder(rows){
-    for(const type of ['pj','npc']){
-        const list=characterDisplayOrder(rows,type);
-        const allEqual=list.length>1&&list.every(r=>orderValue(r.sort_order,0)===orderValue(list[0].sort_order,0));
-        if(allEqual||list.some(r=>!Number.isFinite(Number(r.sort_order)))) await saveCharacterOrder(list);
-    }
-}
-
-async function toggleCharacterOrderMode(){
-    if(characterOrderMode){characterOrderMode=false;await renderCampaign();return;}
-    characterOrderMode=true;
-    const rows=await getCampaignCharacters();
-    await normalizeCharacterOrder(rows);
-    window.__campaignCharacterRows=rows;
-    renderCampaignCharacters(rows);
-}
-
-async function moveCharacterOrder(id,direction){
-    const rows=await getCampaignCharacters();
-    const row=rows.find(r=>String(r.id)===String(id));
-    if(!row)return;
-    const list=characterDisplayOrder(rows,row.character_type);
-    const index=list.findIndex(r=>String(r.id)===String(id));
-    const target=index+direction;
-    if(index<0||target<0||target>=list.length)return;
-    [list[index],list[target]]=[list[target],list[index]];
-    await saveCharacterOrder(list);
-    const fresh=await getCampaignCharacters();
-    window.__campaignCharacterRows=fresh;
-    renderCampaignCharacters(fresh);
-}
-
 function renderCampaignCharacters(rows){
     const query=normalizeSearchText(document.getElementById('campaignCharacterSearch')?.value||'');
     const playerNamesByCampaign=campaignPlayerNamesByCampaign[currentCampaign?.name]||{};
@@ -3473,32 +3262,28 @@ function renderCampaignCharacters(rows){
         const type=r.character_type==='npc'?'npc':'pj';
         return [r.name,playerName,type,type==='pj'?'jugador':'master','npc'].some(v=>normalizeSearchText(v).includes(query));
     });
+
     const players=document.getElementById('playersGrid');
     const npcs=document.getElementById('npcsGrid');
     if(!players||!npcs)return;
 
-    const pjRows=characterDisplayOrder(filtered,'pj');
-    const slots=pjRows.map(r=>Number(r.player_slot)).filter(Boolean);
-    const filteredPlayerRows=pjRows;
+    const slots=[...new Set([...Object.keys(campaignPlayerNames).map(Number),...rows.filter(r=>r.character_type==='pj'&&r.player_slot).map(r=>Number(r.player_slot))])].sort((a,b)=>a-b);
+    const filteredPlayerRows=filtered.filter(r=>r.character_type==='pj');
     const visiblePlayerSlots=slots.filter(slot=>{
-        const row=pjRows.find(r=>Number(r.player_slot)===slot);
+        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot]||`Jugador ${slot}`);
         if(!query)return true;
         return normalizeSearchText(playerName).includes(query)||!!filteredPlayerRows.some(r=>Number(r.player_slot)===slot);
     });
 
-    players.innerHTML=visiblePlayerSlots.map((slot,index)=>{
-        const row=pjRows.find(r=>Number(r.player_slot)===slot);
+    players.innerHTML=visiblePlayerSlots.map(slot=>{
+        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
-        const controls=characterOrderMode&&row?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCharacterOrder('${row.id}',-1)">↑</button><button class="secondary" ${index===visiblePlayerSlots.length-1?'disabled':''} onclick="moveCharacterOrder('${row.id}',1)">↓</button></div>`:'';
-        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions">${characterOrderMode?controls:`<button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>`}</div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
+        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
     }).join('');
 
-    const filteredNpcs=characterDisplayOrder(filtered,'npc');
-    npcs.innerHTML=filteredNpcs.map((row,index)=>{
-        const controls=characterOrderMode?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCharacterOrder('${row.id}',-1)">↑</button><button class="secondary" ${index===filteredNpcs.length-1?'disabled':''} onclick="moveCharacterOrder('${row.id}',1)">↓</button></div>`:'';
-        return `<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions">${characterOrderMode?controls:`<button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>`}</div></article>`;
-    }).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
+    const filteredNpcs=filtered.filter(r=>r.character_type==='npc');
+    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
 
     const count=document.getElementById('campaignCharacterSearchCount');
     if(count) count.textContent=query ? `${filtered.length} resultado${filtered.length===1?'':'s'}` : `${rows.length} personajes`;
@@ -3512,8 +3297,6 @@ async function renderCampaign(){
     const rows=await getCampaignCharacters();
     window.__campaignCharacterRows=rows;
     const config = getCampaignConfig(currentCampaign);
-    const legacyHerbariumButton=document.getElementById('legacyHerbariumButton');
-    if(legacyHerbariumButton) legacyHerbariumButton.style.display=/Amor de Otro Mundo:\s*El Legado/i.test(String(currentCampaign?.name||''))?'inline-flex':'none';
     document.getElementById('campaignTitle').textContent=currentCampaign.name;
     document.getElementById('campaignDescription').textContent=config?.description || currentCampaign.description || 'Campaña de rol';
     document.getElementById('headerSubtitle').textContent=currentCampaign.name;
@@ -3548,7 +3331,7 @@ async function openCharacter(id){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function showCampaignView(){document.body.classList.remove("bestiary-mode","bestiary-infection-mode","herbarium-mode");document.getElementById("bestiaryView")?.style && (document.getElementById("bestiaryView").style.display="none");document.getElementById("herbariumView")?.style && (document.getElementById("herbariumView").style.display="none");renderCampaign();}
+function showCampaignView(){document.body.classList.remove("bestiary-mode");document.getElementById("bestiaryView")?.style && (document.getElementById("bestiaryView").style.display="none");renderCampaign();}
 
 async function deleteCharacter(id,event){
   if(event){event.stopPropagation();event.preventDefault();}
@@ -3613,14 +3396,14 @@ async function deleteCurrentCampaign(){
 
 async function createPlayerCharacter(slot){
   const name=prompt(`Nombre del PJ para Jugador ${slot}:`); if(!name)return;
-  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"pj",player_slot:slot,sort_order:Date.now(),attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
+  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"pj",player_slot:slot,attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
   await supabaseRequest("/characters",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify(row)});
   await renderCampaign();
 }
 
 async function createNpc(){
   const name=prompt("Nombre del NPC:"); if(!name)return;
-  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"npc",player_slot:null,sort_order:Date.now(),attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
+  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"npc",player_slot:null,attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
   await supabaseRequest("/characters",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify(row)});
   await renderCampaign();
 }
@@ -3863,6 +3646,7 @@ function updateCalculation() {
 ========================================= */
 
 let dice = [null, null, null];
+let pendingWeaponQuickAttack = null;
 
 let currentMode = "normal";
 
@@ -4089,7 +3873,79 @@ function startDramaTalent() {
    PRUEBAS RÁPIDAS
 ========================================= */
 
+function getLiveWeaponRows(){
+    return normalizeWeapons([...document.querySelectorAll("#weaponsList .weapon-row")].map(row=>({
+        name:row.querySelector(".weapon-name")?.value.trim()||"",
+        damage:row.querySelector(".weapon-damage")?.value.trim()||"",
+        notes:row.querySelector(".weapon-notes")?.value.trim()||""
+    })));
+}
+function closeWeaponQuickPanel(){
+    const panel=document.getElementById("weaponQuickPanel");
+    if(panel){panel.hidden=true;panel.innerHTML="";}
+    pendingWeaponQuickAttack=null;
+}
+function openWeaponQuickPanel(){
+    const panel=document.getElementById("weaponQuickPanel");
+    if(!panel)return;
+    const weapons=getLiveWeaponRows();
+    if(!weapons.length){
+        panel.hidden=false;
+        panel.innerHTML='<h5>⚔️ Ataque con arma</h5><p class="sheet-help">Primero añade un arma en la sección «Armas / ataques» de la ficha.</p>';
+        return;
+    }
+    if(getDiceMode()!=="3d10" && typeof setDiceMode==='function') setDiceMode("3d10");
+    panel.hidden=false;
+    panel.innerHTML=`<h5>⚔️ Elige un arma</h5><div class="weapon-quick-list">${weapons.map((w,i)=>`<button type="button" class="secondary weapon-quick-choice" onclick="selectWeaponQuickAttack(${i})"><span>${escapeHtml(w.name||"Arma")}</span><small>Daño: ${escapeHtml(w.damage||"—")}</small></button>`).join("")}</div>`;
+    panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function selectWeaponQuickAttack(index){
+    const weapons=getLiveWeaponRows(),weapon=weapons[index];
+    const panel=document.getElementById("weaponQuickPanel");
+    if(!weapon||!panel)return;
+    const damageCode=normalizeWeaponDamageCode(weapon.damage);
+    if(!damageCode){
+        alert(`El daño de «${weapon.name||"esta arma"}» debe usar una combinación válida de m, C y M (por ejemplo: m, C, M, mC, mM, CM o mCM).`);
+        return;
+    }
+    weapon.damage=damageCode;
+    pendingWeaponQuickAttack={...weapon};
+    panel.hidden=false;
+    panel.innerHTML=`<div class="weapon-quick-selected"><strong>⚔️ ${escapeHtml(weapon.name||"Arma")}</strong><br><small>Daño: ${escapeHtml(weapon.damage)}</small></div><div class="quick-modes"><button onclick="quickWeaponRoll('normal')">Normal</button><button onclick="quickWeaponRoll('talent')">Talento</button><button onclick="quickWeaponRoll('drama')">Drama</button><button onclick="quickWeaponRoll('dramaTalent')">Drama + Talento</button></div><button type="button" class="secondary" style="margin-top:8px" onclick="openWeaponQuickPanel()">↩ Cambiar arma</button>`;
+}
+function quickWeaponRoll(mode){
+    if(!pendingWeaponQuickAttack)return;
+    if(getDiceMode()!=="3d10" && typeof setDiceMode==='function') setDiceMode("3d10");
+    quickRoll("reflejos","combate",mode);
+}
+function normalizeWeaponDamageCode(damage){
+    const raw=String(damage||"").trim();
+    if(!raw)return null;
+    const code=raw.replace(/\s+/g,"").toLowerCase();
+    if(!/^[mc]+$/.test(code))return null;
+    if(new Set(code.split("")).size!==code.length)return null;
+    // Damage notation is case-sensitive: m = lowest, C = middle, M = highest.
+    // Accept the seven useful combinations without requiring a fixed order.
+    const original=raw.replace(/\s+/g,"");
+    if(!/^[mCM]+$/.test(original))return null;
+    const unique=[...new Set(original.split(""))];
+    if(unique.length!==original.length)return null;
+    return ["m","C","M"].filter(ch=>unique.includes(ch)).join("");
+}
+function getWeaponDamageValue(damage){
+    const code=normalizeWeaponDamageCode(damage);
+    if(!code)return null;
+    const sorted=dice.filter(v=>Number.isFinite(Number(v))).map(Number).sort((a,b)=>a-b);
+    if(sorted.length<3)return null;
+    const values={m:sorted[0],C:sorted[1],M:sorted[2]};
+    return code.split("").reduce((total,part)=>total+values[part],0);
+}
+
 function quickRoll(attribute, skill, mode) {
+
+    if(!(attribute==="reflejos" && skill==="combate") && pendingWeaponQuickAttack){
+        closeWeaponQuickPanel();
+    }
 
     document.getElementById("attributeSelect").value = attribute;
     document.getElementById("skillSelect").value = skill;
@@ -4657,6 +4513,8 @@ function applyBaseValue(
     const modifierInfo=getCurrentRollModifierSummary();
     const modifierTotal=modifierInfo.total;
     const finalResult=base+diceResult+modifierTotal;
+    const weaponAttack=pendingWeaponQuickAttack;
+    const weaponDamage=weaponAttack?getWeaponDamageValue(weaponAttack.damage):null;
 
     document.getElementById(
         "resultNumber"
@@ -4669,6 +4527,8 @@ function applyBaseValue(
     ).textContent =
 
         explanation +
+
+        (weaponAttack && weaponDamage!=null ? ` ⚔️ ${weaponAttack.name}: daño ${weaponDamage} (dados ${weaponAttack.damage}).` : "") +
 
         " Base de personaje: " +
 
@@ -4686,6 +4546,11 @@ function applyBaseValue(
 
         finalResult +
         ".";
+    if(weaponAttack){
+        pendingWeaponQuickAttack=null;
+        const panel=document.getElementById("weaponQuickPanel");
+        if(panel){panel.hidden=true;panel.innerHTML="";}
+    }
 }
 
 
@@ -4767,90 +4632,6 @@ initializeSharedStorage().catch(error=>{
 
 
 
-<script id="herbariumFeature">
-const HERBARIUM_PREFIX='herbarium/';
-let herbariumEntries=[];
-let activeHerbariumEntryId=null;
-let herbariumEditorOpen=false;
-function herbariumRootPrefix(){return `${HERBARIUM_PREFIX}${currentCampaignId}/`;}
-function herbariumEntryPrefix(id){return `${herbariumRootPrefix()}${id}/`;}
-function herbariumEntryUrl(id,file){return galleryPublicUrl(herbariumEntryPrefix(id)+file);}
-function herbariumNewId(){return `${Date.now()}-${Math.random().toString(36).slice(2,9)}`;}
-function isLegacyCampaign(){return /Amor de Otro Mundo:\s*El Legado/i.test(String(currentCampaign?.name||''));}
-async function loadHerbariumEntries(){
-  if(!currentCampaignId)return [];
-  const folders=await storageList(herbariumRootPrefix());
-  const ids=folders.filter(x=>!x.id&&x.name).map(x=>String(x.name).replace(/\/$/,'')).filter(Boolean);
-  const entries=[];
-  for(const id of ids){
-    try{
-      const meta=await storageList(herbariumEntryPrefix(id));
-      const json=meta.find(x=>x.name==='entry.json');
-      if(!json)continue;
-      const response=await fetch(herbariumEntryUrl(id,'entry.json'),{cache:'no-store'});
-      if(!response.ok)continue;
-      const entry=await response.json();
-      const photos=meta.filter(x=>x.name && /^photo-/i.test(String(x.name))).map(x=>String(x.name)).sort();
-      entry.photos=photos;entry.id=id;entries.push(entry);
-    }catch(error){console.warn('Herbarium entry load warning:',error);}
-  }
-  return entries.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
-}
-async function openHerbarium(){
-  if(!currentCampaignId||!currentCampaign||!isLegacyCampaign())return;
-  document.body.classList.add('herbarium-mode');
-  document.body.classList.remove('bestiary-mode','bestiary-infection-mode');
-  document.getElementById('campaignView').style.display='none';
-  document.getElementById('characterView').style.display='none';
-  document.getElementById('bestiaryView').style.display='none';
-  document.getElementById('herbariumView').style.display='block';
-  document.getElementById('herbariumTitle').textContent=`Herbario · ${currentCampaign.name}`;
-  document.getElementById('herbariumSubtitle').textContent='Cuaderno botánico para plantas, flores y especies mágicas del Legado.';
-  activeHerbariumEntryId=null;herbariumEditorOpen=false;document.getElementById('herbariumSearch').value='';
-  showHerbariumIndex();window.scrollTo({top:0,behavior:'smooth'});
-}
-function closeHerbarium(){document.body.classList.remove('herbarium-mode');document.getElementById('herbariumView').style.display='none';activeHerbariumEntryId=null;herbariumEditorOpen=false;renderCampaign();window.scrollTo({top:0,behavior:'smooth'});}
-async function renderHerbariumIndex(){
-  const index=document.getElementById('herbariumIndex');if(!index)return;
-  try{
-    herbariumEntries=await loadHerbariumEntries();
-    const query=String(document.getElementById('herbariumSearch')?.value||'').trim().toLocaleLowerCase('es');
-    const filtered=herbariumEntries.filter(e=>[e.name,e.epithet,e.classification,e.rarity,e.habitat,e.origin,e.description,e.effects].some(v=>String(v||'').toLocaleLowerCase('es').includes(query)));
-    document.getElementById('herbariumCount').textContent=`${filtered.length} ${filtered.length===1?'planta':'plantas'}`;
-    index.innerHTML=filtered.length?filtered.map(entry=>{const cover=entry.photos?.[0]?herbariumEntryUrl(entry.id,entry.photos[0]):'';return `<article class="herbarium-card" onclick="openHerbariumEntry('${escapeHtml(entry.id)}')"><div class="herbarium-card-cover">${cover?`<img src="${escapeHtml(cover)}" alt="">`:'🌿'}</div><div class="herbarium-card-body"><h3>${escapeHtml(entry.name||'Sin nombre')}</h3><p>${escapeHtml(entry.epithet||entry.classification||entry.rarity||'Registro sin clasificar')}</p></div></article>`;}).join(''):`<div class="herbarium-empty" style="grid-column:1/-1;padding:30px;color:#806b4d;font-style:italic;">${query?'No se encontraron plantas que coincidan con la búsqueda.':'El cuaderno está vacío. Todavía no se ha registrado ninguna planta.'}</div>`;
-  }catch(error){console.error('Herbarium index error:',error);index.innerHTML='<div style="padding:30px;color:#806b4d;">⚠ No se pudo cargar el herbario.</div>';}
-}
-function showHerbariumIndex(){activeHerbariumEntryId=null;herbariumEditorOpen=false;document.getElementById('herbariumIndexView').style.display='block';document.getElementById('herbariumPageView').classList.remove('open');renderHerbariumIndex();}
-function openCreateHerbariumModal(){document.getElementById('newHerbariumName').value='';document.getElementById('newHerbariumEpithet').value='';document.getElementById('createHerbariumModal').classList.add('open');setTimeout(()=>document.getElementById('newHerbariumName')?.focus(),30);}
-function closeCreateHerbariumModal(){document.getElementById('createHerbariumModal')?.classList.remove('open');}
-async function createHerbariumEntry(event){
-  event.preventDefault();const name=document.getElementById('newHerbariumName').value.trim();const epithet=document.getElementById('newHerbariumEpithet').value.trim();if(!name)return;
-  const id=herbariumNewId();const entry={id,name,epithet,classification:'',rarity:'',habitat:'',origin:'',description:'',effects:'',cultivation:'',warnings:'',notes:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
-  try{await storageUpload(herbariumEntryPrefix(id)+'entry.json',new Blob([JSON.stringify(entry)],{type:'application/json'}),'application/json');closeCreateHerbariumModal();await openHerbariumEntry(id);}catch(error){console.error('Create herbarium entry error:',error);alert('No se pudo crear la planta. Revisa los permisos del almacenamiento.');}
-}
-async function openHerbariumEntry(id){try{herbariumEntries=await loadHerbariumEntries();const entry=herbariumEntries.find(e=>String(e.id)===String(id));if(!entry)return;activeHerbariumEntryId=entry.id;document.getElementById('herbariumIndexView').style.display='none';document.getElementById('herbariumPageView').classList.add('open');renderHerbariumEntry(entry);window.scrollTo({top:0,behavior:'smooth'});}catch(error){console.error('Open herbarium entry error:',error);alert('No se pudo abrir la planta.');}}
-function renderHerbariumEntry(entry){
-  document.getElementById('herbariumPageTitle').textContent=entry.name||'Sin nombre';document.getElementById('herbariumPageEpithet').textContent=entry.epithet||'';
-  const photos=entry.photos||[];const frame=document.getElementById('herbariumPortraitFrame');frame.innerHTML=photos.length?`<img class="herbarium-portrait" src="${escapeHtml(herbariumEntryUrl(entry.id,photos[0]))}" alt="${escapeHtml(entry.name||'Planta')}" onclick="openGalleryLightbox('${escapeHtml(herbariumEntryUrl(entry.id,photos[0]))}')">`:'<div class="herbarium-portrait-empty">Aún no hay una ilustración registrada.<br>Añade una imagen para comenzar la página.</div>';
-  const fields=[['Clasificación',entry.classification],['Rareza',entry.rarity],['Hábitat',entry.habitat],['Origen',entry.origin],['Descripción',entry.description],['Propiedades / efectos mágicos',entry.effects],['Cultivo y cuidados',entry.cultivation],['Riesgos / advertencias',entry.warnings],['Notas / observaciones',entry.notes]];
-  document.getElementById('herbariumInfo').innerHTML=fields.filter(([,v])=>String(v||'').trim()).map(([label,value])=>`<section class="herbarium-field"><span class="herbarium-label">${escapeHtml(label)}</span>${label==='Clasificación'||label==='Rareza'?`<span class="herbarium-classification">${escapeHtml(value)}</span>`:`<p class="herbarium-text">${escapeHtml(value)}</p>`}</section>`).join('')||'<div style="padding:20px 0;color:#806b4d;font-style:italic;">Esta página todavía no contiene información. Pulsa <strong>Editar</strong> para comenzar.</div>';
-  const idx=herbariumEntries.findIndex(e=>String(e.id)===String(entry.id));document.getElementById('herbariumPageNumber').textContent=`Página ${Math.max(1,idx+1)} de ${Math.max(1,herbariumEntries.length)}`;document.getElementById('herbariumPrevButton').disabled=idx<=0;document.getElementById('herbariumNextButton').disabled=idx<0||idx>=herbariumEntries.length-1;
-  const fieldsMap={Name:'name',Epithet:'epithet',Classification:'classification',Rarity:'rarity',Habitat:'habitat',Origin:'origin',Description:'description',Effects:'effects',Cultivation:'cultivation',Warnings:'warnings',Notes:'notes'};Object.entries(fieldsMap).forEach(([suffix,key])=>{const el=document.getElementById('he'+suffix);if(el)el.value=entry[key]||'';});document.getElementById('herbariumEditor').classList.toggle('open',herbariumEditorOpen);
-}
-function toggleHerbariumEditor(force){herbariumEditorOpen=typeof force==='boolean'?force:!herbariumEditorOpen;document.getElementById('herbariumEditor').classList.toggle('open',herbariumEditorOpen);}
-async function saveCurrentHerbariumEntry(){
-  const entry=herbariumEntries.find(e=>String(e.id)===String(activeHerbariumEntryId));if(!entry)return;
-  const data={...entry,name:document.getElementById('heName').value.trim(),epithet:document.getElementById('heEpithet').value.trim(),classification:document.getElementById('heClassification').value.trim(),rarity:document.getElementById('heRarity').value.trim(),habitat:document.getElementById('heHabitat').value.trim(),origin:document.getElementById('heOrigin').value.trim(),description:document.getElementById('heDescription').value,effects:document.getElementById('heEffects').value,cultivation:document.getElementById('heCultivation').value,warnings:document.getElementById('heWarnings').value,notes:document.getElementById('heNotes').value,updatedAt:new Date().toISOString()};delete data.photos;
-  try{await storageUpload(herbariumEntryPrefix(entry.id)+'entry.json',new Blob([JSON.stringify(data)],{type:'application/json'}),'application/json');herbariumEditorOpen=false;herbariumEntries=await loadHerbariumEntries();const fresh=herbariumEntries.find(e=>String(e.id)===String(entry.id));if(fresh)renderHerbariumEntry(fresh);else showHerbariumIndex();}catch(error){console.error('Save herbarium entry error:',error);alert('No se pudo guardar la planta.');}
-}
-function navigateHerbarium(direction){const idx=herbariumEntries.findIndex(e=>String(e.id)===String(activeHerbariumEntryId));const next=herbariumEntries[idx+direction];if(next)openHerbariumEntry(next.id);}
-function uploadHerbariumImages(){document.getElementById('herbariumImageInput')?.click();}
-async function handleHerbariumImageInput(event){const files=[...(event.target.files||[])];const entry=herbariumEntries.find(e=>String(e.id)===String(activeHerbariumEntryId));if(!entry||!files.length)return;try{const existing=entry.photos||[];for(let i=0;i<files.length;i++){const ext=(files[i].name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';const name=`photo-${String(existing.length+i+1).padStart(3,'0')}.${ext}`;await storageUpload(herbariumEntryPrefix(entry.id)+name,files[i],files[i].type||'image/jpeg');}herbariumEntries=await loadHerbariumEntries();const fresh=herbariumEntries.find(e=>String(e.id)===String(entry.id));if(fresh)renderHerbariumEntry(fresh);}catch(error){console.error('Herbarium image upload error:',error);alert('No se pudieron subir las imágenes.');}finally{event.target.value='';}}
-async function deleteCurrentHerbariumEntry(){
-  const entry=herbariumEntries.find(e=>String(e.id)===String(activeHerbariumEntryId));if(!entry)return;if(!confirm(`¿Eliminar la planta «${entry.name}» y todos sus datos e imágenes?\n\nEsta acción no se puede deshacer.`))return;
-  try{const prefix=herbariumEntryPrefix(entry.id);const items=await storageList(prefix);const paths=items.filter(x=>x&&x.name&&x.id!==null).map(x=>prefix+String(x.name).replace(/^\//,''));if(paths.length)await storageDeletePaths(paths);const remaining=await storageList(prefix);if(remaining.some(x=>x&&x.name&&x.id!==null))throw new Error('Quedan archivos de la planta en Storage.');herbariumEntries=herbariumEntries.filter(e=>String(e.id)!==String(entry.id));activeHerbariumEntryId=null;herbariumEditorOpen=false;showHerbariumIndex();}catch(error){console.error('Delete herbarium entry error:',error);alert('No se pudo eliminar completamente la planta. No se ha ocultado como si estuviera borrada.');}
-}
-</script>
 <script id="bestiaryFeature">
 const BESTIARY_PREFIX='bestiary/';
 let bestiaryEntries=[];
@@ -4899,9 +4680,8 @@ async function openBestiary(){
 }
 
 function closeBestiary(){
-  document.body.classList.remove('bestiary-mode','bestiary-infection-mode','herbarium-mode');
+  document.body.classList.remove('bestiary-mode','bestiary-infection-mode');
   document.getElementById('bestiaryView').style.display='none';
-  document.getElementById('herbariumView')?.style && (document.getElementById('herbariumView').style.display='none');
   activeBestiaryEntryId=null;
   bestiaryEditorOpen=false;
   renderCampaign();
@@ -5049,32 +4829,14 @@ function navigateBestiary(direction){
 async function deleteCurrentBestiaryEntry(){
   const entry=bestiaryEntries.find(e=>String(e.id)===String(activeBestiaryEntryId));
   if(!entry)return;
-  if(!confirm(`¿Eliminar la entrada «${entry.name}» y todos sus datos e imágenes?\n\nSe borrará permanentemente del almacenamiento de la campaña. Esta acción no se puede deshacer.`))return;
+  if(!confirm(`¿Eliminar la entrada «${entry.name}» y todas sus imágenes?\n\nEsta acción no se puede deshacer.`))return;
   try{
-    const prefix=bestiaryEntryPrefix(entry.id);
-    const items=await storageList(prefix);
-    const paths=items
-      .filter(x=>x && x.name && x.id!==null)
-      .map(x=>prefix+String(x.name).replace(/^\//,''));
-
-    if(paths.length) await storageDeletePaths(paths);
-
-    // Verificación real en Storage: no damos por borrada la criatura hasta comprobarlo.
-    const remaining=await storageList(prefix);
-    const remainingFiles=remaining.filter(x=>x && x.name && x.id!==null);
-    if(remainingFiles.length){
-      throw new Error(`Quedan ${remainingFiles.length} archivos de la entrada en Storage.`);
-    }
-
-    bestiaryEntries=bestiaryEntries.filter(e=>String(e.id)!==String(entry.id));
+    const items=await storageList(bestiaryEntryPrefix(entry.id));
+    for(const item of items.filter(x=>x.name&&x.id!==null))await storageDelete(bestiaryEntryPrefix(entry.id)+item.name);
     activeBestiaryEntryId=null;
-    bestiaryEditorOpen=false;
     await renderBestiaryIndex();
     showBestiaryIndex();
-  }catch(error){
-    console.error('Delete bestiary entry error:',error);
-    alert('No se pudo eliminar completamente la criatura. No se ha ocultado como si estuviera borrada.\n\nRevisa la consola para ver el detalle.');
-  }
+  }catch(error){console.error('Delete bestiary entry error:',error);alert('No se pudo eliminar la entrada.');}
 }
 
 function uploadBestiaryImages(){document.getElementById('bestiaryImageInput')?.click();}
@@ -5114,67 +4876,11 @@ async function storageUpload(path,fileOrBlob,contentType){
   const response=await fetch(`${SUPABASE_URL}/storage/v1/object/${GALLERY_BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':contentType||fileOrBlob.type||'application/octet-stream','x-upsert':'true'},body:fileOrBlob});
   if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
 }
-async function storageDeletePaths(paths){
-  const unique=[...new Set((paths||[]).filter(Boolean))];
-  for(let i=0;i<unique.length;i+=1000){
-    const batch=unique.slice(i,i+1000);
-    const response=await fetch(`${SUPABASE_URL}/storage/v1/object/${GALLERY_BUCKET}`,{
-      method:'DELETE',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},
-      body:JSON.stringify({prefixes:batch})
-    });
-    if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
-  }
-}
-
 async function storageDelete(path){
-  return storageDeletePaths([path]);
+  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/remove/${GALLERY_BUCKET}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});
+  if(!response.ok && response.status!==404){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
 }
 async function getGalleryCharacters(){return currentCampaignId?await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=id,name,character_type,player_slot&order=name.asc`):[];}
-
-async function saveGalleryAlbumMetadata(album){
-  const data={name:album.name||'Álbum',description:album.description||'',section:album.section||'General',characterId:album.characterId||null,characterName:album.characterName||'',createdAt:album.createdAt||new Date().toISOString(),sortOrder:orderValue(album.sortOrder,0)};
-  await storageUpload(galleryAlbumPrefix(album.id)+'album.json',new Blob([JSON.stringify(data)],{type:'application/json'}),'application/json');
-}
-
-function sortGalleryAlbums(albums){
-  return albums.slice().sort((a,b)=>{
-    const sa=orderValue(a.sortOrder,Number.MAX_SAFE_INTEGER),sb=orderValue(b.sortOrder,Number.MAX_SAFE_INTEGER);
-    if(sa!==sb)return sa-sb;
-    return String(a.createdAt||a.name||'').localeCompare(String(b.createdAt||b.name||''),'es',{sensitivity:'base'});
-  });
-}
-
-async function normalizeGalleryAlbumOrder(albums){
-  const groups={};
-  for(const album of albums.filter(a=>a.id!=='_loose'))(groups[album.section||'General'] ||= []).push(album);
-  for(const list of Object.values(groups)){
-    const sorted=sortGalleryAlbums(list);
-    for(let i=0;i<sorted.length;i++){sorted[i].sortOrder=i;await saveGalleryAlbumMetadata(sorted[i]);}
-  }
-}
-
-async function toggleGalleryOrderMode(){
-  if(galleryOrderMode){galleryOrderMode=false;await renderGallery();return;}
-  galleryOrderMode=true;
-  const albums=await loadGalleryAlbums();
-  await normalizeGalleryAlbumOrder(albums);
-  await renderGallery();
-}
-
-async function moveGalleryAlbum(id,direction){
-  const albums=await loadGalleryAlbums();
-  const album=albums.find(a=>String(a.id)===String(id));
-  if(!album||album.id==='_loose')return;
-  const sameSection=sortGalleryAlbums(albums.filter(a=>a.id!=='_loose'&&(a.section||'General')===(album.section||'General')));
-  const index=sameSection.findIndex(a=>String(a.id)===String(id));
-  const target=index+direction;
-  if(index<0||target<0||target>=sameSection.length)return;
-  [sameSection[index],sameSection[target]]=[sameSection[target],sameSection[index]];
-  for(let i=0;i<sameSection.length;i++){sameSection[i].sortOrder=i;await saveGalleryAlbumMetadata(sameSection[i]);}
-  activeGalleryAlbumId=id;
-  await renderGallery(id);
-}
 
 async function loadGalleryAlbums(){
   if(!currentCampaignId)return [];
@@ -5200,7 +4906,7 @@ async function loadGalleryAlbums(){
       albums.push({...data,id:folder,photosCount:photos.length,cover,photoItems:photos});
     }catch(error){console.warn('Gallery album read error',folder,error);}
   }
-  return sortGalleryAlbums(albums);
+  return albums.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
 }
 
 function galleryMatches(album,query){
@@ -5226,23 +4932,13 @@ async function renderGallery(selectAlbumId=null){
     if(count)count.textContent=`${filtered.length} álbum${filtered.length===1?'':'es'}`;
     const grouped={};
     filtered.forEach(album=>{const section=album.section||'General';(grouped[section] ||= []).push(album);});
-    const groupedHtml=Object.entries(grouped).map(([section,items])=>{
-      const sectionItems=items.slice().sort((a,b)=>orderValue(a.sortOrder,Number.MAX_SAFE_INTEGER)-orderValue(b.sortOrder,Number.MAX_SAFE_INTEGER));
-      const cards=sectionItems.map((album,albumIndex)=>{
-        const openAttr=galleryOrderMode?'':`onclick="openGalleryAlbum('${album.id}')"`;
-        const deleteBtn=galleryOrderMode||album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`;
-        const controls=galleryOrderMode&&album.id!=='_loose'?`<div class="gallery-sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${albumIndex+1}</span><button class="secondary" ${albumIndex===0?'disabled':''} onclick="moveGalleryAlbum('${album.id}',-1)">↑</button><button class="secondary" ${albumIndex===sectionItems.length-1?'disabled':''} onclick="moveGalleryAlbum('${album.id}',1)">↓</button></div>`:'';
-        return `<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" ${openAttr}>
-          ${deleteBtn}
-          <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
-          <h4>${escapeHtml(album.name||'Álbum')}</h4>
-          <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
-          ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
-          ${controls}
-        </article>`;
-      }).join('');
-      return `<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${cards}</div>`;
-    }).join('');
+    const groupedHtml=Object.entries(grouped).map(([section,items])=>`<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${items.map(album=>`<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" onclick="openGalleryAlbum('${album.id}')">
+      ${album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`}
+      <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
+      <h4>${escapeHtml(album.name||'Álbum')}</h4>
+      <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
+      ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
+    </article>`).join('')}`).join('');
     albumsEl.innerHTML=filtered.length?groupedHtml:`<div class="gallery-empty">${query?'No se encontraron álbumes que coincidan con la búsqueda.':'Todavía no hay álbumes. Crea el primero para empezar la galería de esta campaña.'}</div>`;
     if(activeGalleryAlbumId)renderGalleryAlbumViewer(activeGalleryAlbumId);
     else {const viewer=document.getElementById('galleryViewer');if(viewer){viewer.style.display='none';viewer.innerHTML='';}}
