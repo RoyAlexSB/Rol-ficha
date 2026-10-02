@@ -786,6 +786,16 @@ select {
 .character-context .context-name{color:#aeb4c2;font-size:.9rem;}
 @media(max-width:760px){.campaign-selector{padding:22px 18px;}.campaigns-grid{grid-template-columns:1fr;}.campaign-card-content p{min-height:0;}.section-heading{align-items:stretch;flex-direction:column}.section-heading button{width:100%}.campaign-hero{align-items:flex-start}.campaign-logo-placeholder{width:120px;height:68px}}
 
+/* ===== ORDEN MANUAL ===== */
+.sort-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:0 0 12px;}
+.sort-hint{font-size:.78rem;color:#9ba5b8;margin-right:auto;}
+.sort-actions{display:flex;gap:6px;align-items:center;margin-top:10px;}
+.sort-actions button{width:36px!important;min-width:36px;height:34px;padding:0!important;border-radius:9px!important;}
+.sort-order-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 7px;border-radius:999px;background:rgba(125,136,255,.12);border:1px solid rgba(125,136,255,.25);color:#c9ceff;font-size:.72rem;font-weight:800;}
+.gallery-sort-actions{display:flex;gap:6px;align-items:center;margin-top:8px;}
+.gallery-sort-actions button{width:34px!important;min-width:34px;height:32px;padding:0!important;border-radius:8px!important;}
+@media(max-width:760px){.sort-toolbar{justify-content:stretch}.sort-hint{width:100%;margin-right:0}.sort-toolbar button{width:100%}}
+
 
 /* ===== FONDO INTEGRADO: la ilustración debe formar parte de la interfaz ===== */
 /* Las superficies principales dejan de ser bloques opacos. */
@@ -1271,6 +1281,7 @@ select {
     <div id="campaignsGrid" class="campaigns-grid"></div>
     <div class="campaign-selector-actions">
         <button class="primary create-campaign-button" onclick="openCreateCampaignModal()">＋ Crear nueva campaña</button>
+        <button class="secondary" onclick="toggleCampaignOrderMode()">⚙️ Ordenar campañas</button>
     </div>
 </section>
 
@@ -1334,7 +1345,7 @@ select {
     </div>
 
     <div class="manager-section">
-        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div>
+        <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><div><button class="secondary" onclick="toggleCharacterOrderMode()">⚙️ Ordenar fichas</button> <button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div></div>
         <div id="playersGrid" class="manager-grid"></div>
     </div>
 
@@ -1347,6 +1358,7 @@ select {
         <div class="section-heading">
             <div><span class="eyebrow">ARCHIVO VISUAL</span><h3>🖼️ Galería</h3></div>
             <div class="gallery-photo-actions">
+                <button class="secondary" onclick="toggleGalleryOrderMode()">⚙️ Ordenar álbumes</button>
                 <button class="secondary" onclick="createGalleryAlbum()">＋ Nuevo álbum</button>
                 <button class="secondary" onclick="openLooseGallery()">📷 Fotos sueltas</button>
                 <button onclick="uploadGalleryPhotos()">📷 Subir fotos</button>
@@ -2970,7 +2982,7 @@ async function loadCharacter() {
 }
 
 async function initializeSharedStorage() {
-    const existing = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
+    const existing = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
 
     for (const config of campaignCatalog) {
         if (!existing.some(row => row.name === config.name)) {
@@ -2986,14 +2998,14 @@ async function initializeSharedStorage() {
         }
     }
 
-    let campaigns = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
+    let campaigns = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
 
     // Migración de la campaña de prueba antigua:
     // Archie pasa a El Legado como PJ del Jugador 1 · Alex.
     // La campaña antigua deja de mostrarse en la aplicación.
     await migrateLegacyArchie(campaigns);
 
-    campaigns = await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
+    campaigns = await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
     const olympus = campaigns.find(row => row.name === DEFAULT_CAMPAIGN_NAME);
 
     if (olympus) {
@@ -3122,7 +3134,7 @@ async function createCampaign(event){
         const created=await supabaseRequest("/campaigns",{
             method:"POST",
             headers:{"Prefer":"return=representation"},
-            body:JSON.stringify({name,description,accent_color:"#5865f2"})
+            body:JSON.stringify({name,description,accent_color:"#5865f2",sort_order:Date.now()})
         });
         const campaign=created?.[0];
         if(!campaign?.id)throw new Error("Supabase no devolvió la campaña creada.");
@@ -3140,7 +3152,7 @@ async function createCampaign(event){
 
         closeCreateCampaignModal();
         status.textContent="";
-        const campaigns=await supabaseRequest(`/campaigns?select=*&order=created_at.asc`);
+        const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
         renderCampaignSelector(campaigns);
     }catch(error){
         console.error("Create campaign error:",error);
@@ -3150,26 +3162,83 @@ async function createCampaign(event){
     }
 }
 
+let campaignOrderMode=false;
+let characterOrderMode=false;
+let galleryOrderMode=false;
+
+function orderValue(value,fallback=0){
+    const n=Number(value);
+    return Number.isFinite(n)?n:fallback;
+}
+
+async function saveCampaignOrder(campaigns){
+    for(let i=0;i<campaigns.length;i++){
+        const c=campaigns[i];
+        await supabaseRequest(`/campaigns?id=eq.${encodeURIComponent(c.id)}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sort_order:i})});
+        c.sort_order=i;
+    }
+}
+
+async function normalizeCampaignOrder(campaigns){
+    const visible=campaigns.filter(c=>c.name!==LEGACY_CAMPAIGN_NAME).slice().sort((a,b)=>{
+        const ao=orderValue(a.sort_order,NaN),bo=orderValue(b.sort_order,NaN);
+        if(Number.isFinite(ao)&&Number.isFinite(bo)&&ao!==bo)return ao-bo;
+        if(Number.isFinite(ao)!==Number.isFinite(bo))return Number.isFinite(ao)?-1:1;
+        return String(a.created_at||'').localeCompare(String(b.created_at||''));
+    });
+    const allEqual=visible.length>1&&visible.every(c=>orderValue(c.sort_order,0)===orderValue(visible[0].sort_order,0));
+    if(allEqual||visible.some(c=>!Number.isFinite(Number(c.sort_order)))) await saveCampaignOrder(visible);
+    return visible;
+}
+
+async function toggleCampaignOrderMode(){
+    if(campaignOrderMode){campaignOrderMode=false;await refreshCampaignSelector();return;}
+    campaignOrderMode=true;
+    const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+    await normalizeCampaignOrder(campaigns);
+    renderCampaignSelector(campaigns);
+}
+
+async function refreshCampaignSelector(){
+    try{const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);renderCampaignSelector(campaigns);}catch(error){console.error('Campaign selector refresh error:',error);}
+}
+
+async function moveCampaign(id,direction){
+    const campaigns=await supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`);
+    const visible=campaigns.filter(c=>c.name!==LEGACY_CAMPAIGN_NAME);
+    const index=visible.findIndex(c=>String(c.id)===String(id));
+    const target=index+direction;
+    if(index<0||target<0||target>=visible.length)return;
+    [visible[index],visible[target]]=[visible[target],visible[index]];
+    await saveCampaignOrder(visible);
+    renderCampaignSelector(campaigns);
+}
+
 function renderCampaignSelector(campaigns) {
     const grid = document.getElementById("campaignsGrid");
     if (!grid) return;
 
-    const visibleCampaigns = campaigns.filter(campaign => campaign.name !== LEGACY_CAMPAIGN_NAME);
+    const visibleCampaigns = campaigns.filter(campaign => campaign.name !== LEGACY_CAMPAIGN_NAME).slice().sort((a,b)=>{
+        const ao=orderValue(a.sort_order,Number.MAX_SAFE_INTEGER),bo=orderValue(b.sort_order,Number.MAX_SAFE_INTEGER);
+        if(ao!==bo)return ao-bo;
+        return String(a.created_at||'').localeCompare(String(b.created_at||''));
+    });
 
-    grid.innerHTML = visibleCampaigns.map(campaign => {
+    grid.innerHTML = visibleCampaigns.map((campaign,index) => {
         const config = getCampaignConfig(campaign);
         const description = config?.description || campaign.description || "Campaña de rol";
         const logo = getCampaignLogo(campaign);
         const logoHtml = logo
             ? `<img class="campaign-card-logo" src="${logo}" alt="Logo de ${escapeHtml(campaign.name)}">`
             : `<div class="campaign-card-logo campaign-card-empty-logo">🎲</div>`;
-
-        return `<article class="campaign-card" onclick="selectCampaign('${campaign.id}')">
+        const openAction=campaignOrderMode?'':`onclick="selectCampaign('${campaign.id}')"`;
+        const sortControls=campaignOrderMode?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCampaign('${campaign.id}',-1)">↑</button><button class="secondary" ${index===visibleCampaigns.length-1?'disabled':''} onclick="moveCampaign('${campaign.id}',1)">↓</button></div>`:'';
+        return `<article class="campaign-card" ${openAction}>
             ${logoHtml}
             <div class="campaign-card-content">
                 <h3>${escapeHtml(campaign.name)}</h3>
                 <p>${escapeHtml(description)}</p>
-                <button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>
+                ${campaignOrderMode?sortControls:`<button onclick="event.stopPropagation(); selectCampaign('${campaign.id}')">Entrar en la campaña →</button>`}
             </div>
         </article>`;
     }).join("");
@@ -3177,7 +3246,7 @@ function renderCampaignSelector(campaigns) {
     document.getElementById("campaignSelectorView").style.display = "block";
     document.getElementById("campaignView").style.display = "none";
     document.getElementById("characterView").style.display = "none";
-    document.getElementById("headerSubtitle").textContent = "Gestor de campañas de rol";
+    document.getElementById("headerSubtitle").textContent = campaignOrderMode ? "Ordena tus campañas" : "Gestor de campañas de rol";
 }
 
 async function selectCampaign(id) {
@@ -3189,6 +3258,7 @@ async function selectCampaign(id) {
         currentCampaignId = rows[0].id;
         currentCharacterId = null;
         currentCharacterRow = null;
+        characterOrderMode=false; galleryOrderMode=false;
 
         if (currentCampaign.name === DEFAULT_CAMPAIGN_NAME) {
             await seedOlimpoCharacters();
@@ -3202,6 +3272,7 @@ async function selectCampaign(id) {
 }
 
 function showCampaignSelector() {
+    campaignOrderMode=false; characterOrderMode=false; galleryOrderMode=false;
     document.body.classList.remove("bestiary-mode");
     document.getElementById("bestiaryView")?.style && (document.getElementById("bestiaryView").style.display="none");
     currentCampaign = null;
@@ -3209,7 +3280,7 @@ function showCampaignSelector() {
     currentCharacterId = null;
     currentCharacterRow = null;
 
-    supabaseRequest(`/campaigns?select=*&order=created_at.asc`)
+    supabaseRequest(`/campaigns?select=*&order=sort_order.asc,created_at.asc`)
         .then(campaigns => renderCampaignSelector(campaigns))
         .catch(error => {
             console.error("Campaign selector error:", error);
@@ -3219,9 +3290,9 @@ function showCampaignSelector() {
 async function seedOlimpoCharacters(){
     const existing = await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*`);
     const seeds = [
-      {name:"Marte Cygnus",character_type:"pj",player_slot:1,attributes:{fortaleza:7,reflejos:3,voluntad:4,inteligencia:6},skills:{formaFisica:7,combate:6,percepcion:5,subterfugio:3,comunicacion:6,cultura:5,ocultismo:5,gestionEmocional:4}},
-      {name:"Gaia Dione",character_type:"pj",player_slot:2,attributes:{fortaleza:3,reflejos:5,voluntad:5,inteligencia:7},skills:{formaFisica:3,combate:5,percepcion:5,subterfugio:6,comunicacion:7,cultura:6,ocultismo:3,gestionEmocional:5}},
-      {name:"Asterion Delmaris",character_type:"npc",player_slot:null,attributes:{fortaleza:5,reflejos:5,voluntad:6,inteligencia:7},skills:{formaFisica:6,combate:5,percepcion:8,subterfugio:5,comunicacion:6,cultura:8,ocultismo:8,gestionEmocional:3}}
+      {name:"Marte Cygnus",character_type:"pj",player_slot:1,sort_order:1,attributes:{fortaleza:7,reflejos:3,voluntad:4,inteligencia:6},skills:{formaFisica:7,combate:6,percepcion:5,subterfugio:3,comunicacion:6,cultura:5,ocultismo:5,gestionEmocional:4}},
+      {name:"Gaia Dione",character_type:"pj",player_slot:2,sort_order:2,attributes:{fortaleza:3,reflejos:5,voluntad:5,inteligencia:7},skills:{formaFisica:3,combate:5,percepcion:5,subterfugio:6,comunicacion:7,cultura:6,ocultismo:3,gestionEmocional:5}},
+      {name:"Asterion Delmaris",character_type:"npc",player_slot:null,sort_order:1,attributes:{fortaleza:5,reflejos:5,voluntad:6,inteligencia:7},skills:{formaFisica:6,combate:5,percepcion:8,subterfugio:5,comunicacion:6,cultura:8,ocultismo:8,gestionEmocional:3}}
     ];
     for(const seed of seeds){
       if(!existing.some(r=>r.name===seed.name)){
@@ -3231,7 +3302,7 @@ async function seedOlimpoCharacters(){
 }
 
 async function getCampaignCharacters(){
-    return await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*&order=player_slot.asc,name.asc`);
+    return await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=*&order=sort_order.asc,player_slot.asc,name.asc`);
 }
 
 const SESSION_ARC_PLACEHOLDER = "__ROL_FICHA_EMPTY_ARC__";
@@ -3344,6 +3415,55 @@ function normalizeSearchText(value){
     return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
 
+async function saveCharacterOrder(rows){
+    for(let i=0;i<rows.length;i++){
+        const row=rows[i];
+        await supabaseRequest(`/characters?id=eq.${encodeURIComponent(row.id)}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({sort_order:i})});
+        row.sort_order=i;
+    }
+}
+
+function characterDisplayOrder(rows,type){
+    return rows.filter(r=>r.character_type===type).slice().sort((a,b)=>{
+        const ao=orderValue(a.sort_order,Number.MAX_SAFE_INTEGER),bo=orderValue(b.sort_order,Number.MAX_SAFE_INTEGER);
+        if(ao!==bo)return ao-bo;
+        if(type==='pj')return Number(a.player_slot||999)-Number(b.player_slot||999);
+        return String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'});
+    });
+}
+
+async function normalizeCharacterOrder(rows){
+    for(const type of ['pj','npc']){
+        const list=characterDisplayOrder(rows,type);
+        const allEqual=list.length>1&&list.every(r=>orderValue(r.sort_order,0)===orderValue(list[0].sort_order,0));
+        if(allEqual||list.some(r=>!Number.isFinite(Number(r.sort_order)))) await saveCharacterOrder(list);
+    }
+}
+
+async function toggleCharacterOrderMode(){
+    if(characterOrderMode){characterOrderMode=false;await renderCampaign();return;}
+    characterOrderMode=true;
+    const rows=await getCampaignCharacters();
+    await normalizeCharacterOrder(rows);
+    window.__campaignCharacterRows=rows;
+    renderCampaignCharacters(rows);
+}
+
+async function moveCharacterOrder(id,direction){
+    const rows=await getCampaignCharacters();
+    const row=rows.find(r=>String(r.id)===String(id));
+    if(!row)return;
+    const list=characterDisplayOrder(rows,row.character_type);
+    const index=list.findIndex(r=>String(r.id)===String(id));
+    const target=index+direction;
+    if(index<0||target<0||target>=list.length)return;
+    [list[index],list[target]]=[list[target],list[index]];
+    await saveCharacterOrder(list);
+    const fresh=await getCampaignCharacters();
+    window.__campaignCharacterRows=fresh;
+    renderCampaignCharacters(fresh);
+}
+
 function renderCampaignCharacters(rows){
     const query=normalizeSearchText(document.getElementById('campaignCharacterSearch')?.value||'');
     const playerNamesByCampaign=campaignPlayerNamesByCampaign[currentCampaign?.name]||{};
@@ -3353,28 +3473,32 @@ function renderCampaignCharacters(rows){
         const type=r.character_type==='npc'?'npc':'pj';
         return [r.name,playerName,type,type==='pj'?'jugador':'master','npc'].some(v=>normalizeSearchText(v).includes(query));
     });
-
     const players=document.getElementById('playersGrid');
     const npcs=document.getElementById('npcsGrid');
     if(!players||!npcs)return;
 
-    const slots=[...new Set([...Object.keys(campaignPlayerNames).map(Number),...rows.filter(r=>r.character_type==='pj'&&r.player_slot).map(r=>Number(r.player_slot))])].sort((a,b)=>a-b);
-    const filteredPlayerRows=filtered.filter(r=>r.character_type==='pj');
+    const pjRows=characterDisplayOrder(filtered,'pj');
+    const slots=pjRows.map(r=>Number(r.player_slot)).filter(Boolean);
+    const filteredPlayerRows=pjRows;
     const visiblePlayerSlots=slots.filter(slot=>{
-        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
+        const row=pjRows.find(r=>Number(r.player_slot)===slot);
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot]||`Jugador ${slot}`);
         if(!query)return true;
         return normalizeSearchText(playerName).includes(query)||!!filteredPlayerRows.some(r=>Number(r.player_slot)===slot);
     });
 
-    players.innerHTML=visiblePlayerSlots.map(slot=>{
-        const row=rows.find(r=>r.character_type==='pj'&&Number(r.player_slot)===slot);
+    players.innerHTML=visiblePlayerSlots.map((slot,index)=>{
+        const row=pjRows.find(r=>Number(r.player_slot)===slot);
         const playerName=(playerNamesByCampaign[slot]||campaignPlayerNames[slot])||`Jugador ${slot}`;
-        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
+        const controls=characterOrderMode&&row?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCharacterOrder('${row.id}',-1)">↑</button><button class="secondary" ${index===visiblePlayerSlots.length-1?'disabled':''} onclick="moveCharacterOrder('${row.id}',1)">↓</button></div>`:'';
+        return `<article class="manager-card"><div class="player-label">👤 Jugador ${slot} · ${escapeHtml(playerName)}</div>${row?`<h4>${row.name === 'Marte Cygnus' ? '☀️' : row.name === 'Gaia Dione' ? '🔥' : ''}${row.name === 'Marte Cygnus' || row.name === 'Gaia Dione' ? ' ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions">${characterOrderMode?controls:`<button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>`}</div>`:`<p class="empty">Sin personaje todavía.</p><button onclick="createPlayerCharacter(${slot})">＋ Crear PJ</button>`}</article>`;
     }).join('');
 
-    const filteredNpcs=filtered.filter(r=>r.character_type==='npc');
-    npcs.innerHTML=filteredNpcs.map(row=>`<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions"><button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button></div></article>`).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
+    const filteredNpcs=characterDisplayOrder(filtered,'npc');
+    npcs.innerHTML=filteredNpcs.map((row,index)=>{
+        const controls=characterOrderMode?`<div class="sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${index+1}</span><button class="secondary" ${index===0?'disabled':''} onclick="moveCharacterOrder('${row.id}',-1)">↑</button><button class="secondary" ${index===filteredNpcs.length-1?'disabled':''} onclick="moveCharacterOrder('${row.id}',1)">↓</button></div>`:'';
+        return `<article class="manager-card"><div class="player-label">🎭 NPC</div><h4>${row.name === 'Asterion Delmaris' ? '📖 ' : ''}${escapeHtml(row.name)}</h4><div class="manager-card-actions">${characterOrderMode?controls:`<button onclick="openCharacter('${row.id}')">Abrir ficha →</button><button class="delete-button" onclick="deleteCharacter('${row.id}', event)">🗑 Borrar</button>`}</div></article>`;
+    }).join('') || (query ? '<div class="no-search-results">No se encontraron NPC que coincidan con la búsqueda.</div>' : '<article class="manager-card"><p class="empty">Todavía no hay NPCs.</p></article>');
 
     const count=document.getElementById('campaignCharacterSearchCount');
     if(count) count.textContent=query ? `${filtered.length} resultado${filtered.length===1?'':'s'}` : `${rows.length} personajes`;
@@ -3489,14 +3613,14 @@ async function deleteCurrentCampaign(){
 
 async function createPlayerCharacter(slot){
   const name=prompt(`Nombre del PJ para Jugador ${slot}:`); if(!name)return;
-  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"pj",player_slot:slot,attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
+  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"pj",player_slot:slot,sort_order:Date.now(),attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
   await supabaseRequest("/characters",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify(row)});
   await renderCampaign();
 }
 
 async function createNpc(){
   const name=prompt("Nombre del NPC:"); if(!name)return;
-  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"npc",player_slot:null,attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
+  const row={name:name.trim(),campaign_id:currentCampaignId,character_type:"npc",player_slot:null,sort_order:Date.now(),attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0}};
   await supabaseRequest("/characters",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify(row)});
   await renderCampaign();
 }
@@ -5008,6 +5132,50 @@ async function storageDelete(path){
 }
 async function getGalleryCharacters(){return currentCampaignId?await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=id,name,character_type,player_slot&order=name.asc`):[];}
 
+async function saveGalleryAlbumMetadata(album){
+  const data={name:album.name||'Álbum',description:album.description||'',section:album.section||'General',characterId:album.characterId||null,characterName:album.characterName||'',createdAt:album.createdAt||new Date().toISOString(),sortOrder:orderValue(album.sortOrder,0)};
+  await storageUpload(galleryAlbumPrefix(album.id)+'album.json',new Blob([JSON.stringify(data)],{type:'application/json'}),'application/json');
+}
+
+function sortGalleryAlbums(albums){
+  return albums.slice().sort((a,b)=>{
+    const sa=orderValue(a.sortOrder,Number.MAX_SAFE_INTEGER),sb=orderValue(b.sortOrder,Number.MAX_SAFE_INTEGER);
+    if(sa!==sb)return sa-sb;
+    return String(a.createdAt||a.name||'').localeCompare(String(b.createdAt||b.name||''),'es',{sensitivity:'base'});
+  });
+}
+
+async function normalizeGalleryAlbumOrder(albums){
+  const groups={};
+  for(const album of albums.filter(a=>a.id!=='_loose'))(groups[album.section||'General'] ||= []).push(album);
+  for(const list of Object.values(groups)){
+    const sorted=sortGalleryAlbums(list);
+    for(let i=0;i<sorted.length;i++){sorted[i].sortOrder=i;await saveGalleryAlbumMetadata(sorted[i]);}
+  }
+}
+
+async function toggleGalleryOrderMode(){
+  if(galleryOrderMode){galleryOrderMode=false;await renderGallery();return;}
+  galleryOrderMode=true;
+  const albums=await loadGalleryAlbums();
+  await normalizeGalleryAlbumOrder(albums);
+  await renderGallery();
+}
+
+async function moveGalleryAlbum(id,direction){
+  const albums=await loadGalleryAlbums();
+  const album=albums.find(a=>String(a.id)===String(id));
+  if(!album||album.id==='_loose')return;
+  const sameSection=sortGalleryAlbums(albums.filter(a=>a.id!=='_loose'&&(a.section||'General')===(album.section||'General')));
+  const index=sameSection.findIndex(a=>String(a.id)===String(id));
+  const target=index+direction;
+  if(index<0||target<0||target>=sameSection.length)return;
+  [sameSection[index],sameSection[target]]=[sameSection[target],sameSection[index]];
+  for(let i=0;i<sameSection.length;i++){sameSection[i].sortOrder=i;await saveGalleryAlbumMetadata(sameSection[i]);}
+  activeGalleryAlbumId=id;
+  await renderGallery(id);
+}
+
 async function loadGalleryAlbums(){
   if(!currentCampaignId)return [];
   const items=await storageList(galleryPrefix());
@@ -5032,7 +5200,7 @@ async function loadGalleryAlbums(){
       albums.push({...data,id:folder,photosCount:photos.length,cover,photoItems:photos});
     }catch(error){console.warn('Gallery album read error',folder,error);}
   }
-  return albums.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base'}));
+  return sortGalleryAlbums(albums);
 }
 
 function galleryMatches(album,query){
@@ -5058,13 +5226,23 @@ async function renderGallery(selectAlbumId=null){
     if(count)count.textContent=`${filtered.length} álbum${filtered.length===1?'':'es'}`;
     const grouped={};
     filtered.forEach(album=>{const section=album.section||'General';(grouped[section] ||= []).push(album);});
-    const groupedHtml=Object.entries(grouped).map(([section,items])=>`<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${items.map(album=>`<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" onclick="openGalleryAlbum('${album.id}')">
-      ${album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`}
-      <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
-      <h4>${escapeHtml(album.name||'Álbum')}</h4>
-      <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
-      ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
-    </article>`).join('')}`).join('');
+    const groupedHtml=Object.entries(grouped).map(([section,items])=>{
+      const sectionItems=items.slice().sort((a,b)=>orderValue(a.sortOrder,Number.MAX_SAFE_INTEGER)-orderValue(b.sortOrder,Number.MAX_SAFE_INTEGER));
+      const cards=sectionItems.map((album,albumIndex)=>{
+        const openAttr=galleryOrderMode?'':`onclick="openGalleryAlbum('${album.id}')"`;
+        const deleteBtn=galleryOrderMode||album.id==='_loose'?'':`<button class="gallery-album-delete" title="Eliminar álbum" onclick="event.stopPropagation();deleteGalleryAlbum('${album.id}')">🗑</button>`;
+        const controls=galleryOrderMode&&album.id!=='_loose'?`<div class="gallery-sort-actions" onclick="event.stopPropagation()"><span class="sort-order-badge">${albumIndex+1}</span><button class="secondary" ${albumIndex===0?'disabled':''} onclick="moveGalleryAlbum('${album.id}',-1)">↑</button><button class="secondary" ${albumIndex===sectionItems.length-1?'disabled':''} onclick="moveGalleryAlbum('${album.id}',1)">↓</button></div>`:'';
+        return `<article class="gallery-album ${album.id===activeGalleryAlbumId?'active':''}" ${openAttr}>
+          ${deleteBtn}
+          <div class="gallery-album-cover">${album.cover?`<img src="${escapeHtml(album.cover)}" alt="">`:'<span>🖼️</span>'}</div>
+          <h4>${escapeHtml(album.name||'Álbum')}</h4>
+          <p>${escapeHtml(album.description||'Sin descripción')} · ${album.photosCount||0} foto${(album.photosCount||0)===1?'':'s'}</p>
+          ${album.characterName?`<span class="gallery-linked">👤 ${escapeHtml(album.characterName)}</span>`:''}
+          ${controls}
+        </article>`;
+      }).join('');
+      return `<div class="gallery-group" style="grid-column:1/-1;display:contents"><div style="grid-column:1/-1;margin:8px 2px 0;font-size:.78rem;color:#aeb7ca;font-weight:800;letter-spacing:.08em;text-transform:uppercase">${escapeHtml(section)}</div>${cards}</div>`;
+    }).join('');
     albumsEl.innerHTML=filtered.length?groupedHtml:`<div class="gallery-empty">${query?'No se encontraron álbumes que coincidan con la búsqueda.':'Todavía no hay álbumes. Crea el primero para empezar la galería de esta campaña.'}</div>`;
     if(activeGalleryAlbumId)renderGalleryAlbumViewer(activeGalleryAlbumId);
     else {const viewer=document.getElementById('galleryViewer');if(viewer){viewer.style.display='none';viewer.innerHTML='';}}
