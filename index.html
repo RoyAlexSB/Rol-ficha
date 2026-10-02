@@ -74,6 +74,97 @@ body.bestiary-mode{
 }
 
 /* ===== BESTIARIO DE INFECCIÓN — ARCHIVO BIOLÓGICO RESTRINGIDO ===== */
+/* =========================
+   BESTIARIO · LA NUEVA ERA
+========================= */
+body.bestiary-new-era-mode{
+  --new-era-ink:#26323a;
+  --new-era-blue:#315a70;
+  --new-era-blue-soft:#607f90;
+  --new-era-amber:#a8782b;
+  --new-era-paper:#e3e5e2;
+  --new-era-line:#89969d;
+  background:
+    radial-gradient(circle at 16% 12%,rgba(255,255,255,.08),transparent 25%),
+    radial-gradient(circle at 84% 76%,rgba(0,0,0,.13),transparent 34%),
+    repeating-linear-gradient(0deg,rgba(38,48,55,.035) 0,rgba(38,48,55,.035) 1px,transparent 1px,transparent 5px),
+    linear-gradient(135deg,#b7bab8,#d1d3d0 46%,#aeb2b0);
+  color:var(--new-era-ink);
+}
+body.bestiary-new-era-mode:before{
+  content:"AMOR DE OTRO MUNDO · LA NUEVA ERA · PALEOBIOLOGICAL ARCHIVE";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  display:flex;align-items:center;justify-content:center;
+  font:900 clamp(20px,5vw,68px)/1 Arial,sans-serif;
+  letter-spacing:.12em;text-align:center;color:rgba(49,90,112,.045);
+  transform:rotate(-27deg);white-space:nowrap;
+}
+body.bestiary-new-era-mode .bestiary-shell{
+  background:rgba(225,227,224,.965);
+  border:1px solid #747f85;border-radius:2px;
+  box-shadow:0 18px 55px rgba(0,0,0,.28),inset 0 0 0 5px rgba(50,60,66,.045);
+}
+body.bestiary-new-era-mode .bestiary-shell:before{border:1px solid rgba(61,76,85,.22);}
+body.bestiary-new-era-mode .bestiary-kicker{color:var(--new-era-blue);font-family:Arial,sans-serif;letter-spacing:.18em;}
+body.bestiary-new-era-mode .bestiary-title,
+body.bestiary-new-era-mode .bestiary-page-title{color:#20292f;font-family:Arial,Helvetica,sans-serif;letter-spacing:-.025em;}
+body.bestiary-new-era-mode .bestiary-title:after{
+  content:"  //  PALEOBIOLOGICAL RESEARCH FILE";
+  color:var(--new-era-amber);font-size:.34em;letter-spacing:.08em;vertical-align:middle;
+}
+body.bestiary-new-era-mode .bestiary-subtitle,
+body.bestiary-new-era-mode .bestiary-page-epithet,
+body.bestiary-new-era-mode .bestiary-text,
+body.bestiary-new-era-mode .bestiary-card p{color:#4d5960;font-family:Arial,Helvetica,sans-serif;font-style:normal;}
+body.bestiary-new-era-mode .bestiary-btn{border-color:#7e8b92!important;background:rgba(55,65,70,.055)!important;color:#29353b!important;border-radius:2px!important;}
+body.bestiary-new-era-mode .bestiary-btn:hover{background:rgba(49,90,112,.10)!important;border-color:#607681!important;}
+body.bestiary-new-era-mode .bestiary-toolbar{border-color:#9aa4a9;}
+body.bestiary-new-era-mode .bestiary-search{border-color:#929da2;border-radius:2px;background:rgba(248,248,245,.78);color:#242d32;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-search:focus{border-color:var(--new-era-blue);box-shadow:0 0 0 2px rgba(49,90,112,.12);}
+body.bestiary-new-era-mode .bestiary-card{border-color:#8d989d;border-radius:2px;background:rgba(238,240,237,.84);box-shadow:0 5px 14px rgba(30,34,36,.10);}
+body.bestiary-new-era-mode .bestiary-card:hover{border-color:#667982;box-shadow:0 9px 20px rgba(30,34,36,.16);}
+body.bestiary-new-era-mode .bestiary-card-cover{background:#c4c9c8;border-color:#9aa4a8;}
+body.bestiary-new-era-mode .bestiary-card-cover img{filter:saturate(.72) contrast(1.06);}
+body.bestiary-new-era-mode .bestiary-card h3{color:#27343b;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-count{color:#5c696f;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-portrait-frame{background:#d1d5d3;border-color:#858f94;box-shadow:0 7px 18px rgba(25,29,31,.14);}
+body.bestiary-new-era-mode .bestiary-portrait{filter:saturate(.84) contrast(1.05);}
+body.bestiary-new-era-mode .bestiary-field{border-color:#a5adb1;}
+body.bestiary-new-era-mode .bestiary-label{color:#52646e;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-classification{border-color:#929da2;border-radius:2px;color:#354a56;background:rgba(49,90,112,.06);font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-editor{border-color:#9ba5a9;}
+body.bestiary-new-era-mode .bestiary-editor label{color:#4f5d64;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-editor input,
+body.bestiary-new-era-mode .bestiary-editor textarea,
+body.bestiary-new-era-mode .bestiary-editor select{border-color:#929da2;border-radius:2px;background:#f0f1ee;color:#242d32;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-editor input:focus,
+body.bestiary-new-era-mode .bestiary-editor textarea:focus,
+body.bestiary-new-era-mode .bestiary-editor select:focus{border-color:var(--new-era-blue);box-shadow:0 0 0 2px rgba(49,90,112,.11);}
+body.bestiary-new-era-mode .bestiary-pagination{border-color:#9ba5a9;}
+body.bestiary-new-era-mode .bestiary-page-number{color:#5d696f;font-family:Arial,sans-serif;}
+body.bestiary-new-era-mode .bestiary-page-header:after{
+  content:"PALEOBIOLOGY / RESTRICTED";
+  position:absolute;right:0;bottom:-4px;padding:4px 8px;
+  border:2px solid rgba(49,90,112,.58);color:rgba(49,90,112,.76);
+  font:900 .66rem/1 Arial,sans-serif;letter-spacing:.12em;transform:rotate(-3deg);
+}
+.new-era-only{display:none;}
+body.bestiary-new-era-mode .new-era-only{display:block!important;}
+body.bestiary-new-era-mode .new-era-dossier{display:block;}
+.new-era-dossier{margin:0 0 20px;padding:14px 16px;border:1px solid #929da2;background:rgba(238,240,237,.84);display:none;}
+.new-era-dossier-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.new-era-dossier-item{min-width:0;padding:8px 10px;border-left:3px solid var(--new-era-blue);background:rgba(255,255,255,.28);}
+.new-era-dossier-label{display:block;font:800 .62rem/1.2 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#68747a;margin-bottom:4px;}
+.new-era-dossier-value{display:block;font:800 .9rem/1.3 Arial,sans-serif;color:#27343b;overflow-wrap:anywhere;}
+.new-era-spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:18px;}
+.new-era-spec-item{padding:9px 11px;border:1px solid #a1abb0;background:rgba(255,255,255,.26);}
+.new-era-spec-label{display:block;font:800 .62rem/1.2 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#68747a;margin-bottom:4px;}
+.new-era-spec-value{display:block;font:800 .92rem/1.3 Arial,sans-serif;color:#27343b;overflow-wrap:anywhere;}
+.new-era-section-tag{display:block;margin-bottom:5px;color:#52646e;font:800 .66rem/1.2 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;}
+.new-era-stamp{display:inline-block;margin-top:7px;padding:4px 7px;border:1px solid rgba(168,120,43,.62);color:#8a6426;font:900 .62rem/1 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;}
+@media(max-width:760px){.new-era-dossier-grid,.new-era-spec-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:480px){.new-era-dossier-grid,.new-era-spec-grid{grid-template-columns:1fr;}}
+
 body.bestiary-infection-mode{
   --infection-ink:#1b2024;
   --infection-muted:#566067;
@@ -1375,6 +1466,16 @@ select {
           <button class="bestiary-btn" onclick="deleteCurrentBestiaryEntry()">🗑 Borrar</button>
         </div>
       </div>
+      <section id="newEraDossier" class="new-era-dossier new-era-only" aria-label="Datos del registro paleobiológico">
+        <div class="new-era-dossier-grid">
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Código de espécimen</span><span class="new-era-dossier-value" id="newEraSpecimenCode">—</span></div>
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Clasificación</span><span class="new-era-dossier-value" id="newEraTaxonomy">—</span></div>
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Periodo geológico</span><span class="new-era-dossier-value" id="newEraPeriod">—</span></div>
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Lugar de hallazgo</span><span class="new-era-dossier-value" id="newEraDiscoveryLocation">—</span></div>
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Estado del espécimen</span><span class="new-era-dossier-value" id="newEraSpecimenStatus">—</span></div>
+          <div class="new-era-dossier-item"><span class="new-era-dossier-label">Estado del registro</span><span class="new-era-dossier-value" id="newEraRecordStatus">—</span></div>
+        </div>
+      </section>
       <section id="infectionDossier" class="infection-dossier infection-only" aria-label="Datos del expediente biológico">
         <div class="infection-dossier-grid">
           <div class="infection-dossier-item"><span class="infection-dossier-label">Número de expediente</span><span class="infection-dossier-value" id="infectionDossierNumber">—</span></div>
@@ -1409,13 +1510,37 @@ select {
               <label class="infection-dossier-item">Fecha de identificación<input id="beFechaIdentificacion" type="date"></label>
             </div>
           </div>
+          <div class="new-era-only" style="grid-column:1/-1;display:none;">
+            <div class="new-era-dossier-grid">
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Código de espécimen</span><input id="beSpecimenCode" maxlength="60" placeholder="NNE-PALEO-0001"></label>
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Clasificación taxonómica</span><input id="beTaxonomy" maxlength="180" placeholder="Theropoda · Tyrannosauridae"></label>
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Periodo geológico</span><input id="bePeriod" maxlength="120" placeholder="Cretácico superior"></label>
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Lugar de hallazgo</span><input id="beDiscoveryLocation" maxlength="180" placeholder="Sector / coordenadas / yacimiento"></label>
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Estado del espécimen</span><select id="beSpecimenStatus"><option value="Completo">Completo</option><option value="Parcial">Parcial</option><option value="Fragmentario">Fragmentario</option><option value="Vivo / observado">Vivo / observado</option><option value="Desconocido">Desconocido</option></select></label>
+              <label class="new-era-dossier-item"><span class="new-era-dossier-label">Estado del registro</span><select id="beRecordStatus"><option value="Confirmado">Confirmado</option><option value="En estudio">En estudio</option><option value="No confirmado">No confirmado</option><option value="Desconocido">Desconocido</option></select></label>
+            </div>
+          </div>
+          <div class="new-era-only" style="grid-column:1/-1;display:none;">
+            <div class="new-era-spec-grid">
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Longitud estimada</span><input id="beLength" maxlength="60" placeholder="12,3 m"></label>
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Altura estimada</span><input id="beHeight" maxlength="60" placeholder="4,0 m"></label>
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Masa estimada</span><input id="beMass" maxlength="60" placeholder="7.000 kg"></label>
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Dieta</span><input id="beDiet" maxlength="120" placeholder="Carnívoro · herbívoro · omnívoro"></label>
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Distribución / hábitat</span><input id="beDistribution" maxlength="180" placeholder="Bosques, llanuras, costa…"></label>
+              <label class="new-era-spec-item"><span class="new-era-spec-label">Nivel de riesgo</span><input id="beRisk" maxlength="100" placeholder="Bajo · moderado · extremo…"></label>
+            </div>
+          </div>
           <label>Clasificación<input id="beClassification" maxlength="100" placeholder="Entidad · Bestia · Divinidad…"></label>
           <label>Hábitat<input id="beHabitat" maxlength="180"></label>
+          <label class="full new-era-only" style="display:none;">Anatomía / características<textarea id="beAnatomy" placeholder="Rasgos anatómicos, dentición, extremidades, adaptaciones…"></textarea></label>
           <label class="full">Descripción<textarea id="beDescription"></textarea></label>
           <label class="full">Comportamiento<textarea id="beBehavior"></textarea></label>
+          <label class="full new-era-only" style="display:none;">Registro del hallazgo<textarea id="beDiscoveryRecord" placeholder="Circunstancias del descubrimiento, excavación, observación o recuperación…"></textarea></label>
           <label class="full">Capacidades<textarea id="beAbilities"></textarea></label>
+          <label class="full new-era-only" style="display:none;">Riesgos / medidas de seguridad<textarea id="beSafety" placeholder="Riesgos para investigadores, recomendaciones de aproximación o contención…"></textarea></label>
           <label class="full">Debilidades<textarea id="beWeaknesses"></textarea></label>
           <label class="full">Notas / registros<textarea id="beNotes"></textarea></label>
+          <label class="full new-era-only" style="display:none;">Observaciones científicas<textarea id="beObservations" placeholder="Hipótesis, anomalías, comportamiento no explicado, comparaciones…"></textarea></label>
         </div>
         <div class="bestiary-editor-actions">
           <button class="bestiary-btn" onclick="toggleBestiaryEditor(false)">Cancelar</button>
@@ -4665,13 +4790,19 @@ async function loadBestiaryEntries(){
 
 async function openBestiary(){
   if(!currentCampaignId||!currentCampaign)return;
+  const campaignName=String(currentCampaign.name||'');
+  const isInfection=/Amor de Otro Mundo:\s*Infección/i.test(campaignName);
+  const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(campaignName);
   document.body.classList.add('bestiary-mode');
-  document.body.classList.toggle('bestiary-infection-mode', /Amor de Otro Mundo:\s*Infección/i.test(String(currentCampaign.name||'')));
+  document.body.classList.toggle('bestiary-infection-mode', isInfection);
+  document.body.classList.toggle('bestiary-new-era-mode', isNewEra);
   document.getElementById('campaignView').style.display='none';
   document.getElementById('characterView').style.display='none';
   document.getElementById('bestiaryView').style.display='block';
-  document.getElementById('bestiaryTitle').textContent=`Bestiario · ${currentCampaign.name}`;
-  document.getElementById('bestiarySubtitle').textContent=currentCampaign.description||'Registro de criaturas y entidades conocidas de la campaña.';
+  document.getElementById('bestiaryTitle').textContent=isNewEra?`Registro paleobiológico · ${currentCampaign.name}`:`Bestiario · ${currentCampaign.name}`;
+  document.getElementById('bestiarySubtitle').textContent=isNewEra?'Registro científico de dinosaurios, fauna prehistórica y organismos anómalos.':(currentCampaign.description||'Registro de criaturas y entidades conocidas de la campaña.');
+  document.getElementById('bestiaryNewButton').textContent=isNewEra?'＋ Registrar espécimen':'＋ Nueva criatura';
+  document.getElementById('bestiarySearch').placeholder=isNewEra?'🔎 Buscar especie, espécimen o clasificación…':'🔎 Buscar criatura…';
   activeBestiaryEntryId=null;
   bestiaryEditorOpen=false;
   document.getElementById('bestiarySearch').value='';
@@ -4680,7 +4811,7 @@ async function openBestiary(){
 }
 
 function closeBestiary(){
-  document.body.classList.remove('bestiary-mode','bestiary-infection-mode');
+  document.body.classList.remove('bestiary-mode','bestiary-infection-mode','bestiary-new-era-mode');
   document.getElementById('bestiaryView').style.display='none';
   activeBestiaryEntryId=null;
   bestiaryEditorOpen=false;
@@ -4694,13 +4825,17 @@ async function renderBestiaryIndex(){
   try{
     bestiaryEntries=await loadBestiaryEntries();
     const query=String(document.getElementById('bestiarySearch')?.value||'').trim().toLocaleLowerCase('es');
-    const filtered=bestiaryEntries.filter(e=>[e.name,e.epithet,e.classification,e.habitat,e.description].some(v=>String(v||'').toLocaleLowerCase('es').includes(query)));
+    const filtered=bestiaryEntries.filter(e=>[e.name,e.epithet,e.classification,e.habitat,e.description,e.taxonomia,e.codigoEspecimen,e.periodo,e.lugarHallazgo,e.dieta].some(v=>String(v||'').toLocaleLowerCase('es').includes(query)));
     document.getElementById('bestiaryCount').textContent=`${filtered.length} ${filtered.length===1?'registro':'registros'}`;
     index.innerHTML=filtered.length?filtered.map(entry=>{
       const cover=entry.photos?.[0]?bestiaryEntryUrl(entry.id,entry.photos[0]):'';
+      const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(String(currentCampaign?.name||''));
+      const cardMeta=isNewEra?(entry.taxonomia||entry.classification||entry.periodo||'Registro paleobiológico'):(entry.epithet||entry.classification||'Registro sin clasificar');
+      const cardCover=cover?`<img src="${escapeHtml(cover)}" alt="">`:`<span>${isNewEra?'🦴':'✧'}</span>`;
+      const cardStamp=isNewEra&&entry.codigoEspecimen?`<span class="new-era-stamp">${escapeHtml(entry.codigoEspecimen)}</span>`:'';
       return `<article class="bestiary-card" onclick="openBestiaryEntry('${escapeHtml(entry.id)}')">
-        <div class="bestiary-card-cover">${cover?`<img src="${escapeHtml(cover)}" alt="">`:'<span>✧</span>'}</div>
-        <div class="bestiary-card-body"><h3>${escapeHtml(entry.name||'Sin nombre')}</h3><p>${escapeHtml(entry.epithet||entry.classification||'Registro sin clasificar')}</p></div>
+        <div class="bestiary-card-cover">${cardCover}</div>
+        <div class="bestiary-card-body"><h3>${escapeHtml(entry.name||'Sin nombre')}</h3><p>${escapeHtml(cardMeta)}</p>${cardStamp}</div>
       </article>`;
     }).join(''):`<div class="bestiary-empty">${query?'No se encontraron criaturas que coincidan con la búsqueda.':'El archivo está vacío. Todavía no se ha registrado ninguna criatura en esta campaña.'}</div>`;
   }catch(error){console.error('Bestiary index error:',error);index.innerHTML='<div class="bestiary-empty">⚠ No se pudo cargar el bestiario. Revisa los permisos del almacenamiento.</div>';}
@@ -4715,6 +4850,12 @@ function showBestiaryIndex(){
 }
 
 function openCreateBestiaryModal(){
+  const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(String(currentCampaign?.name||''));
+  document.getElementById('createBestiaryTitle').textContent=isNewEra?'Registrar espécimen':'Registrar criatura';
+  const modalCopy=document.querySelector('#createBestiaryModal .bestiary-modal p');
+  if(modalCopy)modalCopy.textContent=isNewEra?'La ficha quedará preparada como expediente paleobiológico para registrar especie, anatomía, hallazgo y observaciones.':'La primera página del registro quedará preparada para que puedas completar su historia, capacidades e imágenes.';
+  document.getElementById('newBestiaryName').placeholder=isNewEra?'Ej.: Tyrannosaurus rex':'Ej.: El Devoraluz';
+  document.getElementById('newBestiaryEpithet').placeholder=isNewEra?'Ej.: Ejemplar NNE-PALEO-0047':'Ej.: Entidad de los cielos muertos';
   document.getElementById('newBestiaryName').value='';
   document.getElementById('newBestiaryEpithet').value='';
   document.getElementById('createBestiaryModal').classList.add('open');
@@ -4728,7 +4869,9 @@ async function createBestiaryEntry(event){
   const epithet=document.getElementById('newBestiaryEpithet').value.trim();
   if(!name)return;
   const id=bestiaryNewId();
-  const entry={id,name,epithet,expediente:'',amenaza:'I · Bajo',estado:'Activo',origen:'',instalacion:'',fechaIdentificacion:'',classification:'',habitat:'',description:'',behavior:'',abilities:'',weaknesses:'',notes:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(String(currentCampaign?.name||''));
+  const entry={id,name,epithet,expediente:'',amenaza:'I · Bajo',estado:'Activo',origen:'',instalacion:'',fechaIdentificacion:'',classification:'',habitat:'',description:'',behavior:'',abilities:'',weaknesses:'',notes:'',codigoEspecimen:'',taxonomia:'',periodo:'',lugarHallazgo:'',estadoEspecimen:'Completo',estadoRegistro:'Confirmado',longitud:'',altura:'',masa:'',dieta:'',distribucion:'',riesgo:'',anatomia:'',registroHallazgo:'',riesgosSeguridad:'',observaciones:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  if(isNewEra)entry.estadoRegistro='En estudio';
   try{
     await storageUpload(bestiaryEntryPrefix(id)+'entry.json',new Blob([JSON.stringify(entry)],{type:'application/json'}),'application/json');
     closeCreateBestiaryModal();
@@ -4755,9 +4898,13 @@ function renderBestiaryEntry(entry){
   const photos=entry.photos||[];
   const frame=document.getElementById('bestiaryPortraitFrame');
   frame.innerHTML=photos.length?`<img class="bestiary-portrait" src="${escapeHtml(bestiaryEntryUrl(entry.id,photos[0]))}" alt="${escapeHtml(entry.name||'Criatura')}" onclick="openGalleryLightbox('${escapeHtml(bestiaryEntryUrl(entry.id,photos[0]))}')">`:'<div class="bestiary-portrait-empty">Aún no hay una ilustración registrada.<br>Añade una imagen para comenzar el expediente.</div>';
-  const isInfection=/Amor de Otro Mundo:\s*Infección/i.test(String(currentCampaign?.name||''));
+  const campaignName=String(currentCampaign?.name||'');
+  const isInfection=/Amor de Otro Mundo:\s*Infección/i.test(campaignName);
+  const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(campaignName);
   const dossier=document.getElementById('infectionDossier');
   if(dossier)dossier.style.display=isInfection?'block':'none';
+  const newEraDossier=document.getElementById('newEraDossier');
+  if(newEraDossier)newEraDossier.style.display=isNewEra?'block':'none';
   if(isInfection){
     const setD=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value||'—');};
     setD('infectionDossierNumber',entry.expediente);
@@ -4767,8 +4914,24 @@ function renderBestiaryEntry(entry){
     setD('infectionDossierFacility',entry.instalacion);
     setD('infectionDossierDate',entry.fechaIdentificacion?new Date(entry.fechaIdentificacion+'T00:00:00').toLocaleDateString('es-ES'): '—');
   }
-  const fields=[['Clasificación',entry.classification],['Hábitat',entry.habitat],['Descripción',entry.description],['Comportamiento',entry.behavior],['Capacidades',entry.abilities],['Debilidades',entry.weaknesses],['Notas / registros',entry.notes]];
-  document.getElementById('bestiaryInfo').innerHTML=fields.filter(([,v])=>String(v||'').trim()).map(([label,value])=>`<section class="bestiary-field"><span class="bestiary-label">${escapeHtml(label)}</span>${label==='Clasificación'?`<span class="bestiary-classification">${escapeHtml(value)}</span>`:`<p class="bestiary-text">${escapeHtml(value)}</p>`}</section>`).join('')||'<div class="bestiary-empty" style="grid-column:1/-1">Esta página todavía no contiene información. Pulsa <strong>Editar</strong> para comenzar el registro.</div>';
+  if(isNewEra){
+    const specs=[['Longitud estimada',entry.longitud],['Altura estimada',entry.altura],['Masa estimada',entry.masa],['Dieta',entry.dieta],['Distribución / hábitat',entry.distribucion||entry.habitat],['Nivel de riesgo',entry.riesgo]];
+    const specHtml=specs.some(([,v])=>String(v||'').trim())?`<div class="new-era-spec-grid">${specs.filter(([,v])=>String(v||'').trim()).map(([label,value])=>`<div class="new-era-spec-item"><span class="new-era-spec-label">${escapeHtml(label)}</span><span class="new-era-spec-value">${escapeHtml(value)}</span></div>`).join('')}</div>`:'';
+    const fields=[['Anatomía / características',entry.anatomia],['Descripción',entry.description],['Comportamiento',entry.behavior],['Registro del hallazgo',entry.registroHallazgo],['Capacidades',entry.abilities],['Riesgos / medidas de seguridad',entry.riesgosSeguridad||entry.weaknesses],['Observaciones científicas',entry.observaciones],['Notas / registros',entry.notes]];
+    document.getElementById('bestiaryInfo').innerHTML=specHtml+fields.filter(([,v])=>String(v||'').trim()).map(([label,value])=>`<section class="bestiary-field"><span class="new-era-section-tag">${escapeHtml(label)}</span><p class="bestiary-text">${escapeHtml(value)}</p></section>`).join('')||'<div class="bestiary-empty" style="grid-column:1/-1">Este registro todavía no contiene información. Pulsa <strong>Editar</strong> para completar el expediente científico.</div>';
+  }else{
+    const fields=[['Clasificación',entry.classification],['Hábitat',entry.habitat],['Descripción',entry.description],['Comportamiento',entry.behavior],['Capacidades',entry.abilities],['Debilidades',entry.weaknesses],['Notas / registros',entry.notes]];
+    document.getElementById('bestiaryInfo').innerHTML=fields.filter(([,v])=>String(v||'').trim()).map(([label,value])=>`<section class="bestiary-field"><span class="bestiary-label">${escapeHtml(label)}</span>${label==='Clasificación'?`<span class="bestiary-classification">${escapeHtml(value)}</span>`:`<p class="bestiary-text">${escapeHtml(value)}</p>`}</section>`).join('')||'<div class="bestiary-empty" style="grid-column:1/-1">Esta página todavía no contiene información. Pulsa <strong>Editar</strong> para comenzar el registro.</div>';
+  }
+  if(isNewEra){
+    const setN=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value||'—');};
+    setN('newEraSpecimenCode',entry.codigoEspecimen);
+    setN('newEraTaxonomy',entry.taxonomia||entry.classification);
+    setN('newEraPeriod',entry.periodo);
+    setN('newEraDiscoveryLocation',entry.lugarHallazgo);
+    setN('newEraSpecimenStatus',entry.estadoEspecimen);
+    setN('newEraRecordStatus',entry.estadoRegistro);
+  }
   document.getElementById('bestiaryPageNumber').textContent=`Página ${Math.max(1,bestiaryEntries.findIndex(e=>String(e.id)===String(entry.id))+1)} de ${Math.max(1,bestiaryEntries.length)}`;
   const idx=bestiaryEntries.findIndex(e=>String(e.id)===String(entry.id));
   document.getElementById('bestiaryPrevButton').disabled=idx<=0;
@@ -4778,9 +4941,12 @@ function renderBestiaryEntry(entry){
   });
   const infectionFields={Expediente:'expediente',Amenaza:'amenaza',Estado:'estado',Origen:'origen',Instalacion:'instalacion',FechaIdentificacion:'fechaIdentificacion'};
   Object.entries(infectionFields).forEach(([suffix,key])=>{const field=document.getElementById('be'+suffix);if(field)field.value=entry[key]||field.value||'';});
+  const newEraFields={SpecimenCode:'codigoEspecimen',Taxonomy:'taxonomia',Period:'periodo',DiscoveryLocation:'lugarHallazgo',SpecimenStatus:'estadoEspecimen',RecordStatus:'estadoRegistro',Length:'longitud',Height:'altura',Mass:'masa',Diet:'dieta',Distribution:'distribucion',Risk:'riesgo',Anatomy:'anatomia',DiscoveryRecord:'registroHallazgo',Safety:'riesgosSeguridad',Observations:'observaciones'};
+  Object.entries(newEraFields).forEach(([suffix,key])=>{const field=document.getElementById('be'+suffix);if(field)field.value=entry[key]||'';});
   const editor=document.getElementById('bestiaryEditor');
   editor.classList.toggle('open',bestiaryEditorOpen);
   editor.querySelectorAll('.infection-only').forEach(el=>{el.style.display=isInfection?'block':'none';});
+  editor.querySelectorAll('.new-era-only').forEach(el=>{el.style.display=isNewEra?'block':'none';});
 }
 
 function toggleBestiaryEditor(force){
@@ -4807,6 +4973,22 @@ async function saveCurrentBestiaryEntry(){
     abilities:document.getElementById('beAbilities').value,
     weaknesses:document.getElementById('beWeaknesses').value,
     notes:document.getElementById('beNotes').value,
+    codigoEspecimen:document.getElementById('beSpecimenCode')?.value.trim()||'',
+    taxonomia:document.getElementById('beTaxonomy')?.value.trim()||'',
+    periodo:document.getElementById('bePeriod')?.value.trim()||'',
+    lugarHallazgo:document.getElementById('beDiscoveryLocation')?.value.trim()||'',
+    estadoEspecimen:document.getElementById('beSpecimenStatus')?.value||'Completo',
+    estadoRegistro:document.getElementById('beRecordStatus')?.value||'Confirmado',
+    longitud:document.getElementById('beLength')?.value.trim()||'',
+    altura:document.getElementById('beHeight')?.value.trim()||'',
+    masa:document.getElementById('beMass')?.value.trim()||'',
+    dieta:document.getElementById('beDiet')?.value.trim()||'',
+    distribucion:document.getElementById('beDistribution')?.value.trim()||'',
+    riesgo:document.getElementById('beRisk')?.value.trim()||'',
+    anatomia:document.getElementById('beAnatomy')?.value||'',
+    registroHallazgo:document.getElementById('beDiscoveryRecord')?.value||'',
+    riesgosSeguridad:document.getElementById('beSafety')?.value||'',
+    observaciones:document.getElementById('beObservations')?.value||'',
     updatedAt:new Date().toISOString()
   };
   delete data.photos;
@@ -4877,8 +5059,22 @@ async function storageUpload(path,fileOrBlob,contentType){
   if(!response.ok){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
 }
 async function storageDelete(path){
-  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/remove/${GALLERY_BUCKET}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});
-  if(!response.ok && response.status!==404){const txt=await response.text();throw new Error(txt||`HTTP ${response.status}`);}
+  const response=await fetch(`${SUPABASE_URL}/storage/v1/object/${GALLERY_BUCKET}`,{
+    method:'DELETE',
+    headers:{
+      'apikey':SUPABASE_KEY,
+      'Authorization':`Bearer ${SUPABASE_KEY}`,
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({prefixes:[path]})
+  });
+  if(!response.ok && response.status!==404){
+    const txt=await response.text();
+    throw new Error(txt||`HTTP ${response.status}`);
+  }
+  if(response.status!==404){
+    try{await response.json();}catch(_){ }
+  }
 }
 async function getGalleryCharacters(){return currentCampaignId?await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(currentCampaignId)}&select=id,name,character_type,player_slot&order=name.asc`):[];}
 
