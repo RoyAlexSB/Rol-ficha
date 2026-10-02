@@ -1316,7 +1316,9 @@ select {
 @media(max-width:620px){.modifier-scope-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.modifier-form-grid{grid-template-columns:1fr 80px}}
 </style>
 </style>
-</head>
+<style id="creatureSheetStyles">
+.creature-sheet-wrap{display:none;margin-top:22px}.creature-sheet-wrap.open{display:block}.creature-sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.creature-sheet-title{font-size:clamp(1.25rem,3vw,1.8rem);margin:0}.creature-sheet-subtitle{margin:4px 0 0;color:#aeb8ca;font-size:.9rem}.creature-sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.creature-sheet-card{background:rgba(16,20,29,.78);border:1px solid rgba(150,160,185,.18);border-radius:14px;padding:16px;min-width:0}.creature-sheet-card.full{grid-column:1/-1}.creature-sheet-card h4{margin:0 0 12px;font-size:1rem}.creature-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.creature-stat{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;text-align:center}.creature-stat span{display:block;font-size:.75rem;color:#aeb8ca;text-transform:uppercase;letter-spacing:.05em}.creature-stat input{width:100%;margin-top:6px;text-align:center;font-weight:700;font-size:1.1rem}.creature-skill-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.creature-skill-row{display:grid;grid-template-columns:minmax(105px,.7fr) 64px minmax(0,1.4fr);gap:8px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 10px}.creature-skill-name{font-size:.8rem;color:#cbd3e2;font-weight:700}.creature-skill-row input{width:100%;min-width:0}.creature-skill-value{text-align:center;font-weight:700}.creature-skill-talent::placeholder{color:#8490a5}.creature-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.creature-field-grid label,.creature-sheet-card label{display:flex;flex-direction:column;gap:5px;color:#cbd3e2;font-size:.82rem}.creature-sheet-card input,.creature-sheet-card textarea,.creature-sheet-card select{box-sizing:border-box;width:100%;border:1px solid rgba(160,170,195,.2);border-radius:9px;background:rgba(255,255,255,.055);color:#f4f6fb;padding:9px 10px}.creature-sheet-card textarea{min-height:82px;resize:vertical}.creature-list{display:grid;gap:9px}.creature-list-row{display:grid;grid-template-columns:1.1fr .65fr 1.6fr auto;gap:8px;align-items:center}.creature-list-row button{white-space:nowrap}.creature-sheet-actions{display:flex;gap:8px;flex-wrap:wrap}.creature-sheet-note{color:#9faabd;font-size:.8rem;margin:8px 0 0}.creature-sheet-view-toggle{display:flex;gap:8px;flex-wrap:wrap}.creature-sheet-saved{font-size:.8rem;color:#8fd3a7;min-height:1.1em}@media(max-width:760px){.creature-sheet-grid,.creature-field-grid,.creature-skill-grid{grid-template-columns:1fr}.creature-sheet-card.full{grid-column:auto}.creature-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.creature-skill-row{grid-template-columns:minmax(0,1fr) 58px}.creature-skill-talent{grid-column:1/-1}.creature-list-row{grid-template-columns:1fr 1fr}.creature-list-row input:nth-child(3){grid-column:1/-1}.creature-list-row button{grid-column:1/-1;justify-self:start}}
+</style></head>
 
 <body>
 
@@ -1463,6 +1465,7 @@ select {
         <div class="bestiary-page-actions">
           <button class="bestiary-btn" onclick="showBestiaryIndex()">☰ Índice</button>
           <button class="bestiary-btn" onclick="toggleBestiaryEditor()">✒ Editar</button>
+          <button class="bestiary-btn" id="creatureSheetButton" onclick="toggleCreatureSheet()">🧬 Ficha de criatura</button>
           <button class="bestiary-btn" onclick="deleteCurrentBestiaryEntry()">🗑 Borrar</button>
         </div>
       </div>
@@ -1496,7 +1499,39 @@ select {
         </div>
         <div class="bestiary-info" id="bestiaryInfo"></div>
       </div>
-      <div id="bestiaryEditor" class="bestiary-editor">
+      <section id="creatureSheetWrap" class="creature-sheet-wrap">
+  <div class="creature-sheet-head">
+    <div><h3 class="creature-sheet-title">🧬 Ficha de criatura</h3><p class="creature-sheet-subtitle">Perfil jugable independiente del expediente del Bestiario.</p></div>
+    <div class="creature-sheet-actions"><button class="bestiary-btn" onclick="saveCreatureSheet()">💾 Guardar ficha</button><button class="bestiary-btn" onclick="toggleCreatureSheet(false)">← Ocultar ficha</button></div>
+  </div>
+  <div class="creature-sheet-grid">
+    <section class="creature-sheet-card full"><h4>📋 Identidad y estado</h4><div class="creature-field-grid">
+      <label>Especie / denominación<input id="csSpecies" maxlength="160"></label><label>Tipo de criatura<input id="csType" maxlength="120" placeholder="Dinosaurio, infectado, entidad…"></label>
+      <label>Estado<select id="csStatus"><option>Activo</option><option>Contención</option><option>Extinto</option><option>Desconocido</option></select></label><label>Nivel de amenaza<input id="csThreat" maxlength="80" placeholder="Bajo · moderado · crítico…"></label>
+    </div></section>
+    <section class="creature-sheet-card full"><h4>🧬 Atributos</h4><div class="creature-stat-grid">
+      <div class="creature-stat"><span>Fortaleza</span><input id="csFortaleza" type="number" min="0"></div><div class="creature-stat"><span>Reflejos</span><input id="csReflejos" type="number" min="0"></div><div class="creature-stat"><span>Voluntad</span><input id="csVoluntad" type="number" min="0"></div><div class="creature-stat"><span>Inteligencia</span><input id="csInteligencia" type="number" min="0"></div>
+    </div></section>
+    <section class="creature-sheet-card full"><h4>🎯 Habilidades</h4><div class="creature-skill-grid">
+      <div class="creature-skill-row"><span class="creature-skill-name">Forma física</span><input class="creature-skill-value" id="csFormaFisica" type="number" min="0" aria-label="Valor de Forma física"><input class="creature-skill-talent" id="csTalentFormaFisica" type="text" placeholder="Talento…" aria-label="Talento de Forma física"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Combate</span><input class="creature-skill-value" id="csCombate" type="number" min="0" aria-label="Valor de Combate"><input class="creature-skill-talent" id="csTalentCombate" type="text" placeholder="Talento…" aria-label="Talento de Combate"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Percepción</span><input class="creature-skill-value" id="csPercepcion" type="number" min="0" aria-label="Valor de Percepción"><input class="creature-skill-talent" id="csTalentPercepcion" type="text" placeholder="Talento…" aria-label="Talento de Percepción"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Subterfugio</span><input class="creature-skill-value" id="csSubterfugio" type="number" min="0" aria-label="Valor de Subterfugio"><input class="creature-skill-talent" id="csTalentSubterfugio" type="text" placeholder="Talento…" aria-label="Talento de Subterfugio"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Comunicación</span><input class="creature-skill-value" id="csComunicacion" type="number" min="0" aria-label="Valor de Comunicación"><input class="creature-skill-talent" id="csTalentComunicacion" type="text" placeholder="Talento…" aria-label="Talento de Comunicación"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Cultura</span><input class="creature-skill-value" id="csCultura" type="number" min="0" aria-label="Valor de Cultura"><input class="creature-skill-talent" id="csTalentCultura" type="text" placeholder="Talento…" aria-label="Talento de Cultura"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Ocultismo</span><input class="creature-skill-value" id="csOcultismo" type="number" min="0" aria-label="Valor de Ocultismo"><input class="creature-skill-talent" id="csTalentOcultismo" type="text" placeholder="Talento…" aria-label="Talento de Ocultismo"></div>
+      <div class="creature-skill-row"><span class="creature-skill-name">Gestión emocional</span><input class="creature-skill-value" id="csGestionEmocional" type="number" min="0" aria-label="Valor de Gestión emocional"><input class="creature-skill-talent" id="csTalentGestionEmocional" type="text" placeholder="Talento…" aria-label="Talento de Gestión emocional"></div>
+    </div><p class="creature-sheet-note">Cada talento queda asociado directamente a su habilidad.</p></section>
+    <section class="creature-sheet-card"><h4>❤️ Salud</h4><div class="creature-field-grid"><label>Umbral de herida<input id="csWoundThreshold" type="number" min="0"></label><label>Resistencia total<input id="csResistanceTotal" type="number" min="0"></label><label>Resistencia actual<input id="csResistanceCurrent" type="number" min="0"></label><label>RED<input id="csRed" type="number" min="0"></label></div><p class="creature-sheet-note">Puedes usar estos valores manualmente o reflejar las reglas que utilicéis para cada especie.</p></section>
+    <section class="creature-sheet-card"><h4>⚔️ Combate</h4><div class="creature-field-grid"><label>Iniciativa<input id="csInitiative" type="number"></label><label>Defensa<input id="csDefense" type="number"></label><label>Defensa desprevenido<input id="csDefenseFlat" type="number"></label><label>Daño cuerpo a cuerpo<input id="csMeleeDamage" maxlength="30" placeholder="M / CM / mCM…"></label><label>Daño a distancia<input id="csRangedDamage" maxlength="30"></label></div></section>
+    <section class="creature-sheet-card full"><h4>🦴 Ataques</h4><div id="creatureAttacksList" class="creature-list"></div><button type="button" class="bestiary-btn" style="margin-top:10px" onclick="addCreatureAttack()">＋ Añadir ataque</button><p class="creature-sheet-note">Cada ataque puede tener su propio daño, alcance y efecto.</p></section>
+    <section class="creature-sheet-card full"><h4>✨ Capacidades especiales</h4><div id="creatureAbilitiesList" class="creature-list"></div><button type="button" class="bestiary-btn" style="margin-top:10px" onclick="addCreatureAbility()">＋ Añadir capacidad</button></section>
+    <section class="creature-sheet-card"><h4>⚠️ Debilidades</h4><textarea id="csWeaknesses" placeholder="Una por línea…"></textarea></section>
+    <section class="creature-sheet-card full"><h4>📖 Notas de juego</h4><textarea id="csNotes" placeholder="Comportamiento en combate, reglas especiales, notas del Máster…"></textarea></section>
+  </div>
+  <div class="creature-sheet-actions" style="margin-top:14px"><button class="bestiary-btn" onclick="saveCreatureSheet()">💾 Guardar ficha</button><span id="creatureSheetSaved" class="creature-sheet-saved"></span></div>
+</section>
+<div id="bestiaryEditor" class="bestiary-editor">
         <div class="bestiary-editor-grid">
           <label>Nombre<input id="beName" maxlength="120"></label>
           <label>Nombre alternativo / título<input id="beEpithet" maxlength="180"></label>
@@ -4778,7 +4813,7 @@ async function loadBestiaryEntries(){
       const meta=await storageList(bestiaryEntryPrefix(id));
       const json=meta.find(x=>x.name==='entry.json');
       if(!json)continue;
-      const response=await fetch(bestiaryEntryUrl(id,'entry.json'),{cache:'no-store'});
+      const response=await fetch(`${bestiaryEntryUrl(id,'entry.json')}?cb=${Date.now()}`,{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
       if(!response.ok)continue;
       const data=await response.json();
       const photos=meta.filter(x=>x.name&&x.name!=='entry.json'&&x.id!==null);
@@ -4842,6 +4877,7 @@ async function renderBestiaryIndex(){
 }
 
 function showBestiaryIndex(){
+  document.getElementById('creatureSheetWrap')?.classList.remove('open');
   activeBestiaryEntryId=null;
   bestiaryEditorOpen=false;
   document.getElementById('bestiaryIndexView').style.display='block';
@@ -4870,7 +4906,7 @@ async function createBestiaryEntry(event){
   if(!name)return;
   const id=bestiaryNewId();
   const isNewEra=/Amor de Otro Mundo:\s*La Nueva Era/i.test(String(currentCampaign?.name||''));
-  const entry={id,name,epithet,expediente:'',amenaza:'I · Bajo',estado:'Activo',origen:'',instalacion:'',fechaIdentificacion:'',classification:'',habitat:'',description:'',behavior:'',abilities:'',weaknesses:'',notes:'',codigoEspecimen:'',taxonomia:'',periodo:'',lugarHallazgo:'',estadoEspecimen:'Completo',estadoRegistro:'Confirmado',longitud:'',altura:'',masa:'',dieta:'',distribucion:'',riesgo:'',anatomia:'',registroHallazgo:'',riesgosSeguridad:'',observaciones:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  const entry={id,name,epithet,expediente:'',amenaza:'I · Bajo',estado:'Activo',origen:'',instalacion:'',fechaIdentificacion:'',classification:'',habitat:'',description:'',behavior:'',abilities:'',weaknesses:'',notes:'',creatureSheet:defaultCreatureSheet(),codigoEspecimen:'',taxonomia:'',periodo:'',lugarHallazgo:'',estadoEspecimen:'Completo',estadoRegistro:'Confirmado',longitud:'',altura:'',masa:'',dieta:'',distribucion:'',riesgo:'',anatomia:'',registroHallazgo:'',riesgosSeguridad:'',observaciones:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
   if(isNewEra)entry.estadoRegistro='En estudio';
   try{
     await storageUpload(bestiaryEntryPrefix(id)+'entry.json',new Blob([JSON.stringify(entry)],{type:'application/json'}),'application/json');
@@ -4891,6 +4927,17 @@ async function openBestiaryEntry(id){
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(error){console.error('Open bestiary entry error:',error);alert('No se pudo abrir la entrada.');}
 }
+
+function defaultCreatureSheet(){return {species:'',type:'',status:'Activo',threat:'',attributes:{fortaleza:0,reflejos:0,voluntad:0,inteligencia:0},skills:{formaFisica:0,combate:0,percepcion:0,subterfugio:0,comunicacion:0,cultura:0,ocultismo:0,gestionEmocional:0},skillTalents:{formaFisica:'',combate:'',percepcion:'',subterfugio:'',comunicacion:'',cultura:'',ocultismo:'',gestionEmocional:''},health:{woundThreshold:0,resistanceTotal:0,resistanceCurrent:0,red:0},combat:{initiative:0,defense:0,defenseFlat:0,meleeDamage:'',rangedDamage:''},attacks:[],abilities:[],talents:'',weaknesses:'',notes:''};}
+function normalizeCreatureSheet(sheet){const d=defaultCreatureSheet(),x=sheet||{};return {...d,...x,attributes:{...d.attributes,...(x.attributes||{})},skills:{...d.skills,...(x.skills||{})},skillTalents:{...d.skillTalents,...(x.skillTalents||{})},health:{...d.health,...(x.health||{})},combat:{...d.combat,...(x.combat||{})},attacks:Array.isArray(x.attacks)?x.attacks.map(a=>({name:String(a?.name||''),damage:String(a?.damage||''),range:String(a?.range||''),effect:String(a?.effect||'')})).filter(a=>a.name||a.damage||a.range||a.effect):[],abilities:Array.isArray(x.abilities)?x.abilities.map(a=>({name:String(a?.name||''),description:String(a?.description||'')})).filter(a=>a.name||a.description):[]};}
+function toggleCreatureSheet(force){const el=document.getElementById('creatureSheetWrap');if(!el)return;const open=typeof force==='boolean'?force:!el.classList.contains('open');el.classList.toggle('open',open);if(open){const e=bestiaryEntries.find(x=>String(x.id)===String(activeBestiaryEntryId));if(e)renderCreatureSheet(e.creatureSheet);}else document.getElementById('creatureSheetSaved').textContent='';}
+function renderCreatureSheet(sheet){const x=normalizeCreatureSheet(sheet);const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??'';};set('csSpecies',x.species);set('csType',x.type);set('csStatus',x.status);set('csThreat',x.threat);Object.entries(x.attributes).forEach(([k,v])=>set('cs'+k.charAt(0).toUpperCase()+k.slice(1),v));Object.entries(x.skills).forEach(([k,v])=>set('cs'+k.charAt(0).toUpperCase()+k.slice(1),v));Object.entries(x.skillTalents).forEach(([k,v])=>set('csTalent'+k.charAt(0).toUpperCase()+k.slice(1),v));Object.entries(x.health).forEach(([k,v])=>set('cs'+k.charAt(0).toUpperCase()+k.slice(1),v));Object.entries(x.combat).forEach(([k,v])=>set('cs'+k.charAt(0).toUpperCase()+k.slice(1),v));set('csWeaknesses',x.weaknesses);set('csNotes',x.notes);renderCreatureAttacks(x.attacks);renderCreatureAbilities(x.abilities);}
+function renderCreatureAttacks(list){const el=document.getElementById('creatureAttacksList');if(!el)return;el.innerHTML=list.length?list.map((a,i)=>`<div class="creature-list-row"><input data-ca-name value="${escapeHtml(a.name)}" placeholder="Ataque"><input data-ca-damage value="${escapeHtml(a.damage)}" placeholder="Daño"><input data-ca-range value="${escapeHtml(a.range)}" placeholder="Alcance / condición"><input data-ca-effect value="${escapeHtml(a.effect)}" placeholder="Efecto"><button type="button" class="bestiary-btn" onclick="this.parentElement.remove()">🗑</button></div>`).join(''):'<p class="creature-sheet-note">Todavía no hay ataques registrados.</p>';}
+function addCreatureAttack(){const el=document.getElementById('creatureAttacksList');if(!el)return;const empty=el.querySelector('.creature-sheet-note');if(empty)empty.remove();el.insertAdjacentHTML('beforeend','<div class="creature-list-row"><input data-ca-name placeholder="Ataque"><input data-ca-damage placeholder="Daño"><input data-ca-range placeholder="Alcance / condición"><input data-ca-effect placeholder="Efecto"><button type="button" class="bestiary-btn" onclick="this.parentElement.remove()">🗑</button></div>');}
+function renderCreatureAbilities(list){const el=document.getElementById('creatureAbilitiesList');if(!el)return;el.innerHTML=list.length?list.map(a=>`<div class="creature-list-row" style="grid-template-columns:1fr 2fr auto"><input data-cab-name value="${escapeHtml(a.name)}" placeholder="Capacidad"><input data-cab-desc value="${escapeHtml(a.description)}" placeholder="Descripción / efecto"><button type="button" class="bestiary-btn" onclick="this.parentElement.remove()">🗑</button></div>`).join(''):'<p class="creature-sheet-note">Todavía no hay capacidades especiales registradas.</p>';}
+function addCreatureAbility(){const el=document.getElementById('creatureAbilitiesList');if(!el)return;const empty=el.querySelector('.creature-sheet-note');if(empty)empty.remove();el.insertAdjacentHTML('beforeend','<div class="creature-list-row" style="grid-template-columns:1fr 2fr auto"><input data-cab-name placeholder="Capacidad"><input data-cab-desc placeholder="Descripción / efecto"><button type="button" class="bestiary-btn" onclick="this.parentElement.remove()">🗑</button></div>');}
+function collectCreatureSheet(){const get=id=>document.getElementById(id)?.value??'';const num=id=>Number(get(id))||0;return {species:get('csSpecies').trim(),type:get('csType').trim(),status:get('csStatus'),threat:get('csThreat').trim(),attributes:{fortaleza:num('csFortaleza'),reflejos:num('csReflejos'),voluntad:num('csVoluntad'),inteligencia:num('csInteligencia')},skills:{formaFisica:num('csFormaFisica'),combate:num('csCombate'),percepcion:num('csPercepcion'),subterfugio:num('csSubterfugio'),comunicacion:num('csComunicacion'),cultura:num('csCultura'),ocultismo:num('csOcultismo'),gestionEmocional:num('csGestionEmocional')},skillTalents:{formaFisica:get('csTalentFormaFisica').trim(),combate:get('csTalentCombate').trim(),percepcion:get('csTalentPercepcion').trim(),subterfugio:get('csTalentSubterfugio').trim(),comunicacion:get('csTalentComunicacion').trim(),cultura:get('csTalentCultura').trim(),ocultismo:get('csTalentOcultismo').trim(),gestionEmocional:get('csTalentGestionEmocional').trim()},health:{woundThreshold:num('csWoundThreshold'),resistanceTotal:num('csResistanceTotal'),resistanceCurrent:num('csResistanceCurrent'),red:num('csRed')},combat:{initiative:num('csInitiative'),defense:num('csDefense'),defenseFlat:num('csDefenseFlat'),meleeDamage:get('csMeleeDamage').trim(),rangedDamage:get('csRangedDamage').trim()},attacks:[...document.querySelectorAll('#creatureAttacksList .creature-list-row')].map(r=>({name:r.querySelector('[data-ca-name]')?.value.trim()||'',damage:r.querySelector('[data-ca-damage]')?.value.trim()||'',range:r.querySelector('[data-ca-range]')?.value.trim()||'',effect:r.querySelector('[data-ca-effect]')?.value.trim()||''})).filter(a=>a.name||a.damage||a.range||a.effect),abilities:[...document.querySelectorAll('#creatureAbilitiesList .creature-list-row')].map(r=>({name:r.querySelector('[data-cab-name]')?.value.trim()||'',description:r.querySelector('[data-cab-desc]')?.value.trim()||''})).filter(a=>a.name||a.description),talents:'',weaknesses:get('csWeaknesses'),notes:get('csNotes')};}
+async function saveCreatureSheet(){const entry=bestiaryEntries.find(e=>String(e.id)===String(activeBestiaryEntryId));if(!entry)return;try{const creatureSheet=collectCreatureSheet();creatureSheet.talents=entry.creatureSheet?.talents||'';const data={...entry,creatureSheet,updatedAt:new Date().toISOString()};delete data.photos;await storageUpload(bestiaryEntryPrefix(entry.id)+'entry.json',new Blob([JSON.stringify(data)],{type:'application/json'}),'application/json');const savedData={...data,photos:entry.photos||[]};bestiaryEntries=bestiaryEntries.map(e=>String(e.id)===String(entry.id)?savedData:e);renderBestiaryEntry(savedData);renderCreatureSheet(savedData.creatureSheet);const refreshed=await loadBestiaryEntries();const fresh=refreshed.find(e=>String(e.id)===String(entry.id));if(fresh){bestiaryEntries=refreshed;renderBestiaryEntry(fresh);renderCreatureSheet(fresh.creatureSheet);document.getElementById('creatureSheetWrap').classList.add('open');document.getElementById('creatureSheetSaved').textContent='✓ Ficha guardada';setTimeout(()=>{const e=document.getElementById('creatureSheetSaved');if(e)e.textContent='';},2200);}}catch(error){console.error('Save creature sheet error:',error);alert('No se pudo guardar la ficha de criatura.');}}
 
 function renderBestiaryEntry(entry){
   document.getElementById('bestiaryPageTitle').textContent=entry.name||'Sin nombre';
@@ -4936,6 +4983,7 @@ function renderBestiaryEntry(entry){
   const idx=bestiaryEntries.findIndex(e=>String(e.id)===String(entry.id));
   document.getElementById('bestiaryPrevButton').disabled=idx<=0;
   document.getElementById('bestiaryNextButton').disabled=idx<0||idx>=bestiaryEntries.length-1;
+  renderCreatureSheet(entry.creatureSheet);
   ['Name','Epithet','Classification','Habitat','Description','Behavior','Abilities','Weaknesses','Notes'].forEach(key=>{
     const field=document.getElementById('be'+key); if(field)field.value=entry[key.charAt(0).toLowerCase()+key.slice(1)]||'';
   });
@@ -4994,11 +5042,13 @@ async function saveCurrentBestiaryEntry(){
   delete data.photos;
   try{
     await storageUpload(bestiaryEntryPrefix(entry.id)+'entry.json',new Blob([JSON.stringify(data)],{type:'application/json'}),'application/json');
+    const savedData={...data,photos:entry.photos||[]};
+    bestiaryEntries=bestiaryEntries.map(e=>String(e.id)===String(entry.id)?savedData:e);
     bestiaryEditorOpen=false;
-    bestiaryEntries=await loadBestiaryEntries();
-    const fresh=bestiaryEntries.find(e=>String(e.id)===String(entry.id));
-    if(fresh)renderBestiaryEntry(fresh);
-    else showBestiaryIndex();
+    renderBestiaryEntry(savedData);
+    const refreshed=await loadBestiaryEntries();
+    const fresh=refreshed.find(e=>String(e.id)===String(entry.id));
+    if(fresh){bestiaryEntries=refreshed;renderBestiaryEntry(fresh);}
   }catch(error){console.error('Save bestiary entry error:',error);alert('No se pudo guardar la entrada.');}
 }
 
