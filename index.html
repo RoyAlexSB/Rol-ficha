@@ -1076,6 +1076,33 @@ select {
 .character-gallery-link{margin-left:auto}
 
 
+
+.modifiers-panel{margin:14px 0 0;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(10,14,30,.46);overflow:hidden}
+.modifiers-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
+.modifiers-title{font-weight:800;font-size:.92rem}
+.modifiers-actions{display:flex;gap:7px;flex-wrap:wrap}
+.modifier-list{padding:0 10px 10px;display:grid;gap:7px}
+.modifier-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border-radius:11px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)}
+.modifier-card.inactive{opacity:.48}
+.modifier-check{width:18px;height:18px;accent-color:#8e78ff}
+.modifier-main{min-width:0}
+.modifier-name{font-weight:800;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.modifier-value{font-weight:900;font-size:.9rem;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.09)}
+.modifier-scope,.modifier-condition{font-size:.74rem;opacity:.68;margin-top:3px;line-height:1.35}
+.modifier-remove{padding:5px 8px!important;min-width:32px}
+.modifier-apply{margin-top:9px;padding:8px 10px;border-radius:10px;background:rgba(142,120,255,.1);border:1px solid rgba(142,120,255,.2);font-size:.78rem}
+.modifier-apply-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800}
+.modifier-apply-list{display:grid;gap:6px;margin-top:7px}
+.modifier-apply-row{display:flex;align-items:flex-start;gap:8px}
+.modifier-apply-row input{margin-top:2px;accent-color:#8e78ff}
+.modifier-empty{padding:10px 2px;font-size:.78rem;opacity:.65}
+.modifier-dialog{display:none;margin:0 10px 10px;padding:10px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.modifier-dialog.visible{display:block}
+.modifier-form-grid{display:grid;grid-template-columns:minmax(0,1.5fr) 90px;gap:8px}
+.modifier-form-grid input,.modifier-dialog textarea{width:100%;box-sizing:border-box}
+.modifier-scope-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
+.modifier-scope-grid label{font-size:.72rem;display:flex;gap:5px;align-items:center}
+@media(max-width:620px){.modifier-scope-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.modifier-form-grid{grid-template-columns:1fr 80px}}
 </style>
 </style>
 </head>
@@ -1686,6 +1713,42 @@ select {
 
     <div class="calculation" id="calculation">
         Inteligencia 6 + Percepción 7 = 13
+    </div>
+
+    <div class="modifiers-panel" id="rollModifiersPanel">
+        <div class="modifiers-head">
+            <span class="modifiers-title">⚙️ Modificadores de tirada</span>
+            <div class="modifiers-actions">
+                <button type="button" class="secondary" onclick="toggleModifierEditor()">＋ Añadir</button>
+            </div>
+        </div>
+        <div class="modifier-dialog" id="modifierEditor">
+            <div class="modifier-form-grid">
+                <input id="modifierName" type="text" placeholder="Nombre del efecto">
+                <input id="modifierValue" type="number" step="1" value="1" placeholder="Valor">
+            </div>
+            <input id="modifierCondition" type="text" style="width:100%;box-sizing:border-box;margin-top:8px" placeholder="Cuándo se aplica (ej.: entender, leer o interpretar)" aria-label="Condición del modificador">
+            <div class="modifier-scope-grid" id="modifierScopeGrid">
+                <label><input type="checkbox" value="fortaleza"> Fortaleza</label>
+                <label><input type="checkbox" value="reflejos"> Reflejos</label>
+                <label><input type="checkbox" value="voluntad"> Voluntad</label>
+                <label><input type="checkbox" value="inteligencia"> Inteligencia</label>
+                <label><input type="checkbox" value="formaFisica"> Forma física</label>
+                <label><input type="checkbox" value="combate"> Combate</label>
+                <label><input type="checkbox" value="percepcion"> Percepción</label>
+                <label><input type="checkbox" value="subterfugio"> Subterfugio</label>
+                <label><input type="checkbox" value="comunicacion"> Comunicación</label>
+                <label><input type="checkbox" value="cultura"> Cultura</label>
+                <label><input type="checkbox" value="ocultismo"> Ocultismo</label>
+                <label><input type="checkbox" value="gestionEmocional"> Gestión emocional</label>
+            </div>
+            <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:9px;flex-wrap:wrap">
+                <button type="button" class="secondary" onclick="toggleModifierEditor(false)">Cancelar</button>
+                <button type="button" onclick="createRollModifier()">Guardar modificador</button>
+            </div>
+        </div>
+        <div class="modifier-list" id="modifierList"></div>
+        <div class="modifier-apply" id="modifierApplyPanel" hidden></div>
     </div>
 
 
@@ -2426,7 +2489,7 @@ function getSharedEcstasy(){const live=document.querySelectorAll('#ecstasyTrack 
 function setDramaPointsUI(points=5){const safe=Math.max(0,Math.min(5,Number(points)||0));document.querySelectorAll('.drama-point').forEach((el,index)=>{el.checked=index<safe;});}
 function updateDramaPointsFromUI(){if(!workingCharacter)return;const points=[...document.querySelectorAll('.drama-point')].filter(el=>el.checked).length;workingCharacter.shared.dramaPoints=points;workingCharacter.human.sheet.dramaPoints=points;workingCharacter.ecstasy.sheet.dramaPoints=points;}
 function syncCurrentFormToWorkingCharacter(){
-    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones};workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet};workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||'')};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
+    if(!workingCharacter)return;const sheet=getSheetDataFromForm(),target=activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy;target.sheet={...target.sheet,...sheet};workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones};workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet};workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet};workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[])};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
 }
 function setFormValuesFromCharacterSheet(sheet){
     const a=sheet.attributes||{},s=sheet.skills||{},shared=workingCharacter?.shared?.sheet||{};
@@ -2467,7 +2530,7 @@ function characterToDatabase(character){
             sharedSheet:{...(workingCharacter.shared?.sheet||{})},
             xpTracker:workingCharacter.shared?.xpTracker||null,
             sheet:{...defaultSheetData(),...(h.sheet||{}),dramaPoints:workingCharacter.shared?.dramaPoints??5},
-            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||'')},
+            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[])},
             ecstasy:{
                 ...((previousAttrs&&previousAttrs.ecstasy)||{}),
                 attributes:humanizeNumbers(e.attributes),
@@ -2508,10 +2571,10 @@ function databaseToCharacter(row){
     // Los campos compartidos siempre quedan presentes en ambas formas al cargar.
     human.sheet={...human.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
     ext.sheet={...ext.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
-    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[]),portraitUrl:String(attrs.profile?.portraitUrl||'')};
+    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[]),portraitUrl:String(attrs.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(attrs.profile?.rollModifiers||[])};
     return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
 }
-function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[],portraitUrl:''};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);workingCharacter.profile.portraitUrl=workingCharacter.profile.portraitUrl||'';renderCharacterPortrait(workingCharacter.profile.portraitUrl);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();}
+function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[],portraitUrl:'',rollModifiers:[]};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);workingCharacter.profile.portraitUrl=workingCharacter.profile.portraitUrl||'';workingCharacter.profile.rollModifiers=normalizeRollModifiers(workingCharacter.profile.rollModifiers||[]);renderCharacterPortrait(workingCharacter.profile.portraitUrl);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();renderRollModifiers();}
 
 /* =========================================
    RETRATO DEL PERSONAJE
@@ -3232,6 +3295,108 @@ function refreshSkillSelectorForMode(){
 }
 
 /* =========================================
+   MODIFICADORES DE TIRADA
+========================================= */
+
+const ROLL_MODIFIER_LABELS={
+    fortaleza:'Fortaleza',reflejos:'Reflejos',voluntad:'Voluntad',inteligencia:'Inteligencia',
+    formaFisica:'Forma física',combate:'Combate',percepcion:'Percepción',subterfugio:'Subterfugio',
+    comunicacion:'Comunicación',cultura:'Cultura',ocultismo:'Ocultismo',gestionEmocional:'Gestión emocional'
+};
+
+function normalizeRollModifiers(list=[]){
+    return (Array.isArray(list)?list:[]).map((m,i)=>({
+        id:String(m?.id||`modifier-${Date.now()}-${i}`),
+        name:String(m?.name||'Modificador'),
+        value:Number(m?.value)||0,
+        scope:Array.isArray(m?.scope)?m.scope.filter(k=>ROLL_MODIFIER_LABELS[k]):[],
+        condition:String(m?.condition||''),
+        active:m?.active!==false
+    })).filter(m=>m.name||m.value||m.scope.length);
+}
+
+function getRollModifiers(){
+    if(!workingCharacter)return [];
+    workingCharacter.profile=workingCharacter.profile||{};
+    workingCharacter.profile.rollModifiers=normalizeRollModifiers(workingCharacter.profile.rollModifiers||[]);
+    return workingCharacter.profile.rollModifiers;
+}
+
+function modifierAppliesToCurrentRoll(modifier){
+    const attribute=document.getElementById('attributeSelect')?.value||'';
+    const skill=document.getElementById('skillSelect')?.value||'';
+    return modifier.scope.includes(attribute)||modifier.scope.includes(skill);
+}
+
+function renderRollModifiers(){
+    const list=document.getElementById('modifierList'),apply=document.getElementById('modifierApplyPanel');
+    if(!list)return;
+    const modifiers=getRollModifiers();
+    list.innerHTML=modifiers.length?modifiers.map(m=>{
+        const scope=m.scope.map(k=>ROLL_MODIFIER_LABELS[k]).join(' · ')||'Sin atributo/habilidad asignado';
+        const sign=m.value>0?`+${m.value}`:String(m.value);
+        return `<div class="modifier-card ${m.active?'':'inactive'}"><input class="modifier-check" type="checkbox" ${m.active?'checked':''} aria-label="Activar ${escapeHtml(m.name)}" onchange="toggleRollModifierActive('${escapeHtml(m.id)}',this.checked)"><div class="modifier-main"><div class="modifier-name"><span>${escapeHtml(m.name)}</span><span class="modifier-value">${sign}</span></div><div class="modifier-scope">Afecta a: ${escapeHtml(scope)}</div>${m.condition?`<div class="modifier-condition">${escapeHtml(m.condition)}</div>`:''}</div><button type="button" class="secondary modifier-remove" onclick="removeRollModifier('${escapeHtml(m.id)}')" aria-label="Eliminar modificador">×</button></div>`;
+    }).join(''):'<div class="modifier-empty">No hay modificadores activos o guardados. Puedes añadir uno para efectos temporales, bendiciones, penalizaciones, objetos, bebidas, etc.</div>';
+    renderApplicableRollModifiers();
+}
+
+function renderApplicableRollModifiers(){
+    const panel=document.getElementById('modifierApplyPanel');if(!panel)return;
+    const applicable=getRollModifiers().filter(m=>m.active&&m.value&&modifierAppliesToCurrentRoll(m));
+    if(!applicable.length){panel.hidden=true;panel.innerHTML='';return;}
+    panel.hidden=false;
+    panel.innerHTML=`<div class="modifier-apply-head"><span>⚙️ Aplicar a esta tirada</span><small style="opacity:.65;font-weight:400">Puedes desmarcar los que no correspondan</small></div><div class="modifier-apply-list">${applicable.map(m=>`<label class="modifier-apply-row"><input class="modifier-use-check" data-modifier-id="${escapeHtml(m.id)}" type="checkbox" checked><span><strong>${escapeHtml(m.name)}</strong> (${m.value>0?'+':''}${m.value})${m.condition?` · ${escapeHtml(m.condition)}`:''}</span></label>`).join('')}</div>`;
+}
+
+function toggleModifierEditor(force){
+    const editor=document.getElementById('modifierEditor');if(!editor)return;
+    const show=typeof force==='boolean'?force:!editor.classList.contains('visible');
+    editor.classList.toggle('visible',show);
+    if(show){
+        document.getElementById('modifierName').value='';document.getElementById('modifierValue').value='1';document.getElementById('modifierCondition').value='';
+        document.querySelectorAll('#modifierScopeGrid input').forEach(x=>x.checked=false);
+        document.getElementById('modifierName')?.focus();
+    }
+}
+
+async function createRollModifier(){
+    const name=document.getElementById('modifierName')?.value.trim()||'';
+    const value=Number(document.getElementById('modifierValue')?.value)||0;
+    const condition=document.getElementById('modifierCondition')?.value.trim()||'';
+    const scope=[...document.querySelectorAll('#modifierScopeGrid input:checked')].map(x=>x.value);
+    if(!name){alert('Ponle un nombre al modificador.');return;}
+    if(!value){alert('El modificador no puede ser 0.');return;}
+    if(!scope.length){alert('Selecciona al menos un atributo o habilidad.');return;}
+    const modifiers=getRollModifiers();
+    modifiers.push({id:`modifier-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,name,value,scope,condition,active:true});
+    workingCharacter.profile.rollModifiers=modifiers;
+    toggleModifierEditor(false);renderRollModifiers();
+    try{await saveCharacter();}catch(error){console.error(error);}
+}
+
+async function toggleRollModifierActive(id,active){
+    const modifier=getRollModifiers().find(m=>m.id===id);if(!modifier)return;
+    modifier.active=Boolean(active);renderRollModifiers();
+    try{await saveCharacter();}catch(error){console.error(error);}
+}
+
+async function removeRollModifier(id){
+    const modifier=getRollModifiers().find(m=>m.id===id);if(!modifier)return;
+    if(!confirm(`¿Eliminar el modificador «${modifier.name}»?`))return;
+    workingCharacter.profile.rollModifiers=getRollModifiers().filter(m=>m.id!==id);renderRollModifiers();
+    try{await saveCharacter();}catch(error){console.error(error);}
+}
+
+function getCurrentRollModifierTotal(){
+    return [...document.querySelectorAll('.modifier-use-check:checked')].reduce((sum,el)=>sum+(Number(getRollModifiers().find(m=>m.id===el.dataset.modifierId)?.value)||0),0);
+}
+
+function getCurrentRollModifierSummary(){
+    const selected=[...document.querySelectorAll('.modifier-use-check:checked')].map(el=>getRollModifiers().find(m=>m.id===el.dataset.modifierId)).filter(Boolean);
+    return {total:selected.reduce((sum,m)=>sum+(Number(m.value)||0),0),items:selected};
+}
+
+/* =========================================
    CALCULAR ATRIBUTO + HABILIDAD
 ========================================= */
 
@@ -3276,7 +3441,7 @@ function updateCalculation() {
             " " +
             attributeValue +
             " + 3d10";
-
+        renderApplicableRollModifiers();
         return;
     }
 
@@ -3291,11 +3456,13 @@ function updateCalculation() {
         const baseValue=getValue(expectedAttribute);
         document.getElementById("attributeSelect").value=expectedAttribute;
         document.getElementById("calculation").textContent=`${attributeNames[expectedAttribute]} ${baseValue} + ${name} ${arcaneValue} = ${baseValue+arcaneValue} + 3d10`;
+        renderApplicableRollModifiers();
         return;
     }
 
     const skillValue = getValue(skill);
     document.getElementById("calculation").textContent=attributeNames[attribute]+" "+attributeValue+" + "+skillNames[skill]+" "+skillValue+" = "+(attributeValue+skillValue)+" + 3d10";
+    renderApplicableRollModifiers();
 }
 
 
@@ -3336,7 +3503,8 @@ function addRollToHistory(){
     if(dice.some(v=>v===null)) return;
     const special=detectSpecialRoll();
     const total=Number(document.getElementById("resultNumber")?.textContent);
-    rollHistory.unshift({dice:dice.slice(),total:Number.isFinite(total)?total:null,label:getRollLabel(),mode:getRollModeLabel(),special,time:Date.now()});
+    const modifierInfo=getCurrentRollModifierSummary();
+    rollHistory.unshift({dice:dice.slice(),total:Number.isFinite(total)?total:null,label:getRollLabel(),mode:getRollModeLabel(),special,time:Date.now(),modifierTotal:modifierInfo.total,modifierNames:modifierInfo.items.map(m=>m.name)});
     rollHistory=rollHistory.slice(0,10);
     renderRollHistory();
 }
@@ -3357,7 +3525,8 @@ function renderRollHistory(){
         const specialLabel=item.special==="critical"?'<span class="roll-history-special critical">✨ CRÍTICO</span>':item.special==="fumble"?'<span class="roll-history-special fumble">💀 PIFIA</span>':'';
         const when=new Date(item.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
         const dieType=item.dice.length===3?'3d10':(item.mode&&/^\d+d\d+$/.test(item.mode)?item.mode:`${item.dice.length} dados`);
-        return `<div class="roll-history-item"><div class="roll-history-main"><div class="roll-history-top">${specialLabel}<span class="roll-history-dice">${item.dice.join(" · ")}</span></div><div class="roll-history-meta"><strong>${escapeHtml(dieType)}</strong> · ${escapeHtml(item.label)} · ${escapeHtml(item.mode)} · ${when}</div></div><div class="roll-history-total">${item.total ?? "—"}</div></div>`;
+        const modText=item.modifierTotal?` · ⚙️ ${item.modifierTotal>0?'+':''}${item.modifierTotal}${item.modifierNames?.length?` (${escapeHtml(item.modifierNames.join(', '))})`:''}`:'';
+        return `<div class="roll-history-item"><div class="roll-history-main"><div class="roll-history-top">${specialLabel}<span class="roll-history-dice">${item.dice.join(" · ")}</span></div><div class="roll-history-meta"><strong>${escapeHtml(dieType)}</strong> · ${escapeHtml(item.label)} · ${escapeHtml(item.mode)} · ${when}${modText}</div></div><div class="roll-history-total">${item.total ?? "—"}</div></div>`;
     }).join("");
 }
 
@@ -4088,9 +4257,9 @@ function applyBaseValue(
     }
 
 
-    const finalResult =
-        base + diceResult;
-
+    const modifierInfo=getCurrentRollModifierSummary();
+    const modifierTotal=modifierInfo.total;
+    const finalResult=base+diceResult+modifierTotal;
 
     document.getElementById(
         "resultNumber"
@@ -4116,7 +4285,7 @@ function applyBaseValue(
 
         diceResult +
 
-        " = " +
+        (modifierTotal ? ` ${modifierTotal>0?'+':''}${modifierTotal} modificador = ` : " = ") +
 
         finalResult +
         ".";
