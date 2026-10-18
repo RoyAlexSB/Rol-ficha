@@ -3530,9 +3530,14 @@ async function deleteCurrentCampaign(){
         headers:{'Prefer':'return=representation'}
       });
     }catch(deleteError){
-      // Una restricción FK puede impedir el borrado del padre mientras existan
-      // personajes/sesiones. Solo en ese caso hacemos la limpieza previa.
-      if(deleteError?.status===409 || deleteError?.status===400){
+      // supabaseRequest lanza Error con el JSON de PostgREST dentro de
+      // .message; por eso no basta con comprobar deleteError.status.
+      let dbError = null;
+      try { dbError = JSON.parse(deleteError?.message || ''); } catch {}
+      const isForeignKey = dbError?.code === '23503' || deleteError?.code === '23503';
+      const httpStatus = deleteError?.status ?? deleteError?.statusCode;
+      // Si la FK impide borrar la campaña, limpiamos primero los datos hijos.
+      if(isForeignKey || httpStatus===409 || httpStatus===400){
         needsChildCleanup=true;
       }else{
         throw deleteError;
@@ -3546,9 +3551,10 @@ async function deleteCurrentCampaign(){
     }
 
     if(needsChildCleanup){
-      // Datos relacionales de la campaña.
-      await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(campaignId)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
+      // Datos relacionales de la campaña: primero sesiones y después PJ/NPC,
+      // por si las sesiones contienen referencias a personajes.
       await supabaseRequest(`/sessions?campaign_id=eq.${encodeURIComponent(campaignId)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
+      await supabaseRequest(`/characters?campaign_id=eq.${encodeURIComponent(campaignId)}`,{method:'DELETE',headers:{'Prefer':'return=minimal'}});
 
       // El bestiario y la galería viven en Storage, separados de campaigns.
       try{
