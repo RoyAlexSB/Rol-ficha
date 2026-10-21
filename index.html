@@ -5756,5 +5756,49 @@ async function openCharacterGallery(){
   document.getElementById('gallerySection')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 </script>
+
+<style id="adom-mobile-narrative-layout-fix">
+/* Fix de ancho para Trasfondo y Diario/Notas en móvil.
+   Evita que .narrative-block.full herede grid-column:auto dentro de las 12 columnas. */
+@media (max-width: 760px) {
+  .character-sheet-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+    min-width: 0;
+  }
+  .character-sheet-grid > .sheet-block,
+  .character-sheet-grid > .sheet-block.full,
+  .character-sheet-grid > .sheet-block.third,
+  .character-sheet-grid > .narrative-block,
+  .character-sheet-grid > .narrative-block.full {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .narrative-block .sheet-field,
+  .narrative-block .narrative-textarea,
+  .narrative-block .notes-list,
+  .narrative-block .note-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .narrative-block .narrative-textarea {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+  .narrative-block .note-card-header {
+    flex-wrap: wrap;
+  }
+  .narrative-block .note-card-body {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+}
+</style>
+
 </body>
 </html>
