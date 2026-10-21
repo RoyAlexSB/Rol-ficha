@@ -1536,7 +1536,6 @@ body.condenados-mode #artifactBookView,body.condenados-mode #bestiaryView{color:
 @media(prefers-reduced-motion:no-preference){body.condenados-mode button:hover{transform:translateY(-1px);}}
 
 </style>
-
 <style id="creatureSheetStyles">
 
 /* Individuos de una misma especie */
@@ -1588,7 +1587,6 @@ body.condenados-mode #artifactBookView,body.condenados-mode #bestiaryView{color:
 .artifact-entry-save span{font-size:.85rem;color:#5d482b}
 @media(max-width:650px){.artifact-book-header{flex-direction:column}.artifact-book-actions{justify-content:flex-start}.artifact-entry-grid{grid-template-columns:1fr}.artifact-entry-grid label.full{grid-column:auto}.artifact-book-toolbar{align-items:stretch;flex-direction:column}}
 </style>
-
 <style>
 
 /* ===== TEMA VISUAL EXCLUSIVO · LA NUEVA ERA =====
@@ -1906,17 +1904,17 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 </div>
 </div>
 <section class="artifact-book-view" id="artifactBookView" style="display:none">
-  <div class="artifact-book-shell">
-    <header class="artifact-book-header">
-      <div><div class="artifact-book-kicker">ARCHIVO ARCANO · REGISTRO DE CAMPAÑA</div><h1 id="artifactBookTitle">Libro de Artefactos Mágicos</h1><p id="artifactBookSubtitle">Reliquias, objetos encantados y vestigios de poder.</p></div>
-      <div class="artifact-book-actions"><button class="secondary" onclick="closeArtifactBook()">← Volver a la campaña</button><button onclick="createArtifactEntry()">＋ Nuevo artefacto</button></div>
-    </header>
-    <div id="artifactBookIndexView">
-      <div class="artifact-book-toolbar"><input id="artifactBookSearch" type="search" placeholder="🔎 Buscar artefactos por nombre, tipo o procedencia…" oninput="renderArtifactBookIndex()"/><span id="artifactBookCount"></span></div>
-      <div id="artifactBookIndex" class="artifact-book-index"></div>
-    </div>
-    <article id="artifactBookEntryView" class="artifact-book-entry" style="display:none"></article>
-  </div>
+<div class="artifact-book-shell">
+<header class="artifact-book-header">
+<div><div class="artifact-book-kicker">ARCHIVO ARCANO · REGISTRO DE CAMPAÑA</div><h1 id="artifactBookTitle">Libro de Artefactos Mágicos</h1><p id="artifactBookSubtitle">Reliquias, objetos encantados y vestigios de poder.</p></div>
+<div class="artifact-book-actions"><button class="secondary" onclick="closeArtifactBook()">← Volver a la campaña</button><button onclick="createArtifactEntry()">＋ Nuevo artefacto</button></div>
+</header>
+<div id="artifactBookIndexView">
+<div class="artifact-book-toolbar"><input id="artifactBookSearch" oninput="renderArtifactBookIndex()" placeholder="🔎 Buscar artefactos por nombre, tipo o procedencia…" type="search"/><span id="artifactBookCount"></span></div>
+<div class="artifact-book-index" id="artifactBookIndex"></div>
+</div>
+<article class="artifact-book-entry" id="artifactBookEntryView" style="display:none"></article>
+</div>
 </section>
 <div id="characterView">
 <div class="character-context">
@@ -2020,7 +2018,21 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 </div>
 </div>
 <div class="character-sheet-grid">
+
+
+
+
+
+
+
+
+
+
 <div class="sheet-block full">
+<h3>🎲 Base de tiradas</h3>
+<p class="sheet-help">Valores calculados directamente a partir de los Atributos y Habilidades de la ficha. Se actualizan automáticamente.</p>
+<div class="derived-grid" id="sheetBaseRolls"></div>
+</div><div class="sheet-block full">
 <h3>📖 Identidad del personaje</h3>
 <div class="sheet-fields">
 <div class="sheet-field">
@@ -2036,73 +2048,33 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 <input id="sheetTemporalAspect" placeholder="Aspecto temporal actual" type="text"/>
 </div>
 </div>
-</div>
-<div class="sheet-block full condena-only-block" id="condenaBlock"><h3>⛓️ Condena</h3><p class="sheet-help">Información exclusiva de la campaña «Amor de Otro Mundo: Condenados».</p><div class="sheet-fields"><div class="sheet-field"><label for="sheetCondena">Condena</label><input id="sheetCondena" placeholder="Ej.: 20 años de prisión por el asesinato de una familia" type="text"/></div><div class="sheet-field"><label for="sheetCondenaEdadIngreso">Edad al ingresar</label><input id="sheetCondenaEdadIngreso" min="0" placeholder="19" type="number"/></div><div class="sheet-field"><label for="sheetCondenaEdadSalida">Edad prevista de salida</label><input id="sheetCondenaEdadSalida" min="0" placeholder="39" type="number"/></div></div></div><div class="sheet-block full">
-<h3>❤️ Salud</h3>
-<div class="derived-grid">
-<div class="derived-stat"><span>Umbral de herida</span><strong id="sheetWoundThreshold">—</strong><small>Fortaleza + ½ Voluntad</small></div>
-<div class="derived-stat"><span>Resistencia total</span><strong id="sheetResistanceTotal">—</strong><small>Umbral × 3</small></div>
-</div>
-<div class="sheet-fields" style="margin-top:12px;">
+</div><div class="sheet-block full condena-only-block" id="condenaBlock"><h3>⛓️ Condena</h3><p class="sheet-help">Información exclusiva de la campaña «Amor de Otro Mundo: Condenados».</p><div class="sheet-fields"><div class="sheet-field"><label for="sheetCondena">Condena</label><input id="sheetCondena" placeholder="Ej.: 20 años de prisión por el asesinato de una familia" type="text"/></div><div class="sheet-field"><label for="sheetCondenaEdadIngreso">Edad al ingresar</label><input id="sheetCondenaEdadIngreso" min="0" placeholder="19" type="number"/></div><div class="sheet-field"><label for="sheetCondenaEdadSalida">Edad prevista de salida</label><input id="sheetCondenaEdadSalida" min="0" placeholder="39" type="number"/></div></div></div><div class="sheet-block narrative-block full">
+<h3>📖 Trasfondo</h3>
+<p class="sheet-help">Cuenta aquí el pasado y la vida del personaje: infancia, familia, acontecimientos importantes, relaciones, secretos, cómo llegó hasta el presente, etc.</p>
 <div class="sheet-field">
-<label for="sheetCurrentResistance">Resistencia actual</label>
-<input id="sheetCurrentResistance" min="0" placeholder="Vacío mientras esté a tope" type="number"/>
+<textarea class="narrative-textarea" id="characterBackground" placeholder="Escribe aquí el trasfondo del personaje..."></textarea>
 </div>
+</div><div class="sheet-block">
+<h3>📝 Hitos</h3>
 <div class="sheet-field">
-<label>Heridas</label>
-<div class="wound-track">
-<label class="wound-box"><input id="sheetWoundMild1" type="checkbox"/> Leve 1</label>
-<label class="wound-box"><input id="sheetWoundMild2" type="checkbox"/> Leve 2</label>
-<label class="wound-box"><input id="sheetWoundSevere1" type="checkbox"/> Grave 1</label>
-<label class="wound-box"><input id="sheetWoundSevere2" type="checkbox"/> Grave 2</label>
+<label for="sheetMilestones">Momentos importantes del personaje</label>
+<textarea id="sheetMilestones" placeholder="Un hito por línea"></textarea>
 </div>
-<div class="wound-help">2 heridas leves equivalen a 1 grave · 2 heridas graves = muerte.</div>
+</div><div class="sheet-block full human-only-block">
+<h3>🔗 Lazos</h3>
+<p class="sheet-help">El valor representa la fuerza sentimental del vínculo. El éxtasis se calcula automáticamente: Medio = mitad del lazo (mínimo 1) · Mayor = valor del lazo · Crítico = valor del lazo × 2.</p>
+<div class="bonds-wrap">
+<table class="bonds-table">
+<thead>
+<tr><th>Nombre</th><th>Aspecto</th><th>Tipo</th><th>Valor</th><th>Medio</th><th>Mayor</th><th>Crítico</th><th></th></tr>
+</thead>
+<tbody id="bondsBody"></tbody>
+</table>
 </div>
+<div class="sheet-actions">
+<button class="secondary" onclick="addBondRow()" type="button">＋ Añadir lazo</button>
 </div>
-</div>
-<div class="sheet-block">
-<h3>⚔️ Combate</h3>
-<div class="derived-grid">
-<div class="derived-stat"><span>Iniciativa</span><strong id="sheetInitiative">—</strong><small>Reflejos + ½ Inteligencia</small></div>
-<div class="derived-stat"><span>Daño a distancia</span><strong id="sheetRangedDamage">—</strong><small>Combate ÷ 4</small></div>
-<div class="derived-stat"><span>Daño cuerpo a cuerpo</span><strong id="sheetMeleeDamage">—</strong><small>(Fortaleza + Combate) ÷ 4</small></div>
-<div class="derived-stat"><span>Defensa</span><strong id="sheetDefense">—</strong><small>Reflejos + mejor entre Combate/Forma física + 5</small></div>
-<div class="derived-stat"><span>Defensa desprevenido</span><strong id="sheetDefenseUnaware">—</strong><small>Defensa − 3</small></div>
-</div>
-<div class="sheet-field" style="margin-top:12px;">
-<label for="sheetRed">RED · Resistencia al daño</label>
-<input id="sheetRed" min="0" placeholder="Solo si lleva protección" type="number"/>
-</div>
-<div class="sheet-field" style="margin-top:12px;">
-<label>Armas / ataques</label>
-<div class="dynamic-list" id="weaponsList"></div>
-<div class="sheet-actions compact-actions">
-<button class="secondary" onclick="addWeaponRow()" type="button">＋ Añadir arma / ataque</button>
-</div>
-</div>
-</div>
-<div class="sheet-block">
-<h3>🌀 Distorsión y Éxtasis</h3>
-<p class="sheet-help">El nivel de distorsión lo determina el Máster. La salida de éxtasis se calcula automáticamente.</p>
-<div class="sheet-fields">
-<div class="sheet-field">
-<label for="sheetDistortion">Nivel de distorsión</label>
-<input id="sheetDistortion" max="10" min="0" oninput="updateEcstasyTrack()" type="number" value="0"/>
-</div>
-<div class="derived-stat"><span>Salida de éxtasis</span><strong id="sheetEcstasyExit">10</strong><small>10 + nivel de distorsión</small></div>
-</div>
-<div class="sheet-field" style="margin-top:12px;">
-<label>Éxtasis / maná actual</label>
-<div class="ecstasy-track" id="ecstasyTrack"></div>
-<div class="sheet-note" id="ecstasySummary">0 / 10 puntos de éxtasis</div>
-</div>
-</div>
-<div class="sheet-block full">
-<h3>🎲 Base de tiradas</h3>
-<p class="sheet-help">Valores calculados directamente a partir de los Atributos y Habilidades de la ficha. Se actualizan automáticamente.</p>
-<div class="derived-grid" id="sheetBaseRolls"></div>
-</div>
-<div class="sheet-block third">
+</div><div class="sheet-block third">
 <h3>🏆 Experiencia</h3>
 <div class="sheet-fields">
 <div class="sheet-field">
@@ -2129,30 +2101,83 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 <div class="xp-tracker-status" id="xpTrackerStatus">Sin experiencia pendiente.</div>
 <div class="sheet-note" style="margin-top:8px;">El ajuste de Distorsión solo afecta a este recuento; nunca modifica los valores de la ficha.</div>
 </div>
+</div><div class="sheet-block narrative-block full">
+<h3>📓 Diario / Notas</h3>
+<p class="sheet-help">Guarda aquí pistas, descubrimientos, personas, lugares o cualquier dato importante que no quieras olvidar durante la campaña.</p>
+<div class="notes-list" id="characterNotesList"></div>
+<div class="sheet-actions compact-actions">
+<button class="secondary" onclick="addCharacterNote()" type="button">＋ Añadir nota</button>
 </div>
-<div class="sheet-block third human-only-block">
+</div><div class="sheet-block third human-only-block">
 <h3>🎨 Aspectos</h3>
 <div class="sheet-field">
 <label for="sheetAspects">Aspectos activos</label>
 <textarea id="sheetAspects" placeholder="Un aspecto por línea"></textarea>
 </div>
+</div><div class="sheet-block full">
+<h3>❤️ Salud</h3>
+<div class="derived-grid">
+<div class="derived-stat"><span>Umbral de herida</span><strong id="sheetWoundThreshold">—</strong><small>Fortaleza + ½ Voluntad</small></div>
+<div class="derived-stat"><span>Resistencia total</span><strong id="sheetResistanceTotal">—</strong><small>Umbral × 3</small></div>
 </div>
-<div class="sheet-block full human-only-block">
-<h3>🔗 Lazos</h3>
-<p class="sheet-help">El valor representa la fuerza sentimental del vínculo. El éxtasis se calcula automáticamente: Medio = mitad del lazo (mínimo 1) · Mayor = valor del lazo · Crítico = valor del lazo × 2.</p>
-<div class="bonds-wrap">
-<table class="bonds-table">
-<thead>
-<tr><th>Nombre</th><th>Aspecto</th><th>Tipo</th><th>Valor</th><th>Medio</th><th>Mayor</th><th>Crítico</th><th></th></tr>
-</thead>
-<tbody id="bondsBody"></tbody>
-</table>
+<div class="sheet-fields" style="margin-top:12px;">
+<div class="sheet-field">
+<label for="sheetCurrentResistance">Resistencia actual</label>
+<input id="sheetCurrentResistance" min="0" placeholder="Vacío mientras esté a tope" type="number"/>
 </div>
-<div class="sheet-actions">
-<button class="secondary" onclick="addBondRow()" type="button">＋ Añadir lazo</button>
+<div class="sheet-field">
+<label>Heridas</label>
+<div class="wound-track">
+<label class="wound-box"><input id="sheetWoundMild1" type="checkbox"/> Leve 1</label>
+<label class="wound-box"><input id="sheetWoundMild2" type="checkbox"/> Leve 2</label>
+<label class="wound-box"><input id="sheetWoundSevere1" type="checkbox"/> Grave 1</label>
+<label class="wound-box"><input id="sheetWoundSevere2" type="checkbox"/> Grave 2</label>
+</div>
+<div class="wound-help">2 heridas leves equivalen a 1 grave · 2 heridas graves = muerte.</div>
 </div>
 </div>
-<div class="sheet-block full ecstasy-only-block">
+</div><div class="sheet-block">
+<h3>⚔️ Combate</h3>
+<div class="derived-grid">
+<div class="derived-stat"><span>Iniciativa</span><strong id="sheetInitiative">—</strong><small>Reflejos + ½ Inteligencia</small></div>
+<div class="derived-stat"><span>Daño a distancia</span><strong id="sheetRangedDamage">—</strong><small>Combate ÷ 4</small></div>
+<div class="derived-stat"><span>Daño cuerpo a cuerpo</span><strong id="sheetMeleeDamage">—</strong><small>(Fortaleza + Combate) ÷ 4</small></div>
+<div class="derived-stat"><span>Defensa</span><strong id="sheetDefense">—</strong><small>Reflejos + mejor entre Combate/Forma física + 5</small></div>
+<div class="derived-stat"><span>Defensa desprevenido</span><strong id="sheetDefenseUnaware">—</strong><small>Defensa − 3</small></div>
+</div>
+<div class="sheet-field" style="margin-top:12px;">
+<label for="sheetRed">RED · Resistencia al daño</label>
+<input id="sheetRed" min="0" placeholder="Solo si lleva protección" type="number"/>
+</div>
+<div class="sheet-field" style="margin-top:12px;">
+<label>Armas / ataques</label>
+<div class="dynamic-list" id="weaponsList"></div>
+<div class="sheet-actions compact-actions">
+<button class="secondary" onclick="addWeaponRow()" type="button">＋ Añadir arma / ataque</button>
+</div>
+</div>
+</div><div class="sheet-block">
+<h3>🌀 Distorsión y Éxtasis</h3>
+<p class="sheet-help">El nivel de distorsión lo determina el Máster. La salida de éxtasis se calcula automáticamente.</p>
+<div class="sheet-fields">
+<div class="sheet-field">
+<label for="sheetDistortion">Nivel de distorsión</label>
+<input id="sheetDistortion" max="10" min="0" oninput="updateEcstasyTrack()" type="number" value="0"/>
+</div>
+<div class="derived-stat"><span>Salida de éxtasis</span><strong id="sheetEcstasyExit">10</strong><small>10 + nivel de distorsión</small></div>
+</div>
+<div class="sheet-field" style="margin-top:12px;">
+<label>Éxtasis / maná actual</label>
+<div class="ecstasy-track" id="ecstasyTrack"></div>
+<div class="sheet-note" id="ecstasySummary">0 / 10 puntos de éxtasis</div>
+</div>
+</div><div class="sheet-block human-only-block">
+<h3>🎒 Inventario</h3>
+<div class="sheet-field">
+<label for="sheetInventory">Objetos y pertenencias</label>
+<textarea id="sheetInventory" placeholder="Un objeto por línea"></textarea>
+</div>
+</div><div class="sheet-block full ecstasy-only-block">
 <h3>✨ Habilidades Arcanas</h3>
 <p class="sheet-help">Cada poder tiene un valor de dominio. Indica si es innato o aprendido para determinar la combinación de tirada.</p>
 <div class="dynamic-table-wrap">
@@ -2164,52 +2189,18 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 <div class="sheet-actions">
 <button class="secondary" onclick="addArcaneAbilityRow()" type="button">＋ Añadir habilidad arcana</button>
 </div>
-</div>
-<div class="sheet-block ecstasy-only-block">
+</div><div class="sheet-block ecstasy-only-block">
 <h3>⚓ Anclas</h3>
 <p class="sheet-help">Las Anclas se crean desde los Lazos de la Ficha Humana. Marca un vínculo como «Ancla» y aparecerá aquí automáticamente.</p>
 <div class="dynamic-list" id="anchorsList"></div>
-</div>
-<div class="sheet-block ecstasy-only-block">
+</div><div class="sheet-block ecstasy-only-block">
 <h3>🧿 Artefactos arcanos</h3>
 <p class="sheet-help">Objetos sobrenaturales vinculados a la forma de Éxtasis.</p>
 <div class="dynamic-list" id="artifactsList"></div>
 <div class="sheet-actions compact-actions">
 <button class="secondary" onclick="addArtifactRow()" type="button">＋ Añadir artefacto</button>
 </div>
-</div>
-<div class="narrative-grid">
-<div class="sheet-block narrative-block full">
-<h3>📖 Trasfondo</h3>
-<p class="sheet-help">Cuenta aquí el pasado y la vida del personaje: infancia, familia, acontecimientos importantes, relaciones, secretos, cómo llegó hasta el presente, etc.</p>
-<div class="sheet-field">
-<textarea class="narrative-textarea" id="characterBackground" placeholder="Escribe aquí el trasfondo del personaje..."></textarea>
-</div>
-</div>
-<div class="sheet-block narrative-block full">
-<h3>📓 Diario / Notas</h3>
-<p class="sheet-help">Guarda aquí pistas, descubrimientos, personas, lugares o cualquier dato importante que no quieras olvidar durante la campaña.</p>
-<div class="notes-list" id="characterNotesList"></div>
-<div class="sheet-actions compact-actions">
-<button class="secondary" onclick="addCharacterNote()" type="button">＋ Añadir nota</button>
-</div>
-</div>
-</div>
-<div class="sheet-block">
-<h3>📝 Hitos</h3>
-<div class="sheet-field">
-<label for="sheetMilestones">Momentos importantes del personaje</label>
-<textarea id="sheetMilestones" placeholder="Un hito por línea"></textarea>
-</div>
-</div>
-<div class="sheet-block human-only-block">
-<h3>🎒 Inventario</h3>
-<div class="sheet-field">
-<label for="sheetInventory">Objetos y pertenencias</label>
-<textarea id="sheetInventory" placeholder="Un objeto por línea"></textarea>
-</div>
-</div>
-</section><section class="card" data-character-sheet-only="true">
+</div></div></section><section class="card" data-character-sheet-only="true">
 <h2>🎲 Nueva prueba</h2>
 <p>
         Selecciona el Atributo y la Habilidad que quieras utilizar.
@@ -2582,13 +2573,9 @@ body.nueva-era-mode #artifactBookView,body.nueva-era-mode #bestiaryView{color:in
 <span id="saveStatusText">Aún no hay cambios guardados en esta ficha.</span>
 </div>
 </div>
-
 <!-- =========================
      SISTEMA DE PRUEBAS
 ========================= -->
-
-
-
 </main>
 <script>
 
@@ -5166,7 +5153,6 @@ async function deleteArtifactEntry(){
   catch(error){console.error('Delete artifact error:',error);alert('No se pudo borrar el artefacto.');}
 }
 </script>
-
 <script id="bestiaryFeature">
 const BESTIARY_PREFIX='bestiary/';
 let bestiaryEntries=[];
