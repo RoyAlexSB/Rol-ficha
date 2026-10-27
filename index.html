@@ -1829,6 +1829,7 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 <h2 id="campaignTitle">Amor de Otro Mundo: El Olimpo</h2>
 <p id="campaignDescription">Personajes y NPCs de la campaña.</p>
 <div class="campaign-hero-actions">
+<button class="secondary" onclick="openMasterNpcView()">🎭 Fichas del Máster</button>
 <button class="secondary" onclick="openBestiary()">📖 Bestiario</button>
 <button class="secondary" onclick="openArtifactBook()">✦ Libro de artefactos</button><button class="secondary herbarium-campaign-button" id="openHerbariumButton" onclick="openHerbarium()">🌿 Herbolario</button>
 <button class="delete-button" onclick="deleteCurrentCampaign()">🗑 Borrar campaña</button>
@@ -1847,10 +1848,7 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 <div class="section-heading"><div><span class="eyebrow">JUGADORES</span><h3>👥 Personajes jugadores</h3></div><div><button class="secondary" onclick="toggleCharacterOrdering()">↕ Ordenar fichas</button> <button class="secondary" onclick="addPlayerSlot()">＋ Añadir jugador</button></div></div>
 <div class="manager-grid" id="playersGrid"></div>
 </div>
-<div class="manager-section master-section">
-<div class="section-heading"><div><span class="eyebrow">MÁSTER</span><h3>🎭 Personajes del Máster</h3></div><button onclick="createNpc()">＋ Crear NPC</button></div>
-<div class="manager-grid" id="npcsGrid"></div>
-</div>
+<div class="manager-section master-section" id="masterNpcPlaceholder" style="display:none;"><div class="manager-grid" id="npcsGrid"></div></div>
 <div class="manager-section gallery-section" id="gallerySection">
 <div class="section-heading">
 <div><span class="eyebrow">ARCHIVO VISUAL</span><h3>🖼️ Galería</h3></div>
@@ -2057,6 +2055,12 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 </form>
 </div>
 </div>
+<section class="card manager-view" id="masterNpcView" style="display:none;">
+<button class="secondary back-button" onclick="closeMasterNpcView()">← Volver a la campaña</button>
+<div class="section-heading" style="margin-top:18px"><div><span class="eyebrow">ARCHIVO DEL MÁSTER</span><h2>🎭 Fichas de NPC</h2><p>Los personajes no jugadores de esta campaña están separados de la vista general.</p></div><button onclick="createNpc()">＋ Crear NPC</button></div>
+<div class="campaign-character-search"><div class="campaign-character-search-row"><span aria-hidden="true">🔎</span><input autocomplete="off" id="masterNpcSearch" oninput="filterMasterNpcs()" placeholder="Buscar NPC por nombre…" type="search"/><span class="campaign-character-search-count" id="masterNpcCount"></span></div></div>
+<div class="manager-grid" id="masterNpcGridHost"></div>
+</section>
 <section class="artifact-book-view" id="artifactBookView" style="display:none">
 <div class="artifact-book-shell">
 <header class="artifact-book-header">
@@ -3574,6 +3578,7 @@ async function renderCampaignSelector(campaigns) {
 
     document.getElementById("campaignSelectorView").style.display = "block";
     document.getElementById("campaignView").style.display = "none";
+    document.getElementById("masterNpcView")?.style && (document.getElementById("masterNpcView").style.display="none");
     document.getElementById("artifactBookView")?.style && (document.getElementById("artifactBookView").style.display="none");
   document.getElementById("herbariumView")?.style && (document.getElementById("herbariumView").style.display="none");
     document.getElementById("characterView").style.display = "none";
@@ -3832,6 +3837,7 @@ async function renderCampaign(){
     document.getElementById('herbariumView')?.style && (document.getElementById('herbariumView').style.display='none');
     document.getElementById('bestiaryView').style.display='none';
     document.getElementById('campaignView').style.display='block';
+    document.getElementById('masterNpcView')?.style && (document.getElementById('masterNpcView').style.display='none');
     document.getElementById('characterView').style.display='none';
 
     const [rows] = await Promise.all([
@@ -3867,6 +3873,25 @@ async function openCharacter(id){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
+function openMasterNpcView(){
+ const source=document.getElementById('npcsGrid'),host=document.getElementById('masterNpcGridHost');
+ if(source&&host&&source.parentElement!==host)host.appendChild(source);
+ document.getElementById('campaignView').style.display='none';document.getElementById('masterNpcView').style.display='block';
+ document.getElementById('masterNpcSearch').value='';filterMasterNpcs();window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeMasterNpcView(){
+ const source=document.getElementById('npcsGrid'),placeholder=document.getElementById('masterNpcPlaceholder');
+ if(source&&placeholder&&source.parentElement!==placeholder)placeholder.appendChild(source);
+ document.getElementById('masterNpcView').style.display='none';document.getElementById('campaignView').style.display='block';
+ if(document.getElementById('campaignCharacterSearch'))document.getElementById('campaignCharacterSearch').value='';
+ renderCampaignCharacters(window.__campaignCharacterRows||[]);window.scrollTo({top:0,behavior:'smooth'});
+}
+function filterMasterNpcs(){
+ const q=normalizeSearchText(document.getElementById('masterNpcSearch')?.value||'');
+ const grid=document.getElementById('npcsGrid');let count=0;
+ if(grid)[...grid.children].forEach(card=>{const visible=!q||normalizeSearchText(card.innerText||'').includes(q);card.style.display=visible?'':'none';if(visible)count++;});
+ const el=document.getElementById('masterNpcCount');if(el)el.textContent=`${count} ${count===1?'NPC':'NPCs'}`;
+}
 function showCampaignView(){document.body.classList.remove("giada-red-mode","bestiary-mode");document.getElementById("bestiaryView")?.style && (document.getElementById("bestiaryView").style.display="none");renderCampaign();}
 
 async function deleteCharacter(id,event){
