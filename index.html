@@ -1849,23 +1849,6 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 <div class="manager-grid" id="playersGrid"></div>
 </div>
 <div class="manager-section master-section" id="masterNpcPlaceholder" style="display:none;"><div class="manager-grid" id="npcsGrid"></div></div>
-<div class="manager-section gallery-section" id="gallerySection">
-<div class="section-heading">
-<div><span class="eyebrow">ARCHIVO VISUAL</span><h3>🖼️ Galería</h3></div>
-<div class="gallery-photo-actions">
-<button class="secondary" onclick="createGalleryAlbum()">＋ Nuevo álbum</button>
-<button class="secondary" onclick="openLooseGallery()">📷 Fotos sueltas</button>
-<button onclick="uploadGalleryPhotos()">📷 Subir fotos</button>
-<input accept="image/*" id="galleryPhotoInput" multiple="" onchange="handleGalleryPhotoInput(event)" style="display:none" type="file"/>
-</div>
-</div>
-<div class="gallery-toolbar">
-<input autocomplete="off" class="gallery-search" id="gallerySearch" oninput="renderGallery()" placeholder="🔎 Buscar álbumes o fotos…" type="search"/>
-<span class="campaign-character-search-count" id="galleryCount"></span><button class="secondary" onclick="toggleGalleryOrdering()">↕ Ordenar galería</button>
-</div>
-<div class="gallery-albums" id="galleryAlbums"></div>
-<div class="gallery-viewer" id="galleryViewer" style="display:none"></div>
-</div>
 <div class="manager-section sessions-section">
 <div class="section-heading"><div><span class="eyebrow">CAMPAÑA</span><h3>📖 Sesiones</h3></div><button class="secondary" onclick="addSessionArc()">＋ Añadir arco</button></div>
 <div id="sessionsList"></div>
@@ -2074,11 +2057,14 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 <article class="artifact-book-entry" id="artifactBookEntryView" style="display:none"></article>
 </div>
 </section>
+<div class="gallery-lightbox" id="galleryLightbox" onclick="if(event.target===this)closeGalleryLightbox()">
+<button class="gallery-lightbox-close" onclick="closeGalleryLightbox()" aria-label="Cerrar imagen">×</button>
+<img alt="Imagen ampliada" id="galleryLightboxImage" src=""/>
+</div>
 <div id="characterView">
 <div class="character-context">
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
 <button class="secondary back-button" onclick="showCampaignView()">← Volver a la campaña</button>
-<button class="secondary character-gallery-link" onclick="openCharacterGallery()">🖼️ Galería</button>
 <button class="delete-button" onclick="deleteCurrentCharacter()">🗑 Borrar personaje</button>
 </div>
 <div class="context-name" id="characterContext"></div>
@@ -3830,8 +3816,8 @@ async function renderCampaign(){
     else{logoEl.style.display='none';}
 
     // Mostrar la campaña en cuanto se conoce su información principal.
-    // Personajes, galería e historial se cargan en paralelo para no sumar
-    // sus tiempos de espera de Supabase/almacenamiento.
+    // Personajes e historial se cargan en paralelo; la galería se ha retirado
+    // de la interfaz y ya no añade consultas ni espera al entrar en campaña.
     document.getElementById('campaignSelectorView').style.display='none';
     document.getElementById('artifactBookView')?.style && (document.getElementById('artifactBookView').style.display='none');
     document.getElementById('herbariumView')?.style && (document.getElementById('herbariumView').style.display='none');
@@ -3842,7 +3828,6 @@ async function renderCampaign(){
 
     const [rows] = await Promise.all([
         getCampaignCharacters(),
-        renderGallery(),
         renderSessions()
     ]);
     if(!currentCampaign || currentCampaignId!==campaignIdAtStart) return;
@@ -5261,10 +5246,7 @@ initializeSharedStorage().catch(error=>{
 });
 
 </script>
-<div class="gallery-lightbox" id="galleryLightbox" onclick="if(event.target===this)closeGalleryLightbox()">
-<button class="gallery-lightbox-close" onclick="closeGalleryLightbox()">✕</button>
-<img alt="Imagen de galería" id="galleryLightboxImage" src=""/>
-</div>
+
 <div class="gallery-cover-editor" id="galleryCoverEditor" onclick="if(event.target===this)closeGalleryCoverEditor()"><div aria-labelledby="galleryCoverEditorTitle" aria-modal="true" class="gallery-cover-dialog" role="dialog"><div class="gallery-viewer-head"><div><h3 class="gallery-viewer-title" id="galleryCoverEditorTitle">🎨 Elegir y encuadrar portada</h3><p class="campaign-character-search-hint">Elige una foto y arrástrala dentro del recuadro. También puedes acercarla para decidir exactamente qué parte se verá en la portada.</p></div><button class="secondary" onclick="closeGalleryCoverEditor()">✕ Cerrar</button></div><div class="gallery-cover-layout" style="margin-top:15px"><div><div class="gallery-cover-preview" id="galleryCoverPreview"><img alt="Previsualización de portada" id="galleryCoverPreviewImage" src=""/></div><p class="gallery-cover-help">🖱️ Arrastra la imagen para mover el encuadre · 🔍 Usa el control para acercar o alejar.</p></div><div class="gallery-cover-controls"><strong>Fotos del álbum</strong><div class="gallery-cover-thumbs" id="galleryCoverThumbs"></div><label style="font-size:.8rem;font-weight:700">Zoom <span id="galleryCoverZoomValue">1×</span><input class="gallery-cover-range" id="galleryCoverZoom" max="2.5" min="1" oninput="updateGalleryCoverZoom(this.value)" step="0.01" type="range" value="1"/></label></div></div><div class="gallery-cover-actions"><button class="secondary" onclick="closeGalleryCoverEditor()" type="button">Cancelar</button><button onclick="saveGalleryCover()" type="button">✓ Guardar portada</button></div></div></div>
 <script id="artifactBookFeature">
 const ARTIFACT_BOOK_PREFIX='artifacts/';
@@ -5948,14 +5930,7 @@ async function deleteGalleryAlbum(id){
 }
 function openGalleryLightbox(url){const box=document.getElementById('galleryLightbox'),img=document.getElementById('galleryLightboxImage');if(!box||!img)return;img.src=url;box.classList.add('open');}
 function closeGalleryLightbox(){document.getElementById('galleryLightbox')?.classList.remove('open');}
-async function openCharacterGallery(){
-  if(!currentCampaign)return;
-  document.getElementById('characterView').style.display='none';
-  document.getElementById('campaignView').style.display='block';
-  await renderCampaign();
-  await renderGallery();
-  document.getElementById('gallerySection')?.scrollIntoView({behavior:'smooth',block:'start'});
-}
+
 </script>
 <section class="artifact-book-view herbarium-view" id="herbariumView" style="display:none">
 <div class="artifact-book-shell herbarium-shell">
