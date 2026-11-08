@@ -2461,6 +2461,7 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 <div class="die-label">Dado 3</div>
 </div>
 </div>
+<div id="selectedSkillTalent" class="selected-skill-talent" style="margin:10px auto 14px;padding:10px 14px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(12,18,30,.48);max-width:560px;text-align:center;font-size:.9rem;color:#dbe5f5">✨ <strong>Talento de la habilidad:</strong> <span id="selectedSkillTalentValue">Selecciona una habilidad</span></div>
 <div class="roll-area">
 <div class="roll-toolbar">
 <div class="dice-selector-wrap">
@@ -4203,6 +4204,27 @@ function getCurrentRollModifierSummary(){
    CALCULAR ATRIBUTO + HABILIDAD
 ========================================= */
 
+function updateSkillTalentIndicator() {
+    const skill = document.getElementById("skillSelect")?.value || "ninguna";
+    const panel = document.getElementById("selectedSkillTalent");
+    const value = document.getElementById("selectedSkillTalentValue");
+    if (!panel || !value) return;
+    if (skill === "ninguna" || skill.startsWith("arcane:")) {
+        value.textContent = skill === "ninguna" ? "No se ha seleccionado ninguna habilidad" : "Las habilidades arcanas no usan este campo de Talento";
+        return;
+    }
+    const input = document.querySelector(`.skill-talent-input[data-skill-talent="${skill}"]`);
+    const talent = input?.value?.trim() || "";
+    value.textContent = talent ? talent : "Sin talento asociado";
+}
+
+if (!window.__skillTalentIndicatorListener) {
+    document.addEventListener("input", event => {
+        if (event.target?.matches?.(".skill-talent-input[data-skill-talent]")) updateSkillTalentIndicator();
+    });
+    window.__skillTalentIndicatorListener = true;
+}
+
 function updateCalculation() {
 
     const attribute =
@@ -4211,6 +4233,7 @@ function updateCalculation() {
     const skill =
         document.getElementById("skillSelect").value;
 
+    updateSkillTalentIndicator();
 
     const attributeNames = {
 
