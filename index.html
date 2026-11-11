@@ -1631,6 +1631,243 @@ body.corte-sangrienta-mode label,body.corte-sangrienta-mode p,body.corte-sangrie
 body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:rgba(164,39,59,.32)!important;}
 @media(max-width:700px){body.corte-sangrienta-mode{background-position:center center!important;background-attachment:scroll!important;}}
 
+
+/* Editor de identidad visual individual */
+#characterView{--character-primary:#667eea;--character-secondary:#8b5cf6;--character-accent:#38bdf8}
+#characterView .visual-theme-panel{margin:0 0 20px;padding:22px;border:1px solid color-mix(in srgb,var(--character-primary) 58%,transparent);border-radius:16px;background:rgba(8,13,22,.9);color:#edf2fa;box-shadow:0 12px 34px #0003,inset 0 0 25px color-mix(in srgb,var(--character-primary) 8%,transparent);backdrop-filter:blur(12px)}
+#characterView .visual-theme-heading{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}
+#characterView .visual-theme-heading h3{margin:5px 0;color:var(--character-primary)}
+#characterView .visual-theme-heading p{margin:0;color:#aeb9c9;font-size:.84rem}
+#characterView .visual-theme-kicker{font-size:.68rem;letter-spacing:.15em;color:var(--character-secondary);font-weight:bold}
+#characterView .visual-theme-campaign{font-size:.7rem;padding:7px 10px;border:1px solid var(--character-secondary);border-radius:20px}
+#characterView .visual-theme-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+#characterView .visual-theme-panel h4{font-size:.85rem;margin:14px 0 9px;color:#e8edf6}
+#characterView .visual-theme-palettes{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px}
+#characterView .visual-palette-option{min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid #ffffff22;border-radius:9px;background:#ffffff08;color:#e8edf6;font-size:.7rem;cursor:pointer}
+#characterView .visual-palette-option span{display:flex;gap:4px}
+#characterView .visual-palette-option i{width:17px;height:17px;border-radius:50%;border:1px solid #ffffff55}
+#characterView .visual-palette-option.active{border-color:var(--character-primary);box-shadow:0 0 0 1px var(--character-primary)}
+#characterView .visual-theme-colors{display:grid;gap:7px}
+#characterView .visual-color-control{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid #ffffff1c;border-radius:9px;background:#ffffff08;font-size:.8rem}
+#characterView .visual-color-control input{width:42px;height:32px;padding:2px;background:transparent;border:1px solid #ffffff44;border-radius:6px}
+#characterView .visual-theme-styles{display:flex;flex-wrap:wrap;gap:7px}
+#characterView .visual-theme-styles button{padding:8px 11px;border:1px solid #ffffff30;border-radius:8px;background:#ffffff08;color:#eee;font-size:.72rem}
+#characterView .visual-theme-styles button.active{border-color:var(--character-primary);color:var(--character-primary)}
+#characterView .visual-theme-presets{display:grid;gap:8px;margin-top:15px;padding:12px;border:1px solid #ffffff20;border-radius:10px}
+#characterView .visual-theme-presets label{font-size:.8rem}
+#characterView .visual-theme-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#characterView .visual-theme-actions button{font-size:.76rem}
+#characterView .visual-theme-actions button:last-child{background:var(--character-primary)!important;border-color:var(--character-primary)!important;color:#08121a!important}
+#characterView #visualThemeStatus{font-size:.72rem;color:#aeb9c9;margin:9px 0 0}
+#characterView .visual-theme-preview{padding-left:18px;border-left:1px solid #ffffff22}
+#characterView .visual-preview-card{margin-top:12px;padding:16px;border:1px solid var(--character-primary);border-radius:13px;background:linear-gradient(145deg,#172235,#090f1b);box-shadow:inset 0 0 25px color-mix(in srgb,var(--character-primary) 10%,transparent)}
+#characterView .visual-preview-card h3{margin:0;color:var(--character-primary)}
+#characterView .visual-preview-card p{font-size:.72rem;color:#b9c5d5;margin:4px 0 15px}
+#characterView .visual-preview-tabs{display:flex;justify-content:space-between;gap:4px;padding:9px 0;border-top:1px solid #ffffff22;border-bottom:1px solid #ffffff22}
+#characterView .visual-preview-tabs span{font-size:.62rem;padding:5px;border-radius:5px;background:color-mix(in srgb,var(--character-primary) 17%,transparent)}
+#characterView .visual-preview-info{display:grid;gap:7px;margin-top:12px;color:var(--character-secondary);font-size:.78rem}
+#characterView[data-visual-style="soft"] .visual-theme-panel,#characterView[data-visual-style="soft"] .visual-preview-card{box-shadow:none;border-radius:7px}
+#characterView[data-visual-style="ornate"] .visual-theme-panel,#characterView[data-visual-style="ornate"] .visual-preview-card{border-width:2px;box-shadow:0 0 0 3px color-mix(in srgb,var(--character-secondary) 15%,transparent),inset 0 0 25px color-mix(in srgb,var(--character-primary) 10%,transparent)}
+#characterView .stat{border-color:color-mix(in srgb,var(--character-primary) 35%,transparent)}
+#characterView input:focus,#characterView textarea:focus,#characterView select:focus{border-color:var(--character-primary)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--character-primary) 18%,transparent)}
+
+/* Aplicacion real de la identidad visual a toda la ficha del personaje */
+#characterView > .card,
+#characterView .sheet-section,
+#characterView .panel,
+#characterView .stat-card,
+#characterView .form-section,
+#characterView .character-block,
+#characterView .sheet-card {
+  border-color: color-mix(in srgb,var(--character-primary) 48%,rgba(255,255,255,.16)) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb,var(--character-primary) 10%,transparent), inset 0 0 22px color-mix(in srgb,var(--character-primary) 4%,transparent);
+}
+#characterView button:not(.visual-palette-option),
+#characterView .button,
+#characterView input[type=button],
+#characterView input[type=submit] {
+  border-color: color-mix(in srgb,var(--character-primary) 72%,rgba(255,255,255,.2)) !important;
+  background-image: linear-gradient(135deg,
+    color-mix(in srgb,var(--character-primary) 25%,rgba(18,25,39,.96)),
+    color-mix(in srgb,var(--character-secondary) 18%,rgba(10,16,28,.98))) !important;
+  box-shadow: inset 0 0 12px color-mix(in srgb,var(--character-primary) 9%,transparent), 0 2px 10px rgba(0,0,0,.16) !important;
+}
+#characterView button:not(.visual-palette-option):hover,
+#characterView .button:hover {
+  border-color: var(--character-accent) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb,var(--character-accent) 35%,transparent), 0 0 15px color-mix(in srgb,var(--character-primary) 28%,transparent) !important;
+}
+#characterView .sheet-tab.active,
+#characterView .sheet-switcher .active {
+  border-color: var(--character-primary) !important;
+  color: var(--character-primary) !important;
+  box-shadow: inset 0 -2px 0 var(--character-primary), 0 0 12px color-mix(in srgb,var(--character-primary) 16%,transparent) !important;
+}
+#characterView .stat,
+#characterView .stat label,
+#characterView .section-title,
+#characterView h2,
+#characterView h3:not(.visual-preview-card h3) {
+  border-color: color-mix(in srgb,var(--character-secondary) 48%,transparent);
+}
+#characterView .section-title,
+#characterView .stat-value,
+#characterView .highlight,
+#characterView .accent,
+#characterView .sheet-note {
+  color: var(--character-accent) !important;
+}
+#characterView input:not([type=color]):focus,
+#characterView textarea:focus,
+#characterView select:focus {
+  border-color: var(--character-primary) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb,var(--character-primary) 24%,transparent) !important;
+}
+#characterView input[type=checkbox],
+#characterView input[type=radio],
+#characterView progress {
+  accent-color: var(--character-primary) !important;
+}
+#characterView[data-visual-style="soft"] > .card,
+#characterView[data-visual-style="soft"] .sheet-section,
+#characterView[data-visual-style="soft"] .panel,
+#characterView[data-visual-style="soft"] .stat-card,
+#characterView[data-visual-style="soft"] .form-section {
+  box-shadow: none !important;
+  border-radius: 8px !important;
+}
+#characterView[data-visual-style="ornate"] > .card,
+#characterView[data-visual-style="ornate"] .sheet-section,
+#characterView[data-visual-style="ornate"] .panel,
+#characterView[data-visual-style="ornate"] .stat-card,
+#characterView[data-visual-style="ornate"] .form-section {
+  border-width: 2px !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb,var(--character-secondary) 14%,transparent), inset 0 0 24px color-mix(in srgb,var(--character-primary) 7%,transparent) !important;
+}
+/* La personalizacion individual tiene prioridad sobre el acento especial de Giada. */
+body.giada-red-mode #characterView button:not(.visual-palette-option),
+body.giada-red-mode #characterView .button,
+body.giada-red-mode #characterView input[type=button],
+body.giada-red-mode #characterView input[type=submit] {
+  border-color: color-mix(in srgb,var(--character-primary) 78%,white 12%) !important;
+  background-image: linear-gradient(135deg,color-mix(in srgb,var(--character-primary) 30%,#240914),color-mix(in srgb,var(--character-secondary) 22%,#260914)) !important;
+  box-shadow: 0 0 10px color-mix(in srgb,var(--character-primary) 24%,transparent) !important;
+}
+body.giada-red-mode #characterView .sheet-section,
+body.giada-red-mode #characterView .panel,
+body.giada-red-mode #characterView .stat-card,
+body.giada-red-mode #characterView .form-section {
+  border-color: color-mix(in srgb,var(--character-primary) 58%,transparent) !important;
+  box-shadow: 0 0 14px color-mix(in srgb,var(--character-primary) 12%,transparent) !important;
+}
+@media(max-width:760px){#characterView .visual-theme-layout{grid-template-columns:1fr}#characterView .visual-theme-preview{padding:15px 0 0;border-left:0;border-top:1px solid #ffffff22}}
+
+
+
+/* === Cobertura completa de la ficha: tarjetas, campos y valores === */
+#characterView .character-context .context-name,
+#characterView .character-context,
+#characterView #characterName,
+#characterView .character-name,
+#characterView .character-name-input {
+  color: var(--character-accent) !important;
+  border-color: color-mix(in srgb,var(--character-primary) 72%,rgba(255,255,255,.18)) !important;
+  text-shadow: 0 0 10px color-mix(in srgb,var(--character-primary) 28%,transparent);
+}
+#characterView .stat,
+#characterView .attribute-card,
+#characterView .skill-card,
+#characterView .stats-grid > .stat,
+#characterView .attribute-grid > .stat {
+  background: linear-gradient(145deg,
+    color-mix(in srgb,var(--character-primary) 13%,rgba(18,23,34,.96)),
+    color-mix(in srgb,var(--character-secondary) 11%,rgba(12,17,27,.98))) !important;
+  border: 1px solid color-mix(in srgb,var(--character-primary) 58%,rgba(255,255,255,.14)) !important;
+  box-shadow: inset 0 0 18px color-mix(in srgb,var(--character-primary) 7%,transparent),
+              0 3px 12px rgba(0,0,0,.18) !important;
+}
+#characterView .stat-name,
+#characterView .attribute-aspect-label,
+#characterView .skill-talent-label {
+  color: color-mix(in srgb,var(--character-secondary) 66%,#f1f3f8) !important;
+}
+/* Los valores numéricos son el foco visual de los atributos y habilidades. */
+#characterView .stat-input,
+#characterView input.stat-input,
+#characterView .attribute-card input[type=number],
+#characterView .skill-card input[type=number] {
+  background: color-mix(in srgb,var(--character-primary) 16%,rgba(8,12,20,.96)) !important;
+  border: 1px solid color-mix(in srgb,var(--character-primary) 72%,rgba(255,255,255,.16)) !important;
+  color: var(--character-accent) !important;
+  text-shadow: 0 0 9px color-mix(in srgb,var(--character-accent) 30%,transparent);
+  box-shadow: inset 0 0 12px color-mix(in srgb,var(--character-secondary) 10%,transparent),
+              0 0 8px color-mix(in srgb,var(--character-primary) 10%,transparent) !important;
+}
+#characterView .attribute-aspect-input,
+#characterView .skill-talent-input,
+#characterView input:not([type=color]):not(.stat-input),
+#characterView textarea,
+#characterView select {
+  border-color: color-mix(in srgb,var(--character-secondary) 52%,rgba(255,255,255,.16)) !important;
+  background-color: color-mix(in srgb,var(--character-secondary) 9%,rgba(8,12,20,.92)) !important;
+}
+#characterView .attribute-aspect-input,
+#characterView .skill-talent-input,
+#characterView input:not([type=color]),
+#characterView textarea,
+#characterView select { color: #f3f5fa; }
+#characterView .stat input:focus,
+#characterView .attribute-aspect-input:focus,
+#characterView .skill-talent-input:focus,
+#characterView #characterName:focus {
+  border-color: var(--character-accent) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb,var(--character-accent) 28%,transparent),
+              0 0 14px color-mix(in srgb,var(--character-primary) 18%,transparent) !important;
+}
+#characterView h1,
+#characterView h2,
+#characterView h3:not(.visual-preview-card h3),
+#characterView h4,
+#characterView .section-title,
+#characterView .section-heading,
+#characterView .card-title {
+  color: var(--character-primary) !important;
+  text-shadow: 0 0 12px color-mix(in srgb,var(--character-primary) 22%,transparent);
+}
+#characterView .card,
+#characterView .manager-card,
+#characterView .sheet-section,
+#characterView .panel,
+#characterView .form-section,
+#characterView .character-block,
+#characterView .sheet-card {
+  border-color: color-mix(in srgb,var(--character-primary) 48%,rgba(255,255,255,.15)) !important;
+}
+#characterView .stat-value,
+#characterView output,
+#characterView .value-display,
+#characterView .derived-value,
+#characterView .health-value,
+#characterView .defense-value {
+  color: var(--character-accent) !important;
+}
+#characterView .progress-bar,
+#characterView progress,
+#characterView input[type=range] { accent-color: var(--character-primary) !important; }
+#characterView[data-visual-style="soft"] .stat,
+#characterView[data-visual-style="soft"] .attribute-card,
+#characterView[data-visual-style="soft"] .skill-card {
+  box-shadow: none !important;
+  border-color: color-mix(in srgb,var(--character-primary) 38%,rgba(255,255,255,.12)) !important;
+}
+#characterView[data-visual-style="ornate"] .stat,
+#characterView[data-visual-style="ornate"] .attribute-card,
+#characterView[data-visual-style="ornate"] .skill-card {
+  border-width: 2px !important;
+  box-shadow: inset 0 0 20px color-mix(in srgb,var(--character-primary) 12%,transparent),
+              0 0 0 2px color-mix(in srgb,var(--character-secondary) 12%,transparent),
+              0 4px 14px rgba(0,0,0,.2) !important;
+}
 </style>
 <style id="creatureSheetStyles">
 
@@ -2069,6 +2306,7 @@ body.corte-sangrienta-mode hr,body.corte-sangrienta-mode .divider{border-color:r
 </div>
 <div class="context-name" id="characterContext"></div>
 </div>
+<section class="visual-theme-panel" id="visualThemePanel"><div class="visual-theme-heading"><div><span class="visual-theme-kicker">IDENTIDAD DE LA FICHA</span><h3>✦ Personalización visual</h3><p>Personaliza esta ficha sin perder la estética de su campaña. La vista previa se actualiza al instante.</p></div><span class="visual-theme-campaign" id="visualThemeCampaign"></span></div><div class="visual-theme-layout"><div><h4>Paletas recomendadas</h4><div class="visual-theme-palettes" id="visualThemePalettes"></div><h4>Personalización avanzada</h4><div class="visual-theme-colors"><label>Color principal <input id="visualPrimary" type="color"></label><label>Color secundario <input id="visualSecondary" type="color"></label><label>Color de acento <input id="visualAccent" type="color"></label></div><h4>Acabado de la ficha</h4><div class="visual-theme-styles" id="visualThemeStyles"></div><div class="visual-theme-presets"><label for="visualPresetSelect">Presets de este personaje</label><select id="visualPresetSelect"><option value="">Selecciona un preset…</option></select><button type="button" class="secondary" onclick="applyVisualPreset()">Aplicar preset</button><button type="button" class="secondary" onclick="saveVisualPreset()">＋ Guardar combinación como preset</button></div><div class="visual-theme-actions"><button type="button" class="secondary" onclick="resetVisualTheme()">↺ Restablecer estilo original</button><button type="button" onclick="saveVisualTheme()">✓ Guardar personalización</button></div><p id="visualThemeStatus">La vista previa cambia al instante. Guarda para sincronizarla.</p></div><aside class="visual-theme-preview"><strong>◉ Vista previa de la ficha</strong><div class="visual-preview-card"><h3 id="visualPreviewName">Tu personaje</h3><p id="visualPreviewCampaign">Campaña</p><div class="visual-preview-tabs"><span>Datos</span><span>Atributos</span><span>Habilidades</span><span>Equipo</span></div><div class="visual-preview-info"><b>Fortaleza　7</b><b>Reflejos　5</b><b>Voluntad　6</b></div></div></aside></div></section>
 <!-- =========================
      FICHA DEL PERSONAJE
 ========================= -->
@@ -3107,7 +3345,7 @@ function syncCurrentFormToWorkingCharacter(){
     workingCharacter.shared.sheet={...(workingCharacter.shared.sheet||{}),concepto:sheet.concepto,complicacion:sheet.complicacion,aspectoTemporal:sheet.aspectoTemporal,milestones:sheet.milestones,weapons:sharedWeapons};
     workingCharacter.human.sheet={...workingCharacter.human.sheet,...workingCharacter.shared.sheet,weapons:sharedWeapons};
     workingCharacter.ecstasy.sheet={...workingCharacter.ecstasy.sheet,...workingCharacter.shared.sheet,weapons:sharedWeapons};
-    workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[]),condena:{texto:document.getElementById('sheetCondena')?.value||'',edadIngreso:document.getElementById('sheetCondenaEdadIngreso')?.value??'',edadSalida:document.getElementById('sheetCondenaEdadSalida')?.value??''}};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
+    workingCharacter.profile={...(workingCharacter.profile||{}),background:document.getElementById('characterBackground')?.value||'',notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[]),visual:normalizeVisualTheme(workingCharacter.profile?.visual),condena:{texto:document.getElementById('sheetCondena')?.value||'',edadIngreso:document.getElementById('sheetCondenaEdadIngreso')?.value??'',edadSalida:document.getElementById('sheetCondenaEdadSalida')?.value??''}};workingCharacter.shared.distortionLevel=sheet.distortionLevel??getSharedDistortion();workingCharacter.shared.ecstasy=sheet.ecstasy??getSharedEcstasy();workingCharacter.shared.dramaPoints=Math.max(0,Math.min(5,Number(sheet.dramaPoints??workingCharacter.shared.dramaPoints??5)));workingCharacter.human.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.human.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.ecstasy.sheet.distortionLevel=workingCharacter.shared.distortionLevel;workingCharacter.ecstasy.sheet.ecstasy=workingCharacter.shared.ecstasy;workingCharacter.human.sheet.dramaPoints=workingCharacter.shared.dramaPoints;workingCharacter.ecstasy.sheet.dramaPoints=workingCharacter.shared.dramaPoints;target.attributes={fortaleza:getValue('fortaleza'),reflejos:getValue('reflejos'),voluntad:getValue('voluntad'),inteligencia:getValue('inteligencia')};target.skills={formaFisica:getValue('formaFisica'),combate:getValue('combate'),percepcion:getValue('percepcion'),subterfugio:getValue('subterfugio'),comunicacion:getValue('comunicacion'),cultura:getValue('cultura'),ocultismo:getValue('ocultismo'),gestionEmocional:getValue('gestionEmocional')};workingCharacter.name=document.getElementById('characterName')?.value.trim()||workingCharacter.name;
 }
 function setFormValuesFromCharacterSheet(sheet){
     const a=sheet.attributes||{},s=sheet.skills||{},shared=workingCharacter?.shared?.sheet||{};
@@ -3153,7 +3391,7 @@ function characterToDatabase(character){
             sharedSheet:{...(workingCharacter.shared?.sheet||{})},
             xpTracker:workingCharacter.shared?.xpTracker||null,
             sheet:{...defaultSheetData(),...(h.sheet||{}),dramaPoints:workingCharacter.shared?.dramaPoints??5},
-            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[]),condena:{texto:String(workingCharacter.profile?.condena?.texto||''),edadIngreso:workingCharacter.profile?.condena?.edadIngreso??'',edadSalida:workingCharacter.profile?.condena?.edadSalida??''}},
+            profile:{background:String(workingCharacter.profile?.background||''),notes:normalizeCharacterNotes(workingCharacter.profile?.notes||[]),portraitUrl:String(workingCharacter.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(workingCharacter.profile?.rollModifiers||[]),visual:normalizeVisualTheme(workingCharacter.profile?.visual),condena:{texto:String(workingCharacter.profile?.condena?.texto||''),edadIngreso:workingCharacter.profile?.condena?.edadIngreso??'',edadSalida:workingCharacter.profile?.condena?.edadSalida??''}},
             ecstasy:{
                 ...((previousAttrs&&previousAttrs.ecstasy)||{}),
                 attributes:humanizeNumbers(e.attributes),
@@ -3198,10 +3436,10 @@ function databaseToCharacter(row){
     // Los campos compartidos siempre quedan presentes en ambas formas al cargar.
     human.sheet={...human.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
     ext.sheet={...ext.sheet,...shared.sheet,distortionLevel:shared.distortionLevel,ecstasy:shared.ecstasy,dramaPoints:shared.dramaPoints};
-    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[]),portraitUrl:String(attrs.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(attrs.profile?.rollModifiers||[]),condena:{texto:String(attrs.profile?.condena?.texto||''),edadIngreso:attrs.profile?.condena?.edadIngreso??'',edadSalida:attrs.profile?.condena?.edadSalida??''}};
+    const profile={background:String(attrs.profile?.background||human.sheet.background||''),notes:normalizeCharacterNotes(attrs.profile?.notes||human.sheet.notes||[]),portraitUrl:String(attrs.profile?.portraitUrl||''),rollModifiers:normalizeRollModifiers(attrs.profile?.rollModifiers||[]),visual:normalizeVisualTheme(attrs.profile?.visual),condena:{texto:String(attrs.profile?.condena?.texto||''),edadIngreso:attrs.profile?.condena?.edadIngreso??'',edadSalida:attrs.profile?.condena?.edadSalida??''}};
     return {name:row.name||defaultCharacter.name,human,ecstasy:ext,shared,profile};
 }
-function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[],portraitUrl:'',rollModifiers:[],condena:{texto:'',edadIngreso:'',edadSalida:''}};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);workingCharacter.profile.portraitUrl=workingCharacter.profile.portraitUrl||'';workingCharacter.profile.rollModifiers=normalizeRollModifiers(workingCharacter.profile.rollModifiers||[]);renderCharacterPortrait(workingCharacter.profile.portraitUrl);activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();renderRollModifiers();}
+function applyCharacterToForm(character,mode='human'){workingCharacter=character||databaseToCharacter({name:defaultCharacter.name,attributes:{},skills:{}});workingCharacter.profile=workingCharacter.profile||{background:'',notes:[],portraitUrl:'',rollModifiers:[],condena:{texto:'',edadIngreso:'',edadSalida:''}};workingCharacter.profile.notes=normalizeCharacterNotes(workingCharacter.profile.notes||[]);workingCharacter.profile.portraitUrl=workingCharacter.profile.portraitUrl||'';workingCharacter.profile.rollModifiers=normalizeRollModifiers(workingCharacter.profile.rollModifiers||[]);renderCharacterPortrait(workingCharacter.profile.portraitUrl);renderVisualThemeEditor();activeSheetMode=mode==='ecstasy'&&workingCharacter.shared.distortionLevel>=1?'ecstasy':'human';setFormValuesFromCharacterSheet(activeSheetMode==='human'?workingCharacter.human:workingCharacter.ecstasy);updateSheetModeUI(false);updateCalculation();renderRollModifiers();}
 
 /* =========================================
    RETRATO DEL PERSONAJE
@@ -3316,6 +3554,29 @@ function refreshSaveStatus(){
     updateSaveStatus();
 }
 setInterval(refreshSaveStatus,10000);
+
+
+const VISUAL_THEME_PALETTES={
+genesis:[['Neón cian','#00d9e8','#ff3d9a','#a56bff'],['Magenta','#ff3d9a','#a56bff','#00d9e8'],['Violeta','#925cff','#00d9e8','#ff3d9a'],['Rojo eléctrico','#f0445b','#ff3d9a','#ff9a45'],['Verde digital','#35dc91','#00d9e8','#a56bff'],['Azul profundo','#4485e8','#00d9e8','#a56bff']],
+legado:[['Bosque botánico','#315b43','#a77b42','#783f4b'],['Oro antiguo','#a77b42','#315b43','#e0c58c'],['Burdeos clásico','#783f4b','#c19a62','#315b43'],['Lavanda','#76618c','#a77b42','#315b43'],['Marrón tierra','#79543a','#b38a55','#6e3944'],['Crema','#b9a47b','#526b4c','#8a4c4c']],
+olympus:[['Oro divino','#c6a45a','#4b83a6','#eee0b7'],['Mármol','#e3e0d5','#b99b59','#64849a'],['Púrpura','#78518f','#c6a45a','#4b83a6']],
+infection:[['Supervivencia','#8b9b62','#9d3f3f','#d0b36c'],['Sangre seca','#9d3f3f','#777b68','#c7a16b'],['Tóxico','#a4bd55','#526e43','#b7a34e']],
+ascension:[['Arena y óxido','#b97843','#a74336','#d5b77b'],['Atardecer','#d16a3b','#8d3f37','#e1bd75']],
+generic:[['Índigo','#667eea','#8b5cf6','#38bdf8'],['Esmeralda','#299b75','#b78b4c','#7bc6a4'],['Carmesí','#bd5264','#8d6cae','#e2a36b'],['Acero','#718096','#4f83a6','#b6a0d2']]};
+function getVisualCampaignKey(){const n=String(currentCampaign?.name||'');return /g[eé]nesis/i.test(n)?'genesis':/legado/i.test(n)?'legado':/ol[ií]mpo/i.test(n)?'olympus':/infecci[oó]n/i.test(n)?'infection':/ascensi[oó]n/i.test(n)?'ascension':'generic';}
+function getVisualDefault(){const p=VISUAL_THEME_PALETTES[getVisualCampaignKey()][0];return {name:p[0],primary:p[1],secondary:p[2],accent:p[3],style:'standard',presets:[]};}
+function normalizeVisualTheme(v){const d=getVisualDefault(),x=v&&typeof v==='object'?v:{};const c=k=>/^#[0-9a-f]{6}$/i.test(String(x[k]||''))?x[k]:d[k];return {name:String(x.name||d.name),primary:c('primary'),secondary:c('secondary'),accent:c('accent'),style:['standard','soft','ornate'].includes(x.style)?x.style:'standard',presets:Array.isArray(x.presets)?x.presets.slice(0,20):[]};}
+function currentVisualTheme(){return normalizeVisualTheme(workingCharacter?.profile?.visual);}
+function setVisualTheme(patch){if(!workingCharacter)return;const v=currentVisualTheme();workingCharacter.profile=workingCharacter.profile||{};workingCharacter.profile.visual=normalizeVisualTheme({...v,...patch,presets:v.presets});applyVisualThemeToSheet();}
+function applyVisualThemeToSheet(){const root=document.getElementById('characterView');if(!root)return;const v=currentVisualTheme();root.style.setProperty('--character-primary',v.primary);root.style.setProperty('--character-secondary',v.secondary);root.style.setProperty('--character-accent',v.accent);root.dataset.visualStyle=v.style;for(const [id,key] of [['visualPrimary','primary'],['visualSecondary','secondary'],['visualAccent','accent']]){const el=document.getElementById(id);if(el)el.value=v[key];}const n=document.getElementById('visualPreviewName');if(n)n.textContent=workingCharacter?.name||'Tu personaje';const c=document.getElementById('visualPreviewCampaign');if(c)c.textContent=currentCampaign?.name||'Campaña';document.querySelectorAll('#visualThemeStyles button').forEach(b=>b.classList.toggle('active',b.dataset.style===v.style));document.querySelectorAll('#visualThemePalettes button').forEach(b=>b.classList.toggle('active',b.dataset.palette===v.name));}
+function renderVisualThemeEditor(){const host=document.getElementById('visualThemePalettes');if(!host)return;const list=VISUAL_THEME_PALETTES[getVisualCampaignKey()];host.innerHTML=list.map((p,i)=>`<button type="button" class="visual-palette-option" data-palette="${p[0]}" onclick="chooseVisualPalette(${i})"><span><i style="background:${p[1]}"></i><i style="background:${p[2]}"></i><i style="background:${p[3]}"></i></span>${p[0]}</button>`).join('')+'<button type="button" class="visual-palette-option" onclick="startCustomVisualTheme()">＋ Personalizada</button>';document.getElementById('visualThemeCampaign').textContent=currentCampaign?.name||'Campaña';document.getElementById('visualThemeStyles').innerHTML=[['standard','Equilibrado'],['soft','Sutil'],['ornate','Ornamentado']].map(([v,l])=>`<button type="button" data-style="${v}" onclick="setVisualTheme({style:'${v}'})">${l}</button>`).join('');const v=currentVisualTheme();document.getElementById('visualPresetSelect').innerHTML='<option value="">Selecciona un preset…</option>'+v.presets.map((p,i)=>`<option value="${i}">${String(p.name||'Preset').replace(/[<>&"]/g,'')}</option>`).join('');applyVisualThemeToSheet();}
+function chooseVisualPalette(i){const p=VISUAL_THEME_PALETTES[getVisualCampaignKey()][i];setVisualTheme({name:p[0],primary:p[1],secondary:p[2],accent:p[3]});}
+function startCustomVisualTheme(){setVisualTheme({name:'Personalizada'});}
+function applyVisualPreset(){const v=currentVisualTheme(),p=v.presets[Number(document.getElementById('visualPresetSelect').value)];if(p)setVisualTheme(p);else document.getElementById('visualThemeStatus').textContent='Selecciona primero un preset.';}
+async function saveVisualPreset(){const name=prompt('Nombre para esta combinación:');if(!name?.trim())return;const v=currentVisualTheme(),presets=v.presets.filter(p=>p.name!==name.trim());presets.push({name:name.trim().slice(0,40),primary:v.primary,secondary:v.secondary,accent:v.accent,style:v.style});workingCharacter.profile.visual={...v,presets};renderVisualThemeEditor();await saveCharacter();document.getElementById('visualThemeStatus').textContent='✓ Preset guardado y sincronizado.';}
+function resetVisualTheme(){const d=getVisualDefault();d.presets=currentVisualTheme().presets;setVisualTheme(d);document.getElementById('visualThemeStatus').textContent='Vista previa restablecida. Guarda para confirmar.';}
+async function saveVisualTheme(){await saveCharacter();document.getElementById('visualThemeStatus').textContent='✓ Personalización guardada en la nube.';}
+document.addEventListener('input',e=>{const map={visualPrimary:'primary',visualSecondary:'secondary',visualAccent:'accent'};if(map[e.target?.id])setVisualTheme({[map[e.target.id]]:e.target.value,name:'Personalizada'});if(e.target?.id==='characterName'){const n=document.getElementById('visualPreviewName');if(n)n.textContent=e.target.value||'Tu personaje';}});
 
 /* =========================================
    GUARDAR PERSONAJE
